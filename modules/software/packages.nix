@@ -24,8 +24,8 @@
   };
 
   environment.systemPackages = with pkgs; [
-    dbgate # SQL GUI
-    home-manager
+    dbgate # Database Client
+    home-manager # Home Manager CLI
     p7zip # For Handling .7z Files
     binwalk # For Analyzing Binary Files
     hexdump # For Viewing Binary Files
@@ -71,14 +71,6 @@
     teams-for-linux # Unofficial Microsoft Teams Client
     waypipe # For Running Wayland Apps Over SSH
     moonlight-qt # NVIDIA Game Streaming Client
-    gnome-network-displays
-    gst_all_1.gstreamer
-    gst_all_1.gst-plugins-base
-    gst_all_1.gst-plugins-good
-    gst_all_1.gst-plugins-bad
-    gst_all_1.gst-plugins-ugly
-    gst_all_1.gst-libav
-    # Needed specifically for the "x264enc" and "fdkaacenc" mentioned in your logs
-    gst_all_1.gst-vaapi
+    gnome-network-displays # For Wireless Display Streaming
   ];
 }

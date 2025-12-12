@@ -1,6 +1,18 @@
-{ pkgs, ... }:
+{ pkgs, config, vars, ... }:
+let
+  rtl8852cu-package = pkgs.callPackage ./rtl8852cu.nix {
+    kernel = config.boot.kernelPackages.kernel;
+  };
+in
 {
+  boot.extraModulePackages = if vars.add_rtl8852cu then [ rtl8852cu-package ] else [];
+  boot.extraModprobeConfig = if vars.add_rtl8852cu then ''
+    options 8852cu rtw_switch_usb_mode=1
+    options 8852cu rtw_country_code=GB
+  '' else "";
+  boot.kernelModules = if vars.add_rtl8852cu then [ "8852cu" ] else [];
   hardware = {
+    usb-modeswitch.enable=true;
     firmware = [ pkgs.sof-firmware ];
     sane = {
       enable = true;

@@ -36,4 +36,6 @@ in
 
   printEnable = true;
   printDrivers = [ pkgs.postscript-lexmark ];
+
+  add_rtl8852cu = true;
 }

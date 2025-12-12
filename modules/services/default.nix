@@ -7,5 +7,6 @@
     ./vpn.nix
     ./xserver.nix
     ./sunshine.nix
+    ./ollama.nix
   ];
 }
