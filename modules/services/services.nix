@@ -27,5 +27,6 @@
     ananicy.package = pkgs.ananicy-cpp;
 
     irqbalance.enable = true;
+    usbmuxd.enable = true;
   };
 }

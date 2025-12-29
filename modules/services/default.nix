@@ -6,5 +6,6 @@
     ./virtualisation.nix
     ./vpn.nix
     ./xserver.nix
+    ./sunshine.nix
   ];
 }

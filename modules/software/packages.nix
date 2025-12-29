@@ -24,7 +24,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    dbgate
+    dbgate # SQL GUI
     home-manager
     p7zip # For Handling .7z Files
     binwalk # For Analyzing Binary Files
@@ -67,8 +67,18 @@
     wget # Tool For Fetching Files With Links
     hyprpaper # Wallpaper Setter For Hyprland
     qbittorrent # Torrent Client
-    libsecret
-    teams-for-linux
-    waypipe
+    libsecret # For Storing Passwords Securely
+    teams-for-linux # Unofficial Microsoft Teams Client
+    waypipe # For Running Wayland Apps Over SSH
+    moonlight-qt # NVIDIA Game Streaming Client
+    gnome-network-displays
+    gst_all_1.gstreamer
+    gst_all_1.gst-plugins-base
+    gst_all_1.gst-plugins-good
+    gst_all_1.gst-plugins-bad
+    gst_all_1.gst-plugins-ugly
+    gst_all_1.gst-libav
+    # Needed specifically for the "x264enc" and "fdkaacenc" mentioned in your logs
+    gst_all_1.gst-vaapi
   ];
 }

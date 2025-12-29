@@ -14,6 +14,8 @@
       "fs.protected_fifos" = 2;
       "fs.protected_regular" = 2;
       "kernel.kptr_restrict" = 2;
+      "net.ipv4.ip_forward" = 1;
+      "net.ipv6.conf.all.forwarding" = 1;
     };
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
