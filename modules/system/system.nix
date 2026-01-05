@@ -30,4 +30,5 @@
   system.stateVersion = "25.05";
   system.autoUpgrade.enable = true;
   system.autoUpgrade.flake = "/mdata/NS/NullOS";
+  system.autoUpgrade.runGarbageCollection = true;
 }

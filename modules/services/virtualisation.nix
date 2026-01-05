@@ -7,13 +7,13 @@
     docker.enable = true;
     podman.enable = false;
     libvirtd = {
-      enable = false;
+      enable = true;
     };
   };
   users.extraGroups.vboxusers.members = [ vars.username ];
 
   programs = {
-    virt-manager.enable = false;
+    virt-manager.enable = true;
   };
 
 }
