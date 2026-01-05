@@ -6,7 +6,6 @@
     ./nvidia.nix
     ./boot.nix
     ./system.nix
-    ./hardware.nix
     ./network.nix
     ./printing.nix
     ./hardware_add.nix

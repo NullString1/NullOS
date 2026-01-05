@@ -8,6 +8,9 @@
   networking = {
     hostName = "${vars.hostname}";
     networkmanager.enable = true;
+    networkmanager.settings = if vars.add_rtl8852cu then {
+      wifi.powersave = false;
+    } else {};
     timeServers = options.networking.timeServers.default ++ [ "pool.ntp.org" ];
     firewall = {
       enable = true;
