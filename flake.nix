@@ -122,6 +122,7 @@
             ./modules/services
             ./modules/software
             ./modules/system
+            ./modules/system/hardware_nslapt.nix
 
             # Specialisations for different configurations
             {
