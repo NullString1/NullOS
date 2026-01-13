@@ -1,4 +1,11 @@
-{ lib, stdenv, fetchFromGitHub, kernel, bc, nukeReferences }:
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  kernel,
+  bc,
+  nukeReferences,
+}:
 
 stdenv.mkDerivation rec {
   pname = "rtl8852cu";
@@ -21,25 +28,32 @@ stdenv.mkDerivation rec {
       --replace-fail "sh edit-options.sh" ""
     substituteInPlace ./platform/i386_pc.mk \
       --replace-fail /lib/modules "${kernel.dev}/lib/modules"
-    
+
     # Fix crypto function name conflicts with kernel 6.18+
     # Use sed for more reliable multi-line replacements
     sed -i 's/\bhmac_sha256_vector\b/rtw_hmac_sha256_vector/g' ./core/crypto/sha256.h
     sed -i 's/\bhmac_sha256\b/rtw_hmac_sha256/g' ./core/crypto/sha256.h
     sed -i 's/\bsha256_prf\b/rtw_sha256_prf/g' ./core/crypto/sha256.h
-    
+
     sed -i 's/\bhmac_sha256_vector\b/rtw_hmac_sha256_vector/g' ./core/crypto/sha256.c
     sed -i 's/\bhmac_sha256\b/rtw_hmac_sha256/g' ./core/crypto/sha256.c
-    
+
     sed -i 's/\bsha256_prf\b/rtw_sha256_prf/g' ./core/crypto/sha256-prf.c
     sed -i 's/\bhmac_sha256_vector\b/rtw_hmac_sha256_vector/g' ./core/crypto/sha256-prf.c
-    
+
     sed -i 's/\bsha256_prf\b/rtw_sha256_prf/g' ./core/rtw_swcrypto.c
   '';
 
-  nativeBuildInputs = [ bc nukeReferences ] ++ kernel.moduleBuildDependencies;
-  
-  hardeningDisable = [ "pic" "format" ];  
+  nativeBuildInputs = [
+    bc
+    nukeReferences
+  ]
+  ++ kernel.moduleBuildDependencies;
+
+  hardeningDisable = [
+    "pic"
+    "format"
+  ];
 
   makeFlags = [
     "ARCH=${stdenv.hostPlatform.linuxArch}"
@@ -58,7 +72,7 @@ stdenv.mkDerivation rec {
   postInstall = ''
     nuke-refs $out/lib/modules/*/kernel/net/wireless/*.ko
   '';
-  
+
   env.NIX_CFLAGS_COMPILE = "-Wno-designated-init";
   enableParallelBuilding = true;
 

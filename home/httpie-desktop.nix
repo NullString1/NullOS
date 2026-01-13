@@ -1,4 +1,4 @@
 { pkgs, ... }:
 {
-    home.packages = [ pkgs.httpie-desktop ];  
+  home.packages = [ pkgs.httpie-desktop ];
 }

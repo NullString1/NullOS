@@ -193,11 +193,11 @@
           enable = true;
           lsp = {
             enable = true;
-            servers =  [ "nixd" ];
+            servers = [ "nixd" ];
           };
           format = {
             enable = true;
-            type = ["nixfmt"];
+            type = [ "nixfmt" ];
           };
         };
         clang = {
@@ -217,7 +217,7 @@
           lsp = {
             enable = true;
           };
-          format.type = ["prettierd"];
+          format.type = [ "prettierd" ];
           extensions.ts-error-translator = {
             enable = true;
           };
@@ -230,7 +230,7 @@
         };
         css = {
           enable = true;
-          format.type = ["prettierd"];
+          format.type = [ "prettierd" ];
         };
         typst = {
           enable = true;

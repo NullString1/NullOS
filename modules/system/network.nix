@@ -8,9 +8,13 @@
   networking = {
     hostName = "${vars.hostname}";
     networkmanager.enable = true;
-    networkmanager.settings = if vars.add_rtl8852cu then {
-      wifi.powersave = false;
-    } else {};
+    networkmanager.settings =
+      if vars.add_rtl8852cu then
+        {
+          wifi.powersave = false;
+        }
+      else
+        { };
     timeServers = options.networking.timeServers.default ++ [ "pool.ntp.org" ];
     firewall = {
       enable = true;
@@ -25,7 +29,7 @@
         161
         162
         9100
-	      11470
+        11470
         7236
         7237
         7238
@@ -36,7 +40,7 @@
         161
         162
         9100
-	      11470
+        11470
         7236
         7237
         7238
