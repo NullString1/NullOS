@@ -10,7 +10,6 @@
     hyprland.enable = true;
     hyprlock.enable = true;
     fuse.userAllowOther = true;
-    adb.enable = true;
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
@@ -24,6 +23,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    android-tools # adb
     dbgate # Database Client
     home-manager # Home Manager CLI
     p7zip # For Handling .7z Files

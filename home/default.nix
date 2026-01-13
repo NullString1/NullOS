@@ -9,6 +9,8 @@
   imports = [
     ./httpie-desktop.nix
     ./office.nix
+    ./swayosd.nix
+    ./nwg-displays.nix
     #./bottles.nix
     ./fastfetch
     ./hyprland

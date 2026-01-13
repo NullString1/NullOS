@@ -49,6 +49,7 @@
         "killall -q waybar;sleep .5 && waybar"
         "killall -q swaync;sleep .5 && swaync"
         "nm-applet --indicator"
+        "swayosd-server &"
         "pypr &"
         "sleep 1.5 && swww img ${vars.stylixImage}"
       ];
@@ -145,13 +146,7 @@
 
     extraConfig = "
       monitor=,preferred,auto,auto
-      monitor=Virtual-1,1920x1080@60,auto,1
-      monitor=HDMI-A-1,1920x1080@60,0x0,1
-      ${vars.extraMonitorSettings
-          }
-      # To enable blur on waybar uncomment the line below
-      # Thanks to SchotjeChrisman
-      # layerrule = blur,waybar
+      source=~/.config/hypr/monitors.conf
     ";
   };
 }
