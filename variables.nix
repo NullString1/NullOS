@@ -7,8 +7,8 @@ in
   hostname = "examplehost";
   system = "x86_64-linux";
 
-  gitUsername = "Example User";
-  gitEmail = "email@example.com";
+  gitUsername = "exampleuser";
+  gitEmail = "exampleuser@examplehost";
 
   terminal = "ghostty";
   browser = pkgs.brave;
@@ -28,14 +28,14 @@ in
 
   animationSet = home/hyprland/animations-end4.nix;
 
-  resticRepository = "sftp:user@serverip:/mdata/nsdata";
+  resticRepository = "sftp:exampleuser@host:/path/path";
 
   extraMonitorSettings = "
     monitor = eDP-1, 1920x1080@60,auto,1
     ";
 
   printEnable = true;
-  printDrivers = [ pkgs.postscript-lexmark ];
+  printDrivers = [ ];
 
-  add_rtl8852cu = true;
+  add_rtl8852cu = false;
 }
