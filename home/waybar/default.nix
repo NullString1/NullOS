@@ -102,7 +102,7 @@ with lib;
             format-wifi = " {bandwidthDownBits}";
             format-disconnected = "󰤮";
             tooltip = false;
-            on-click = "${terminal} -e btop";
+            on-click = "pypr toggle vpn";
           };
           "tray" = {
             spacing = 12;

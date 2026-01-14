@@ -145,7 +145,7 @@
     };
 
     extraConfig = "
-      monitor=,preferred,auto,auto
+      monitor=,preferred,auto,1
       source=~/.config/hypr/monitors.conf
     ";
   };

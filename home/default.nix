@@ -11,6 +11,7 @@
     ./office.nix
     ./swayosd.nix
     ./nwg-displays.nix
+    ./nixvim.nix
     #./bottles.nix
     ./fastfetch
     ./hyprland
@@ -25,7 +26,7 @@
     ./xdg.nix
     ./ghostty.nix
     ./swaync.nix
-    ./nvf.nix
+    #./nvf.nix
     ./eza.nix
     ./bottom.nix
     ./bat.nix

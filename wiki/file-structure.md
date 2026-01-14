@@ -39,6 +39,7 @@ home/
 ├── gtk.nix            # GTK theming
 ├── httpie-desktop.nix # HTTPie desktop client
 ├── kde.nix            # KDE integration
+├── nixvim.nix         # Neovim (Nixvim) config
 ├── nvf.nix            # Neovim (NVF) config
 ├── nwg-displays.nix   # Display configuration tool
 ├── office.nix         # Office suite
