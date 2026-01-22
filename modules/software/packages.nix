@@ -72,5 +72,7 @@
     waypipe # For Running Wayland Apps Over SSH
     moonlight-qt # NVIDIA Game Streaming Client
     gnome-network-displays # For Wireless Display Streaming
+    #antigravity-nix.packages.${vars.system}.default # Google antigravity
+    antigravity-fhs
   ];
 }

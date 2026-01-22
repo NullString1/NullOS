@@ -1,12 +1,14 @@
 { pkgs, ... }:
 {
   home.packages = [
-    (import (./scripts/screenshotin.nix) { inherit pkgs; })
-    (import (./scripts/keybinds.nix) { inherit pkgs; })
-    (import (./scripts/rofi-launcher.nix) { inherit pkgs; })
-    (import (./scripts/wallsetter.nix) { inherit pkgs; })
+    (import ./scripts/screenshotin.nix { inherit pkgs; })
+    (import ./scripts/keybinds.nix { inherit pkgs; })
+    (import ./scripts/rofi-launcher.nix { inherit pkgs; })
+    (import ./scripts/wallsetter.nix { inherit pkgs; })
   ];
   imports = [
+    ./fusion360.nix
+    ./lutris.nix
     ./httpie-desktop.nix
     ./office.nix
     ./swayosd.nix
