@@ -59,7 +59,7 @@ NullOS is a fully declarative NixOS configuration that provides a polished Wayla
 - Automated backups with Restic
 
 🛠️ **Development Tools**
-- Neovim with NVF configuration
+- Neovim with Nixvim configuration (also NVF available)
 - VSCode with Nix integration
 - Android Studio and ADB
 - Git with GitHub CLI
@@ -67,8 +67,10 @@ NullOS is a fully declarative NixOS configuration that provides a polished Wayla
 
 🎮 **Gaming**
 - Steam with gamemode
+- Lutris game launcher
 - Moonlight streaming client
 - GameMode performance optimizations
+- Fusion 360 (via Wine)
 
 ---
 
@@ -118,6 +120,10 @@ These applications are installed system-wide via NixOS configuration:
 - **Image Viewer**: Eye of GNOME (eog)
 - **Screen Streaming**: Gnome Network Displays
 - **Game Streaming**: Moonlight, Sunshine
+
+### Gaming
+- **Game Launcher**: Lutris
+- **CAD/Design**: Fusion 360 (via Wine)
 
 ### Productivity
 - **Notes**: Obsidian
@@ -173,11 +179,13 @@ User-level applications managed via home-manager:
 - **Fetch**: Fastfetch
 
 ### Desktop Applications
-- **Editor**: VSCode, Neovim (NVF)
+- **Editor**: VSCode, Neovim (Nixvim/NVF)
 - **File Manager**: Dolphin (system integration)
 - **HTTP Client**: HTTPie Desktop
 - **Office Suite**: LibreOffice (via office.nix)
 - **Display Config**: nwg-displays
+- **Gaming**: Lutris game launcher
+- **CAD**: Fusion 360 (via Wine)
 
 ### Wayland Utilities
 - **Screenshot**: Custom screenshotin script, Swappy
@@ -494,7 +502,7 @@ p10k configure
 
 ### Neovim Configuration
 
-NullOS uses NVF for Neovim configuration. Edit `home/nvf.nix` to customize your editor.
+NullOS uses Nixvim as the primary Neovim configuration. Edit `home/nixvim.nix` to customize your editor. An alternative NVF configuration is also available in `home/nvf.nix`.
 
 ### Git Configuration
 

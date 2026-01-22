@@ -33,12 +33,14 @@ home/
 ├── bottles.nix         # Bottles (Wine manager)
 ├── bottom.nix          # Bottom (process monitor)
 ├── eza.nix            # Eza (ls alternative)
+├── fusion360.nix      # Fusion 360 (CAD via Wine)
 ├── gh.nix             # GitHub CLI
 ├── ghostty.nix        # Ghostty terminal
 ├── git.nix            # Git configuration
 ├── gtk.nix            # GTK theming
 ├── httpie-desktop.nix # HTTPie desktop client
 ├── kde.nix            # KDE integration
+├── lutris.nix         # Lutris game launcher
 ├── nixvim.nix         # Neovim (Nixvim) config
 ├── nvf.nix            # Neovim (NVF) config
 ├── nwg-displays.nix   # Display configuration tool
