@@ -14,10 +14,6 @@
       url = "github:nix-community/nixvim/main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    antigravity-nix = {
-      url = "github:jacopone/antigravity-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     fusion360 = {
       url = "github:nullstring1/fusion-360-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -29,7 +25,6 @@
       nixpkgs,
       nixpkgs-stable,
       home-manager,
-      antigravity-nix,
       fusion360,
       ...
     }@inputs:
@@ -79,7 +74,6 @@
             inherit vars;
             inherit inputs;
             inherit home-manager;
-            inherit antigravity-nix;
             fusion360 = fusion360.packages.${system}.default;
           };
           pkgs = import nixpkgs {
