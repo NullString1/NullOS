@@ -3,15 +3,10 @@ let
   pkgs = import nixpkgs { system = "x86_64-linux"; };
 in
 {
+  # User and System Settings
   username = "exampleuser";
   hostname = "examplehost";
   system = "x86_64-linux";
-
-  gitUsername = "exampleuser";
-  gitEmail = "exampleuser@examplehost";
-
-  terminal = "ghostty";
-  browser = pkgs.brave;
 
   keyboardLayout = "gb";
   consoleKeyMap = "uk";
@@ -19,23 +14,61 @@ in
   timeZone = "Europe/London";
   locale = "en_GB.UTF-8";
 
-  useNvidiaPrime = true;
-  intelBusId = "PCI:0:2:0";
-  nvidiaBusId = "PCI:2:0:0";
-
   stylixImage = wallpapers/screen.jpg;
   waybarConfig = home/waybar/default.nix;
 
   animationSet = home/hyprland/animations-end4.nix;
 
-  resticRepository = "sftp:exampleuser@host:/path/path";
-
   extraMonitorSettings = "
     monitor = eDP-1, 1920x1080@60,auto,1
     ";
 
-  printEnable = true;
+  # Git Settings (Enable by setting enableGit to true in variables.nix)
+  gitUsername = "ExampleUser";
+  gitEmail = "exampleuser@example.com";
+
+  # Configurable Default Applications
+  terminal = "ghostty";
+  browser = pkgs.brave;
+
+  # Backup Settings
+  enableResticBackup = false;
+  resticRepository = "sftp:exampleuser@examplehost:/path/path";
+
+  # Drivers and Hardware
+  printEnable = false;
   printDrivers = [ ];
 
+  useNvidiaPrime = true;
+  intelBusId = "PCI:0:2:0";
+  nvidiaBusId = "PCI:2:0:0";
+
   add_rtl8852cu = false;
+
+  # Dev Tools
+  enableDocker = true;
+  enableVSCode = true;
+  enableAndroid = false;
+  enableNVIM = true;
+  enableDirenv = true;
+  enableDBGate = false;
+  enableDevMisc = true; # 7zip, binwalk, hexdump, unrar, unzip, waypipe, cachix, nixfmt, httpie-desktop
+  enableOllama = false;
+  enableGit = true; # Git CLI and GitHub CLI
+
+  # Gaming
+  enableSteam = false;
+  enableLutris = false;
+  enableBottles = false;
+
+  # VPN Services
+  enableTailscale = true;
+  enableMullvadVPN = false;
+  enableCloudflareWarp = false;
+  enableOpenFortiVPN = false;
+
+  # Misc
+  enableFusion360 = false;
+  enableLibreOffice = false;
+  enableFlatpak = false;
 }
