@@ -29,7 +29,7 @@
       ...
     }@inputs:
     let
-      vars = import ./variables.nix { inherit nixpkgs; };
+      vars = import ./variables.nix { inherit pkgs; };
       inherit (vars) system username;
 
       overlays = [
@@ -55,6 +55,7 @@
         inputs.stylix.homeModules.stylix
         ./home/default.nix
         {
+          nixpkgs.overlays = overlays;
           home = {
             inherit username;
             homeDirectory = "/home/${username}";
@@ -66,6 +67,7 @@
       mkSystem =
         {
           hardware,
+          hostname,
           extraModules ? [ ],
         }:
         nixpkgs.lib.nixosSystem {
@@ -85,6 +87,9 @@
               home-manager.users.${username} = {
                 imports = homeManagerModules;
               };
+            }
+            {
+              nixpkgs.pkgs = pkgs;
             }
             {
               users.users.${username} = {

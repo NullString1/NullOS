@@ -1,7 +1,4 @@
-{ nixpkgs, ... }:
-let
-  pkgs = import nixpkgs { system = "x86_64-linux"; };
-in
+{ pkgs, ... }:
 {
   # User and System Settings
   username = "exampleuser";
@@ -26,6 +23,7 @@ in
   # Git Settings (Enable by setting enableGit to true in variables.nix)
   gitUsername = "ExampleUser";
   gitEmail = "exampleuser@example.com";
+  access-tokens = "github.com=your_github_token_here";
 
   # Configurable Default Applications
   terminal = "ghostty";
@@ -39,6 +37,7 @@ in
   printEnable = false;
   printDrivers = [ ];
 
+  useNvidia = true;
   useNvidiaPrime = true;
   intelBusId = "PCI:0:2:0";
   nvidiaBusId = "PCI:2:0:0";

@@ -20,6 +20,7 @@
         "logsmart-cache.cachix.org-1:nhxeVYtlgc5IZ+6zALnIT/6PdZQHpjPwV+R0qwjm+BQ="
       ];
       trusted-users = [ vars.username ];
+      access-tokens = vars.access-tokens;
     };
   };
   time.timeZone = "${vars.timeZone}";
