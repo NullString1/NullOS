@@ -6,8 +6,8 @@
 }:
 with lib;
 {
-  services.xserver.videoDrivers = [ "nvidia" ];
-  services.supergfxd.enable = true;
+  services.xserver.videoDrivers = if vars.useNvidia then [ "nvidia" ] else [];
+  services.supergfxd.enable = vars.useNvidia;
   hardware.nvidia = mkIf vars.useNvidiaPrime {
     modesetting.enable = true;
     powerManagement.enable = true;

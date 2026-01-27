@@ -237,6 +237,74 @@
             ./modules/system/hardware_nspc.nix
           ];
         };
+        nsminipc = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            inherit vars;
+            inherit inputs;
+            inherit home-manager;
+	    fusion360 = fusion360.packages.${system}.default;
+          };
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = overlays;
+            config = {
+              allowUnfree = true;
+              android_sdk.accept_license = true;
+            };
+          };
+          modules = [
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "backup";
+              home-manager.extraSpecialArgs = {
+                inherit vars;
+                inherit inputs;
+                username = vars.username;
+		fusion360 = fusion360.packages.${system}.default;
+              };
+              home-manager.users.${username} = {
+                imports = [
+                  inputs.stylix.homeModules.stylix
+                  ./home/default.nix
+                ];
+                home = {
+                  username = "${username}";
+                  homeDirectory = "/home/${username}";
+                  stateVersion = "25.05";
+                };
+              };
+            }
+            {
+              users.mutableUsers = true;
+              users.users.${username} = {
+                isNormalUser = true;
+                description = "${vars.gitUsername}";
+                extraGroups = [
+                  "kvm"
+                  "adbusers"
+                  "docker"
+                  "libvirtd"
+                  "lp"
+                  "networkmanager"
+                  "scanner"
+                  "wheel"
+                  "dialout"
+                  "audio"
+                ];
+                shell = nixpkgs.legacyPackages.${system}.zsh;
+                ignoreShellProgramCheck = true;
+              };
+              nix.settings.allowed-users = [ "${username}" ];
+            }
+            ./modules/misc
+            ./modules/services
+            ./modules/software
+            ./modules/system
+            ./modules/system/hardware_nsminipc.nix
+          ];
+        };
       };
       inherit vars;
     };
