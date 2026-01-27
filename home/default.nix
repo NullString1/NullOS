@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, vars, ... }:
 {
   home.packages = [
     (import ./scripts/screenshotin.nix { inherit pkgs; })
@@ -7,14 +7,8 @@
     (import ./scripts/wallsetter.nix { inherit pkgs; })
   ];
   imports = [
-    ./fusion360.nix
-    ./lutris.nix
-    ./httpie-desktop.nix
-    ./office.nix
     ./swayosd.nix
     ./nwg-displays.nix
-    ./nixvim.nix
-    #./bottles.nix
     ./fastfetch
     ./hyprland
     ./rofi
@@ -35,10 +29,15 @@
     ./qt.nix
     ./zoxide.nix
     ./stylix.nix
-    ./git.nix
-    ./vscode.nix
     ./tealdeer.nix
-    ./gh.nix
     ./swappy.nix
-  ];
+  ]
+  ++ (if vars.enableNVIM then [ ./nixvim.nix ] else [ ])
+  ++ (if vars.enableVSCode then [ ./vscode.nix ] else [ ])
+  ++ (if vars.enableGit then [ ./git.nix ] else [ ])
+  ++ (if vars.enableFusion360 then [ ./fusion360.nix ] else [ ])
+  ++ (if vars.enableLutris then [ ./lutris.nix ] else [ ])
+  ++ (if vars.enableDevMisc then [ ./httpie-desktop.nix ] else [ ])
+  ++ (if vars.enableBottles then [ ./bottles.nix ] else [ ])
+  ++ (if vars.enableLibreOffice then [ ./libreoffice.nix ] else [ ]);
 }

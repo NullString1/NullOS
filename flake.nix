@@ -243,7 +243,7 @@
             inherit vars;
             inherit inputs;
             inherit home-manager;
-	    fusion360 = fusion360.packages.${system}.default;
+            fusion360 = fusion360.packages.${system}.default;
           };
           pkgs = import nixpkgs {
             inherit system;
@@ -262,7 +262,7 @@
                 inherit vars;
                 inherit inputs;
                 username = vars.username;
-		fusion360 = fusion360.packages.${system}.default;
+                fusion360 = fusion360.packages.${system}.default;
               };
               home-manager.users.${username} = {
                 imports = [
@@ -283,8 +283,6 @@
                 description = "${vars.gitUsername}";
                 extraGroups = [
                   "kvm"
-                  "adbusers"
-                  "docker"
                   "libvirtd"
                   "lp"
                   "networkmanager"
@@ -292,7 +290,9 @@
                   "wheel"
                   "dialout"
                   "audio"
-                ];
+                ]
+                ++ (if vars.enableAndroid then [ "adbusers" ] else [ ])
+                ++ (if vars.enableDocker then [ "docker" ] else [ ]);
                 shell = nixpkgs.legacyPackages.${system}.zsh;
                 ignoreShellProgramCheck = true;
               };

@@ -1,15 +1,16 @@
 {
+  pkgs,
   vars,
   ...
 }:
 {
   virtualisation = {
-    docker.enable = true;
-    podman.enable = false;
+    docker.enable = vars.enableDocker;
     libvirtd = {
       enable = true;
     };
   };
+  environment.systemPackages = if vars.enableDocker then [ pkgs.docker-compose ] else [ ];
   users.extraGroups.vboxusers.members = [ vars.username ];
 
   programs = {

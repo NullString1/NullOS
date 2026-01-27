@@ -29,8 +29,6 @@ in
     description = "${vars.gitUsername}";
     extraGroups = [
       "kvm"
-      "adbusers"
-      "docker"
       "libvirtd"
       "lp"
       "networkmanager"
@@ -38,7 +36,9 @@ in
       "wheel"
       "dialout"
       "audio"
-    ];
+    ]
+    ++ (if vars.enableAndroid then [ "adbusers" ] else [ ])
+    ++ (if vars.enableDocker then [ "docker" ] else [ ]);
     shell = pkgs.zsh;
     ignoreShellProgramCheck = true;
   };

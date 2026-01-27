@@ -1,4 +1,4 @@
-{ ... }:
+{ vars, ... }:
 {
   imports = [
     ./backup.nix
@@ -7,6 +7,7 @@
     ./vpn.nix
     ./xserver.nix
     ./sunshine.nix
-    ./ollama.nix
-  ];
+  ]
+  ++ (if vars.enableOllama then [ ./ollama.nix ] else [ ])
+  ++ (if vars.enableResticBackup then [ ./backup.nix ] else [ ]);
 }

@@ -1,4 +1,4 @@
 { pkgs, ... }:
 {
-    home.packages = [ pkgs.lutris ];
+  home.packages = [ pkgs.lutris ];
 }

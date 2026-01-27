@@ -1,17 +1,17 @@
-{ pkgs, ... }:
+{ pkgs, vars, ... }:
 {
   services = {
     tailscale = {
-      enable = true;
+      enable = vars.enableTailscale;
       useRoutingFeatures = "both";
     };
     mullvad-vpn = {
-      enable = true;
+      enable = vars.enableMullvadVPN;
       package = pkgs.mullvad-vpn;
     };
     cloudflare-warp = {
-      enable = true;
+      enable = vars.enableCloudflareWarp;
     };
   };
-  environment.systemPackages = [ pkgs.riseup-vpn ];
+  environment.systemPackages = if vars.enableOpenFortiVPN then [ pkgs.openfortivpn ] else [ ];
 }

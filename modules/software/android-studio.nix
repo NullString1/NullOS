@@ -1,4 +1,7 @@
 { pkgs, ... }:
 {
-  environment.systemPackages = with pkgs; [ android-studio ];
+  environment.systemPackages = [
+    pkgs.android-studio
+    pkgs.android-tools
+  ];
 }
