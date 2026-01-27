@@ -29,60 +29,49 @@
       ...
     }@inputs:
     let
+      vars = import ./variables.nix { inherit nixpkgs; };
+      inherit (vars) system username;
+
       overlays = [
         (final: prev: {
           stable = import nixpkgs-stable {
-            system = prev.system;
+            inherit system;
             config.allowUnfree = true;
           };
+          fusion360 = fusion360.packages.${system}.default;
         })
       ];
-      vars = import ./variables.nix { inherit nixpkgs; };
-      inherit (vars) system username;
-    in
-    {
-      formatter.x86_64-linux = nixpkgs.legacyPackages.${system}.nixfmt-tree;
-      homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = overlays;
-          config = {
-            allowUnfree = true;
-          };
+
+      pkgs = import nixpkgs {
+        inherit system;
+        inherit overlays;
+        config = {
+          allowUnfree = true;
+          android_sdk.accept_license = true;
         };
-        extraSpecialArgs = {
-          inherit vars;
-          inherit inputs;
-          username = vars.username;
-        };
-        modules = [
-          inputs.stylix.homeModules.stylix
-          ./home/default.nix
-          {
-            home = {
-              username = "${username}";
-              homeDirectory = "/home/${username}";
-              stateVersion = "26.05";
-            };
-          }
-        ];
       };
-      nixosConfigurations = {
-        nslapt = nixpkgs.lib.nixosSystem {
+
+      homeManagerModules = [
+        inputs.stylix.homeModules.stylix
+        ./home/default.nix
+        {
+          home = {
+            inherit username;
+            homeDirectory = "/home/${username}";
+            stateVersion = "26.05";
+          };
+        }
+      ];
+
+      mkSystem =
+        {
+          hardware,
+          extraModules ? [ ],
+        }:
+        nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
-            inherit vars;
-            inherit inputs;
-            inherit home-manager;
-            fusion360 = fusion360.packages.${system}.default;
-          };
-          pkgs = import nixpkgs {
-            inherit system;
-            overlays = overlays;
-            config = {
-              allowUnfree = true;
-              android_sdk.accept_license = true;
-            };
+            inherit vars inputs home-manager;
           };
           modules = [
             inputs.home-manager.nixosModules.home-manager
@@ -90,194 +79,14 @@
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
               home-manager.extraSpecialArgs = {
-                inherit vars;
-                inherit inputs;
-                fusion360 = fusion360.packages.${system}.default;
-                username = vars.username;
+                inherit vars inputs;
+                inherit (vars) username;
               };
               home-manager.users.${username} = {
-                imports = [
-                  inputs.stylix.homeModules.stylix
-                  ./home/default.nix
-                ];
-                home = {
-                  username = "${username}";
-                  homeDirectory = "/home/${username}";
-                  stateVersion = "26.05";
-                };
+                imports = homeManagerModules;
               };
             }
             {
-              users.mutableUsers = true;
-              users.users.${username} = {
-                isNormalUser = true;
-                description = "${vars.gitUsername}";
-                extraGroups = [
-                  "kvm"
-                  "adbusers"
-                  "docker"
-                  "libvirtd"
-                  "lp"
-                  "networkmanager"
-                  "scanner"
-                  "wheel"
-                  "dialout"
-                  "audio"
-                ];
-                shell = nixpkgs.legacyPackages.${system}.zsh;
-                ignoreShellProgramCheck = true;
-              };
-              nix.settings.allowed-users = [ "${username}" ];
-            }
-            ./modules/misc
-            ./modules/services
-            ./modules/software
-            ./modules/system
-            ./modules/system/hardware_nslapt.nix
-
-            # Specialisations for different configurations
-            {
-              specialisation = {
-                # Power-efficient mode with NVIDIA disabled
-                power-efficient = {
-                  inheritParentConfig = true;
-                  configuration = {
-                    # Override NVIDIA configuration
-                    services.xserver.videoDrivers = nixpkgs.lib.mkForce [ "modesetting" ];
-                    hardware.nvidia.prime.offload.enable = nixpkgs.lib.mkForce false;
-                    hardware.nvidia.powerManagement.enable = nixpkgs.lib.mkForce false;
-
-                    # Use integrated graphics only
-                    boot.blacklistedKernelModules = [
-                      "nouveau"
-                      "nvidia"
-                      "nvidia_drm"
-                      "nvidia_uvm"
-                      "nvidia_modeset"
-                    ];
-
-                    boot.kernelParams = [
-                      "i915.enable_psr=1"
-                      "i915.enable_fbc=1"
-                    ];
-
-                    # Additional power saving
-                    powerManagement.cpuFreqGovernor = nixpkgs.lib.mkForce "powersave";
-                  };
-                };
-              };
-            }
-          ];
-        };
-        nspc = nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {
-            inherit vars;
-            inherit inputs;
-            inherit home-manager;
-            fusion360 = fusion360.packages.${system}.default;
-          };
-          pkgs = import nixpkgs {
-            inherit system;
-            overlays = overlays;
-            config = {
-              allowUnfree = true;
-              android_sdk.accept_license = true;
-            };
-          };
-          modules = [
-            inputs.home-manager.nixosModules.home-manager
-            {
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.extraSpecialArgs = {
-                inherit vars;
-                inherit inputs;
-                fusion360 = fusion360.packages.${system}.default;
-                username = vars.username;
-              };
-              home-manager.users.${username} = {
-                imports = [
-                  inputs.stylix.homeModules.stylix
-                  ./home/default.nix
-                ];
-                home = {
-                  username = "${username}";
-                  homeDirectory = "/home/${username}";
-                  stateVersion = "25.05";
-                };
-              };
-            }
-            {
-              users.mutableUsers = true;
-              users.users.${username} = {
-                isNormalUser = true;
-                description = "${vars.gitUsername}";
-                extraGroups = [
-                  "kvm"
-                  "adbusers"
-                  "docker"
-                  "libvirtd"
-                  "lp"
-                  "networkmanager"
-                  "scanner"
-                  "wheel"
-                  "dialout"
-                  "audio"
-                ];
-                shell = nixpkgs.legacyPackages.${system}.zsh;
-                ignoreShellProgramCheck = true;
-              };
-              nix.settings.allowed-users = [ "${username}" ];
-            }
-            ./modules/misc
-            ./modules/services
-            ./modules/software
-            ./modules/system
-            ./modules/system/hardware_nspc.nix
-          ];
-        };
-        nsminipc = nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {
-            inherit vars;
-            inherit inputs;
-            inherit home-manager;
-            fusion360 = fusion360.packages.${system}.default;
-          };
-          pkgs = import nixpkgs {
-            inherit system;
-            overlays = overlays;
-            config = {
-              allowUnfree = true;
-              android_sdk.accept_license = true;
-            };
-          };
-          modules = [
-            inputs.home-manager.nixosModules.home-manager
-            {
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.extraSpecialArgs = {
-                inherit vars;
-                inherit inputs;
-                username = vars.username;
-                fusion360 = fusion360.packages.${system}.default;
-              };
-              home-manager.users.${username} = {
-                imports = [
-                  inputs.stylix.homeModules.stylix
-                  ./home/default.nix
-                ];
-                home = {
-                  username = "${username}";
-                  homeDirectory = "/home/${username}";
-                  stateVersion = "25.05";
-                };
-              };
-            }
-            {
-              users.mutableUsers = true;
               users.users.${username} = {
                 isNormalUser = true;
                 description = "${vars.gitUsername}";
@@ -293,19 +102,84 @@
                 ]
                 ++ (if vars.enableAndroid then [ "adbusers" ] else [ ])
                 ++ (if vars.enableDocker then [ "docker" ] else [ ]);
-                shell = nixpkgs.legacyPackages.${system}.zsh;
+                shell = pkgs.zsh;
                 ignoreShellProgramCheck = true;
               };
-              nix.settings.allowed-users = [ "${username}" ];
+              nix.settings.allowed-users = [ "@wheel" ]; # More secure
             }
             ./modules/misc
             ./modules/services
             ./modules/software
             ./modules/system
-            ./modules/system/hardware_nsminipc.nix
+            hardware
+          ]
+          ++ extraModules;
+        };
+
+    in
+    {
+      formatter.x86_64-linux = pkgs.nixfmt;
+
+      homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        extraSpecialArgs = {
+          inherit vars inputs;
+          username = vars.username;
+        };
+        modules = homeManagerModules;
+      };
+
+      nixosConfigurations = {
+        nslapt = mkSystem {
+          hostname = "nslapt";
+          hardware = ./modules/system/hardware_nslapt.nix;
+          extraModules = [
+            (
+              { pkgs, ... }:
+              {
+                specialisation = {
+                  # Power-efficient mode with NVIDIA disabled
+                  power-efficient = {
+                    inheritParentConfig = true;
+                    configuration = {
+                      # Override NVIDIA configuration
+                      services.xserver.videoDrivers = pkgs.lib.mkForce [ "modesetting" ];
+                      hardware.nvidia.prime.offload.enable = pkgs.lib.mkForce false;
+                      hardware.nvidia.powerManagement.enable = pkgs.lib.mkForce false;
+
+                      # Use integrated graphics only
+                      boot.blacklistedKernelModules = [
+                        "nouveau"
+                        "nvidia"
+                        "nvidia_drm"
+                        "nvidia_uvm"
+                        "nvidia_modeset"
+                      ];
+
+                      boot.kernelParams = [
+                        "i915.enable_psr=1"
+                        "i915.enable_fbc=1"
+                      ];
+                      powerManagement.cpuFreqGovernor = pkgs.lib.mkForce "powersave";
+                    };
+                  };
+                };
+              }
+            )
           ];
         };
+
+        nspc = mkSystem {
+          hostname = "nspc";
+          hardware = ./modules/system/hardware_nspc.nix;
+        };
+
+        nsminipc = mkSystem {
+          hostname = "nsminipc";
+          hardware = ./modules/system/hardware_nsminipc.nix;
+        };
       };
+
       inherit vars;
     };
 }

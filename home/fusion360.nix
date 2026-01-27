@@ -1,6 +1,6 @@
-{ fusion360, ... }:
+{ pkgs, ... }:
 {
   home.packages = [
-    fusion360
+    pkgs.fusion360
   ];
 }
