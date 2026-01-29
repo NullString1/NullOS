@@ -6,6 +6,7 @@
     ./nh.nix
     ./sddm.nix
     ./dolphin.nix
+    ./devtools.nix
     inputs.stylix.nixosModules.stylix
   ]
   ++ (if vars.enableAndroid then [ ./android-studio.nix ] else [ ])
