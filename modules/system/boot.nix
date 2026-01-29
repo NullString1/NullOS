@@ -2,7 +2,7 @@
 
 {
   boot = {
-    kernelPackages = pkgs.linuxPackages_zen;
+    kernelPackages = pkgs.linuxPackages;
     kernelModules = [
       "v4l2loopback"
       "kvm-intel"
