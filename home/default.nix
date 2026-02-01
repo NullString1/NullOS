@@ -39,5 +39,6 @@
   ++ (if vars.enableLutris then [ ./lutris.nix ] else [ ])
   ++ (if vars.enableDevMisc then [ ./httpie-desktop.nix ] else [ ])
   ++ (if vars.enableBottles then [ ./bottles.nix ] else [ ])
-  ++ (if vars.enableLibreOffice then [ ./libreoffice.nix ] else [ ]);
+  ++ (if vars.enableLibreOffice then [ ./libreoffice.nix ] else [ ])
+  ++ (if vars.enableOpencode then [ ./opencode.nix ] else [ ]);
 }

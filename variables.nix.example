@@ -47,12 +47,14 @@
   # Dev Tools
   enableDocker = true;
   enableVSCode = true;
+  enableOpencode = false;
   enableAndroid = false;
   enableNVIM = true;
   enableDirenv = true;
   enableDBGate = false;
   enableDevMisc = true; # 7zip, binwalk, hexdump, unrar, unzip, waypipe, cachix, nixfmt, httpie-desktop
   enableOllama = false;
+  enableExposeOllama = false;
   enableGit = true; # Git CLI and GitHub CLI
 
   # Gaming
