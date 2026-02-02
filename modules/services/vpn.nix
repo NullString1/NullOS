@@ -13,5 +13,5 @@
       enable = vars.enableCloudflareWarp;
     };
   };
-  environment.systemPackages = if vars.enableOpenFortiVPN then [ pkgs.openfortivpn ] else [ ];
+  environment.systemPackages = pkgs.lib.mkIf vars.enableOpenFortiVPN [ pkgs.openfortivpn ];
 }

@@ -445,8 +445,8 @@ animationSet = home/hyprland/animations-end4.nix;  # or create your own
 Edit `home/hyprland/windowrules.nix`:
 
 ```nix
-windowrulev2 = [
-  "float,class:(myapp)"  # Add custom window rules
+windowrule = [
+  "match:class (myapp), float on"  # Add custom window rules
 ];
 ```
 

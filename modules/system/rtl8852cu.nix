@@ -7,9 +7,9 @@
   nukeReferences,
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "rtl8852cu";
-  version = "20240510"; # Use a recent tag or date from the GitHub repo
+  version = "20240510";
 
   src = fetchFromGitHub {
     owner = "morrownr";

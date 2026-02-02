@@ -1,4 +1,7 @@
-{ inputs, vars, ... }:
+{ inputs, vars, lib, ... }:
+let 
+  inherit (lib) optionals;
+in
 {
   imports = [
     ./packages.nix
@@ -9,8 +12,8 @@
     ./devtools.nix
     inputs.stylix.nixosModules.stylix
   ]
-  ++ (if vars.enableAndroid then [ ./android-studio.nix ] else [ ])
-  ++ (if vars.enableSteam then [ ./steam.nix ] else [ ])
-  ++ (if vars.enableFlatpak then [ ./flatpak.nix ] else [ ])
-  ++ (if vars.enableDBGate then [ ./dbgate.nix ] else [ ]);
+  ++ optionals (vars.enableAndroid) [ ./android-studio.nix ]
+  ++ optionals (vars.enableSteam) [ ./steam.nix ]
+  ++ optionals (vars.enableFlatpak) [ ./flatpak.nix ]
+  ++ optionals (vars.enableDBGate) [ ./dbgate.nix ];
 }

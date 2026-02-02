@@ -1,4 +1,7 @@
-{ pkgs, vars, ... }:
+{ pkgs, vars, lib, ... }:
+let 
+  inherit (lib) optionals;
+in
 {
   home.packages = [
     (import ./scripts/screenshotin.nix { inherit pkgs; })
@@ -6,6 +9,7 @@
     (import ./scripts/rofi-launcher.nix { inherit pkgs; })
     (import ./scripts/wallsetter.nix { inherit pkgs; })
   ];
+
   imports = [
     ./swayosd.nix
     ./nwg-displays.nix
@@ -18,11 +22,9 @@
     ./zsh
     ./starship.nix
     ./gtk.nix
-    #./kde.nix
     ./xdg.nix
     ./ghostty.nix
     ./swaync.nix
-    #./nvf.nix
     ./eza.nix
     ./bottom.nix
     ./bat.nix
@@ -32,13 +34,13 @@
     ./tealdeer.nix
     ./swappy.nix
   ]
-  ++ (if vars.enableNVIM then [ ./nixvim.nix ] else [ ])
-  ++ (if vars.enableVSCode then [ ./vscode.nix ] else [ ])
-  ++ (if vars.enableGit then [ ./git.nix ] else [ ])
-  ++ (if vars.enableFusion360 then [ ./fusion360.nix ] else [ ])
-  ++ (if vars.enableLutris then [ ./lutris.nix ] else [ ])
-  ++ (if vars.enableDevMisc then [ ./httpie-desktop.nix ] else [ ])
-  ++ (if vars.enableBottles then [ ./bottles.nix ] else [ ])
-  ++ (if vars.enableLibreOffice then [ ./libreoffice.nix ] else [ ])
-  ++ (if vars.enableOpencode then [ ./opencode.nix ] else [ ]);
+  ++ optionals (vars.enableNVIM) [ ./nixvim.nix ]
+  ++ optionals (vars.enableVSCode) [ ./vscode.nix ]
+  ++ optionals (vars.enableGit) [ ./git.nix ]
+  ++ optionals (vars.enableFusion360) [ ./fusion360.nix ]
+  ++ optionals (vars.enableLutris) [ ./lutris.nix ]
+  ++ optionals (vars.enableDevMisc) [ ./httpie-desktop.nix ]
+  ++ optionals (vars.enableBottles) [ ./bottles.nix ]
+  ++ optionals (vars.enableLibreOffice) [ ./libreoffice.nix ]
+  ++ optionals (vars.enableOpencode) [ ./opencode.nix ];
 }

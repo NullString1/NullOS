@@ -6,12 +6,14 @@
 }:
 with lib;
 {
-  services.xserver.videoDrivers = if vars.useNvidia then [ "nvidia" ] else [ ];
+  services.xserver.videoDrivers = mkIf (vars.useNvidia) [ "nvidia" ];
   services.supergfxd.enable = vars.useNvidia;
   hardware.nvidia = mkIf (vars.useNvidiaPrime && vars.useNvidia) {
     modesetting.enable = true;
-    powerManagement.enable = true;
-    powerManagement.finegrained = false;
+    powerManagement = {
+      enable = true;
+      finegrained = false;
+    };
     open = false;
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;

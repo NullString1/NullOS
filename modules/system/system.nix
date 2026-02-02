@@ -1,8 +1,15 @@
 { vars, ... }:
+let
+  lowPriority = {
+    Nice = 19;
+    IOSchedulingClass = "idle";
+    IOSchedulingPriority = 7;
+  };
+in
 {
   nix = {
     settings = {
-      download-buffer-size = 250000000;
+      download-buffer-size = 512000000; # 512 MB
       auto-optimise-store = true;
       experimental-features = [
         "nix-command"
@@ -22,6 +29,9 @@
       trusted-users = [ vars.username ];
       access-tokens = vars.access-tokens;
     };
+    optimise = {
+      automatic = true;
+    };
   };
   time.timeZone = "${vars.timeZone}";
   i18n.defaultLocale = "${vars.locale}";
@@ -38,8 +48,14 @@
     LC_ALL = "${vars.locale}";
   };
   console.keyMap = "${vars.consoleKeyMap}";
-  system.stateVersion = "25.05";
-  system.autoUpgrade.enable = true;
-  system.autoUpgrade.flake = "/mdata/NS/NullOS";
-  system.autoUpgrade.runGarbageCollection = true;
+  system = {
+    stateVersion = "25.11";
+    autoUpgrade = {
+      enable = true;
+      flake = "/mdata/NS/NullOS";
+      runGarbageCollection = true;
+    };
+  };
+  systemd.services.nixos-upgrade.serviceConfig = lowPriority;
+  systemd.services.nix-optimise.serviceConfig = lowPriority;
 }

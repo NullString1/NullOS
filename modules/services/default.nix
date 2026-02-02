@@ -1,13 +1,15 @@
-{ vars, ... }:
+{ vars, lib, ... }:
+let
+  inherit (lib) optionals;
+in
 {
   imports = [
-    ./backup.nix
     ./services.nix
     ./virtualisation.nix
     ./vpn.nix
     ./xserver.nix
     ./sunshine.nix
   ]
-  ++ (if vars.enableOllama then [ ./ollama.nix ] else [ ])
-  ++ (if vars.enableResticBackup then [ ./backup.nix ] else [ ]);
+  ++ optionals vars.enableOllama [ ./ollama.nix ]
+  ++ optionals vars.enableResticBackup [ ./backup.nix ];
 }

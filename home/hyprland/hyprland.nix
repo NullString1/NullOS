@@ -56,6 +56,7 @@
       ];
 
       input = {
+        accel_profile = "flat";
         kb_layout = "${vars.keyboardLayout}";
         kb_options = [
           "grp:alt_caps_toggle"
@@ -74,8 +75,9 @@
       };
 
       general = {
-        layout = "dwindle";
-        gaps_in = 6;
+        allow_tearing = true;
+        layout = "master";
+        gaps_in = 4;
         gaps_out = 8;
         border_size = 2;
         resize_on_border = true;
@@ -129,7 +131,7 @@
       cursor = {
         sync_gsettings_theme = true;
         no_hardware_cursors = 2; # change to 1 if want to disable
-        enable_hyprcursor = false;
+        enable_hyprcursor = true;
         warp_on_change_workspace = 2;
         no_warps = true;
       };
@@ -139,7 +141,6 @@
       };
 
       master = {
-        new_status = "master";
         new_on_top = 1;
         mfact = 0.5;
       };

@@ -2,6 +2,7 @@
   pkgs,
   config,
   vars,
+  lib,
   ...
 }:
 let
@@ -10,18 +11,15 @@ let
   };
 in
 {
-  boot.extraModulePackages = if vars.add_rtl8852cu then [ rtl8852cu-package ] else [ ];
+  boot.extraModulePackages = lib.mkIf vars.add_rtl8852cu [ rtl8852cu-package ];
   boot.extraModprobeConfig =
-    if vars.add_rtl8852cu then
-      ''
-        options 8852cu rtw_switch_usb_mode=1
-        options 8852cu rtw_country_code=GB
-        options 8852cu rtw_low_power=0
-      ''
-    else
-      "";
-  boot.kernelParams = if vars.add_rtl8852cu then [ "usbcore.autosuspend=-1" ] else [ ];
-  boot.kernelModules = if vars.add_rtl8852cu then [ "8852cu" ] else [ ];
+    lib.mkIf vars.add_rtl8852cu ''
+      options 8852cu rtw_switch_usb_mode=1
+      options 8852cu rtw_country_code=GB
+      options 8852cu rtw_low_power=0
+    '';
+  boot.kernelParams = lib.mkIf vars.add_rtl8852cu [ "usbcore.autosuspend=-1" ];
+  boot.kernelModules = lib.mkIf vars.add_rtl8852cu [ "8852cu" ];
   hardware = {
     usb-modeswitch.enable = true;
     firmware = [ pkgs.sof-firmware ];

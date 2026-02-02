@@ -3,13 +3,13 @@
   ...
 }:
 {
-  environment.systemPackages = with pkgs; [ sddm-astronaut ];
+  environment.systemPackages = [ pkgs.sddm-astronaut ];
   services.displayManager.sddm = {
     enable = true;
     wayland.enable = true;
     theme = "sddm-astronaut-theme";
     package = pkgs.kdePackages.sddm;
-    extraPackages = with pkgs; [ kdePackages.qtmultimedia ];
+    extraPackages = [ pkgs.kdePackages.qtmultimedia ];
   };
   services.displayManager.defaultSession = "hyprland";
 }
