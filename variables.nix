@@ -11,7 +11,12 @@
   timeZone = "Europe/London";
   locale = "en_GB.UTF-8";
 
+  # Desktop Environment: "hyprland" or "kde"
+  desktopEnvironment = "hyprland";
+
   stylixImage = wallpapers/screen.jpg;
+
+  # Hyprland-specific settings (only used when desktopEnvironment = "hyprland")
   waybarConfig = home/waybar/default.nix;
 
   animationSet = home/hyprland/animations-end4.nix;

@@ -1,7 +1,11 @@
 {
   pkgs,
+  vars,
   ...
 }:
+let
+  isHyprland = vars.desktopEnvironment == "hyprland";
+in
 {
   environment.systemPackages = [ pkgs.sddm-astronaut ];
   services.displayManager.sddm = {
@@ -11,5 +15,5 @@
     package = pkgs.kdePackages.sddm;
     extraPackages = [ pkgs.kdePackages.qtmultimedia ];
   };
-  services.displayManager.defaultSession = "hyprland";
+  services.displayManager.defaultSession = if isHyprland then "hyprland" else "plasma";
 }

@@ -1,4 +1,13 @@
-{ pkgs, vars, ... }:
+{
+  pkgs,
+  vars,
+  lib,
+  ...
+}:
+let
+  isHyprland = vars.desktopEnvironment == "hyprland";
+  isKDE = vars.desktopEnvironment == "kde";
+in
 {
   stylix.targets = {
     waybar.enable = false;
@@ -8,7 +17,7 @@
     ghostty.enable = false;
     qt.enable = true;
     vscode.enable = false;
-    kde.enable = true;
+    kde.enable = isKDE;
   };
   stylix = {
     enable = true;

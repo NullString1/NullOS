@@ -1,9 +1,25 @@
-{ pkgs, ... }:
+{ pkgs, vars, ... }:
+let
+  isHyprland = vars.desktopEnvironment == "hyprland";
+  isKDE = vars.desktopEnvironment == "kde";
+in
 {
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
-    configPackages = [ pkgs.hyprland ];
+    extraPortals =
+      if isHyprland then
+        [ pkgs.xdg-desktop-portal-hyprland ]
+      else if isKDE then
+        [ pkgs.xdg-desktop-portal-kde ]
+      else
+        [ ];
+    configPackages =
+      if isHyprland then
+        [ pkgs.hyprland ]
+      else if isKDE then
+        [ pkgs.kdePackages.plasma-workspace ]
+      else
+        [ ];
   };
   services = {
     flatpak.enable = true;

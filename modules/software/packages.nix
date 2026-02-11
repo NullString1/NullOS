@@ -1,5 +1,16 @@
-{ pkgs, vars, ... }:
 {
+  pkgs,
+  vars,
+  ...
+}:
+let
+  isHyprland = vars.desktopEnvironment == "hyprland";
+  isKDE = vars.desktopEnvironment == "kde";
+in
+{
+  # Enable KDE Plasma 6 desktop environment when selected
+  services.desktopManager.plasma6.enable = isKDE;
+
   programs = {
     nix-ld.enable = true;
     neovim = {
@@ -8,8 +19,8 @@
     };
     dconf.enable = true;
     seahorse.enable = true;
-    hyprland.enable = true;
-    hyprlock.enable = true;
+    hyprland.enable = isHyprland;
+    hyprlock.enable = isHyprland;
     fuse.userAllowOther = true;
     gnupg.agent = {
       enable = true;
