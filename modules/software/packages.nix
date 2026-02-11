@@ -1,6 +1,7 @@
 { pkgs, vars, ... }:
 {
   programs = {
+    nix-ld.enable = true;
     neovim = {
       enable = vars.enableNVIM;
       defaultEditor = vars.enableNVIM;

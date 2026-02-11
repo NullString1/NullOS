@@ -199,7 +199,7 @@
           html.enable = true;
           cssls.enable = true;
           clangd.enable = true;
-          zls.enable = true;
+          zls.enable = false;
           marksman.enable = true;
           hyprls.enable = true;
           # hyprls is optional; keep tools available via extraPackages
@@ -365,7 +365,6 @@
       vscode-langservers-extracted
       pyright
       lua-language-server
-      zls
       marksman
       clang-tools
       prettierd

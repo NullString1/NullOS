@@ -41,7 +41,7 @@ in
     animation = "fromTop"
     command = "ghostty"
     class = "com.mitchellh.ghostty"
-    size = "70% 70%"
+    size = "80% 80%"
     max_size = "1920px 100%"
 
     [scratchpads.vpn]

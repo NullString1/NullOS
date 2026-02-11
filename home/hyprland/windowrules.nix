@@ -185,6 +185,7 @@
         "match:tag settings*, opacity 0.8 0.7"
         "match:class ^(gedit|org.gnome.TextEditor|mousepad)$, opacity 0.8 0.7"
         "match:class ^(seahorse)$, opacity 0.9 0.8"
+        "match:tag terminal*, size 80% 80%"
       ];
     };
   };
