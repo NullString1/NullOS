@@ -9,16 +9,25 @@
     profiles = {
       default = {
         extensions = with pkgs.vscode-extensions; [
-          bbenoist.nix
-          jeff-hykin.better-nix-syntax
+          #jeff-hykin.better-nix-syntax
           ms-vscode.cpptools-extension-pack
           mads-hartmann.bash-ide-vscode
-          tamasfe.even-better-toml
           vadimcn.vscode-lldb
           github.copilot-chat
-          github.copilot
           ms-python.black-formatter
           rust-lang.rust-analyzer
+          mkhl.direnv
+          jnoortheen.nix-ide
+          bradlc.vscode-tailwindcss
+          tamasfe.even-better-toml
+          github.vscode-github-actions
+          ms-vscode.hexeditor
+          ms-toolsai.jupyter
+          ms-python.python
+          rust-lang.rust-analyzer
+          svelte.svelte-vscode
+          mechatroner.rainbow-csv
+          dbaeumer.vscode-eslint
         ];
       };
     };
