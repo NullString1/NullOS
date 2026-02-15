@@ -2,7 +2,7 @@
 
 {
   boot = {
-    kernelPackages = pkgs.linuxPackages;
+    kernelPackages = pkgs.linuxPackages_latest;
     kernelModules = [
       "v4l2loopback"
       "kvm-intel"

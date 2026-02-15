@@ -10,6 +10,5 @@
     ./printing.nix
     ./hardware_add.nix
     ./audio.nix
-    #./rtl8852cu.nix
   ];
 }
