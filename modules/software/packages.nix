@@ -94,6 +94,6 @@ in
     # Gaming
     #
     moonlight-qt # NVIDIA Game Streaming Client
-    wineWowPackages.waylandFull # For Running Windows Apps On Linux
+    wineWow64Packages.waylandFull # For Running Windows Apps On Linux
   ];
 }
