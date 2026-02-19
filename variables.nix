@@ -47,8 +47,6 @@
   intelBusId = "PCI:0:2:0";
   nvidiaBusId = "PCI:2:0:0";
 
-  add_rtl8852cu = false;
-
   # Dev Tools
   enableDocker = true;
   enableVSCode = true;
@@ -61,11 +59,13 @@
   enableOllama = false;
   enableExposeOllama = false;
   enableGit = true; # Git CLI and GitHub CLI
+  enableWine = true;
 
   # Gaming
   enableSteam = false;
   enableLutris = false;
   enableBottles = false;
+  enableMoonlight = false;
 
   # VPN Services
   enableTailscale = true;
@@ -77,4 +77,6 @@
   enableFusion360 = false;
   enableLibreOffice = false;
   enableFlatpak = false;
+  enableQBittorrent = false;
+  enableGnomeNetworkDisplays = false;
 }
