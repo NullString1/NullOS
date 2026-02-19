@@ -66,6 +66,7 @@
   enableLutris = false;
   enableBottles = false;
   enableMoonlight = false;
+  enableMinecraft = false;
 
   # VPN Services
   enableTailscale = true;

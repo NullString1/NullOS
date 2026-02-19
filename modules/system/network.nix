@@ -1,5 +1,4 @@
 {
-  lib,
   vars,
   options,
   pkgs,
@@ -9,7 +8,6 @@
   networking = {
     hostName = "${vars.hostname}";
     networkmanager.enable = true;
-    networkmanager.settings = lib.mkIf vars.add_rtl8852cu { wifi.powersave = false; };
     timeServers = options.networking.timeServers.default ++ [ "pool.ntp.org" ];
     firewall = {
       enable = true;

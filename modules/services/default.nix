@@ -11,5 +11,6 @@ in
     ./sunshine.nix
   ]
   ++ optionals vars.enableOllama [ ./ollama.nix ]
-  ++ optionals vars.enableResticBackup [ ./backup.nix ];
+  ++ optionals vars.enableResticBackup [ ./backup.nix ]
+  ++ optionals vars.enableMinecraft [ ./minecraft.nix ];
 }
