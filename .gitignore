@@ -1,0 +1,6 @@
+.DS_Store
+*.bak
+result
+*.qcow2
+
+machines/.secrets/

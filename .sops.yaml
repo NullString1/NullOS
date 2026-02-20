@@ -1,0 +1,8 @@
+keys:
+  - &user_nullstring age16k7ujq57yah9y8vnmlcaa4nygckrrs6vxlx89l7avgsrurw5pf3slsnudq
+
+creation_rules:
+  - path_regex: machines/.*/secrets\.yaml$
+    key_groups:
+      - age:
+        - *user_nullstring

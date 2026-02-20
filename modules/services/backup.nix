@@ -1,5 +1,6 @@
 {
   vars,
+  config,
   ...
 }:
 {
@@ -8,7 +9,7 @@
       "/mdata"
       "/home/${vars.username}"
     ];
-    repository = "${vars.resticRepository}";
+    repositoryFile = config.sops.secrets.resticRepository.path;
     passwordFile = "/etc/nixos/restic-password";
     user = "${vars.username}";
     extraOptions = [ "--exclude-caches" ];
@@ -45,10 +46,10 @@
       "/home/${vars.username}/.ipython"
       "/home/${vars.username}/.java"
       "/home/${vars.username}/.vscode"
-      "/mdata/**/openwrt/build_dir" # openwrt builddir
-      "/mdata/**/target" # cargo builds
-      "**/node_modules" # node modules
-      "/mdata/**/.direnv" # direnv cache
+      "/mdata/**/openwrt/build_dir"
+      "/mdata/**/target"
+      "**/node_modules"
+      "/mdata/**/.direnv"
       "**/ipch"
       "**/.venv"
       ".trash/"

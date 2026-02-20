@@ -18,6 +18,10 @@
       url = "github:nullstring1/fusion-360-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -26,11 +30,24 @@
       nixpkgs-stable,
       home-manager,
       fusion360,
+      sops-nix,
+      self,
       ...
     }@inputs:
     let
-      vars = import ./variables.nix { inherit pkgs; };
-      inherit (vars) system username;
+      system = "x86_64-linux";
+      username = "nullstring1";
+
+      loadMachineConfig =
+        hostname:
+        let
+          machineConfig = import ./machines/${hostname}/default.nix { inherit self; };
+          baseConfig = import ./machines/profiles/base.nix { inherit pkgs; };
+          profileConfig = import ./machines/profiles/${machineConfig.profile}.nix;
+        in
+        lib.attrsets.recursiveUpdate (lib.attrsets.recursiveUpdate baseConfig profileConfig) machineConfig;
+
+      lib = nixpkgs.lib;
 
       overlays = [
         (final: prev: {
@@ -48,11 +65,10 @@
         config = {
           allowUnfree = true;
           android_sdk.accept_license = true;
-          cudaSupport = vars.useNvidia;
         };
       };
 
-      homeManagerModules = [
+      homeManagerModules = vars: [
         inputs.stylix.homeModules.stylix
         ./home/default.nix
         {
@@ -67,10 +83,13 @@
 
       mkSystem =
         {
-          hardware,
           hostname,
+          hardware,
           extraModules ? [ ],
         }:
+        let
+          vars = loadMachineConfig hostname;
+        in
         nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
@@ -78,6 +97,7 @@
           };
           modules = [
             inputs.home-manager.nixosModules.home-manager
+            inputs.sops-nix.nixosModules.sops
             {
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
@@ -86,16 +106,27 @@
                 inherit (vars) username;
               };
               home-manager.users.${username} = {
-                imports = homeManagerModules;
+                imports = homeManagerModules vars;
               };
             }
             {
               nixpkgs.pkgs = pkgs;
             }
             {
+              sops.defaultSopsFile = ./machines/${hostname}/secrets.yaml;
+              sops.defaultSopsFormat = "yaml";
+              sops.age.keyFile = "/home/${username}/.config/sops/age/keys.txt";
+              sops.secrets = {
+                githubToken = { };
+              }
+              // lib.optionalAttrs vars.enableResticBackup {
+                resticRepository = { };
+              };
+            }
+            {
               users.users.${username} = {
                 isNormalUser = true;
-                description = "${vars.gitUsername}";
+                description = "NullString1";
                 extraGroups = [
                   "kvm"
                   "libvirtd"
@@ -111,8 +142,16 @@
                 shell = pkgs.zsh;
                 ignoreShellProgramCheck = true;
               };
-              nix.settings.allowed-users = [ "@wheel" ]; # More secure
+              nix.settings.allowed-users = [ "@wheel" ];
             }
+            (
+              { config, ... }:
+              {
+                nix.extraOptions = ''
+                  !include ${config.sops.secrets.githubToken.path}
+                '';
+              }
+            )
             ./modules/misc
             ./modules/services
             ./modules/software
@@ -129,10 +168,11 @@
       homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         extraSpecialArgs = {
-          inherit vars inputs;
-          username = vars.username;
+          vars = loadMachineConfig "nslapt";
+          inherit inputs;
+          username = username;
         };
-        modules = homeManagerModules;
+        modules = homeManagerModules (loadMachineConfig "nslapt");
       };
 
       nixosConfigurations = {
@@ -144,16 +184,12 @@
               { pkgs, ... }:
               {
                 specialisation = {
-                  # Power-efficient mode with NVIDIA disabled
                   power-efficient = {
                     inheritParentConfig = true;
                     configuration = {
-                      # Override NVIDIA configuration
                       services.xserver.videoDrivers = pkgs.lib.mkForce [ "modesetting" ];
                       hardware.nvidia.prime.offload.enable = pkgs.lib.mkForce false;
                       hardware.nvidia.powerManagement.enable = pkgs.lib.mkForce false;
-
-                      # Use integrated graphics only
                       boot.blacklistedKernelModules = [
                         "nouveau"
                         "nvidia"
@@ -161,7 +197,6 @@
                         "nvidia_uvm"
                         "nvidia_modeset"
                       ];
-
                       boot.kernelParams = [
                         "i915.enable_psr=1"
                         "i915.enable_fbc=1"
@@ -185,7 +220,5 @@
           hardware = ./modules/system/hardware_nsminipc.nix;
         };
       };
-
-      inherit vars;
     };
 }
