@@ -57,6 +57,15 @@
           };
           fusion360 = fusion360.packages.${system}.default;
         })
+        (final: prev: {
+          pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+            (python-final: python-prev: {
+              picosvg = python-prev.picosvg.overridePythonAttrs (oldAttrs: {
+                doCheck = false;
+              });
+            })
+          ];
+        })
       ];
 
       pkgs = import nixpkgs {
