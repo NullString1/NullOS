@@ -13,7 +13,7 @@
       "SUPER,Y,exec,${vars.terminal} -e yazi"
       "SUPER,E,exec,dolphin"
       "SUPER,S,exec,screenshotin"
-      "SUPER SHIFT,S,exec,screenshotin"
+      "SUPER SHIFT,S,exec,screenshot-ocr"
       "SUPER,C,exec,code"
       "SUPER,T,exec,pypr toggle term"
       "SUPER,code:51,exec,pypr toggle vpn" # SUPER+HASH

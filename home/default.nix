@@ -12,9 +12,11 @@ in
 {
   home.packages = optionals isHyprland [
     (import ./scripts/screenshotin.nix { inherit pkgs; })
+    (import ./scripts/screenshot-ocr.nix { inherit pkgs; })
     (import ./scripts/keybinds.nix { inherit pkgs; })
     (import ./scripts/rofi-launcher.nix { inherit pkgs; })
     (import ./scripts/wallsetter.nix { inherit pkgs; })
+    pkgs.tesseract
   ];
 
   imports = [
