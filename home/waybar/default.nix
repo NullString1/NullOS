@@ -159,12 +159,11 @@ with lib;
             };
             return-type = "json";
             exec = pkgs.writeShellScript "tlp-status" ''
-              mode=$(${pkgs.tlp}/bin/tlp-stat -s 2>/dev/null | grep 'Mode' | awk '{print $3 $4}' | tr '[:upper:]' '[:lower:]')
-              case "$mode" in
-                "battery(manual)" ) mode="Battery (manual)" ;;
-                "battery" ) mode="Battery (auto)" ;;
-                "ac(manual)" ) mode="AC (manual)" ;;
-                "ac" ) mode="AC (auto)" ;;
+              power_source=$(${pkgs.tlp}/bin/tlp-stat -s 2>/dev/null | grep 'Power source' | awk '{print $4}')
+              case "$power_source" in
+                "AC" ) mode="AC (auto)" ;;
+                "Battery" ) mode="Battery (auto)" ;;
+                * ) mode="Unknown" ;;
               esac
 
               # Get power consumption
@@ -198,11 +197,11 @@ with lib;
             '';
             interval = 10;
             on-click = pkgs.writeShellScript "tlp-toggle" ''
-              current=$(${pkgs.tlp}/bin/tlp-stat -s 2>/dev/null | grep 'Mode' | awk '{print $3 $4}' | tr '[:upper:]' '[:lower:]')
-              case "$current" in
-                "battery" ) sudo ${pkgs.tlp}/bin/tlp ac ;;
-                "battery(manual)" | "ac(manual)" ) sudo ${pkgs.tlp}/bin/tlp start ;;
-                "ac" ) sudo ${pkgs.tlp}/bin/tlp bat ;;
+              power_source=$(${pkgs.tlp}/bin/tlp-stat -s 2>/dev/null | grep 'Power source' | awk '{print $4}')
+              case "$power_source" in
+                "AC" ) ${pkgs.tlp}/bin/tlp bat ;;
+                "Battery" ) ${pkgs.tlp}/bin/tlp ac ;;
+                * ) echo "Unknown power source: $power_source"; exit 1 ;;
               esac
             '';
           };

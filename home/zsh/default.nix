@@ -37,6 +37,14 @@
 
     plugins = [
       {
+        name = "zsh-autosuggestions";
+        src = pkgs.zsh-autosuggestions;
+      }
+      {
+        name = "fzf";
+        src = pkgs.fzf;
+      }
+      {
         name = "powerlevel10k";
         src = pkgs.zsh-powerlevel10k;
         file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
@@ -53,6 +61,8 @@
       bindkey "\ej" down-line-or-history
       bindkey "\ek" up-line-or-history
       bindkey "\el" forward-word
+      bindkey '^R' history-incremental-search-backward
+      [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
       if [ -f $HOME/.zshrc-personal ]; then
         source $HOME/.zshrc-personal
       fi
