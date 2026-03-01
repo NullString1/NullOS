@@ -22,6 +22,10 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+      inputs.nixpkgs.follows = "nixpkgs"; 
+    };
   };
 
   outputs =
@@ -50,13 +54,20 @@
       lib = nixpkgs.lib;
 
       overlays = [
-        (final: prev: {
-          stable = import nixpkgs-stable {
-            inherit system;
-            config.allowUnfree = true;
-          };
-          fusion360 = fusion360.packages.${system}.default;
-        })
+        (
+          final: prev:
+          let
+            stable = import nixpkgs-stable {
+              inherit system;
+              config.allowUnfree = true;
+            };
+          in
+          {
+            stable = stable;
+            fusion360 = fusion360.packages.${system}.default;
+            sunshine = stable.sunshine;
+          }
+        )
         (final: prev: {
           pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
             (python-final: python-prev: {
@@ -65,6 +76,10 @@
               });
             })
           ];
+        })
+        (final: prev: {
+          hyprland = inputs.hyprland.packages.${system}.hyprland;
+          xdg-desktop-portal-hyprland = inputs.hyprland.packages.${system}.xdg-desktop-portal-hyprland;
         })
       ];
 
