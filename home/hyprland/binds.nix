@@ -20,7 +20,6 @@
       "SUPER,M,exec,pavucontrol"
       "SUPER,Q,killactive,"
       "SUPER,P,pseudo,"
-      "SUPER SHIFT,I,togglesplit,"
       "SUPER,F,fullscreen,"
       "SUPER SHIFT,F,togglefloating,"
       "SUPER ALT,F,workspaceopt, allfloat"
