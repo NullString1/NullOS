@@ -3,5 +3,6 @@
   environment.systemPackages = with pkgs; [
     ffmpegthumbnailer
     kdePackages.dolphin
+    kdePackages.qtsvg
   ];
 }
