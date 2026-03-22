@@ -23,8 +23,8 @@
       ];
       animation = [
         "windows, 1, 3, md3_decel, popin 60%"
-        "windowsIn, 1, 3, md3_decel, popin 60%"
-        "windowsOut, 1, 3, md3_accel, popin 60%"
+        "windowsIn, 1, 5, md3_decel, popin 60%"
+        "windowsOut, 1, 5, md3_accel, popin 60%"
         "border, 1, 10, default"
         "fade, 1, 3, md3_decel"
         "layersIn, 1, 3, menu_decel, slide"
