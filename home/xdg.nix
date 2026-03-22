@@ -165,6 +165,11 @@
         pkgs.kdePackages.xdg-desktop-portal-kde
       ];
       configPackages = [ pkgs.hyprland ];
+      config = {
+        common = {
+          default = [ "hyprland" "gtk" "kde" ];
+        };
+      };
     };
   };
 }
