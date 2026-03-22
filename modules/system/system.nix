@@ -10,7 +10,7 @@ in
 {
   nix = {
     settings = {
-      download-buffer-size = 512000000; # 512 MB
+      download-buffer-size = 1024000000; # 1 GB
       auto-optimise-store = true;
       experimental-features = [
         "nix-command"
@@ -19,14 +19,12 @@ in
       substituters = [
         "https://cache.nixos.org"
         "https://nix-community.cachix.org"
-        "https://logsmart-cache.cachix.org"
       ]
       ++ lib.optionals isHyprland [
         "https://hyprland.cachix.org"
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        "logsmart-cache.cachix.org-1:nhxeVYtlgc5IZ+6zALnIT/6PdZQHpjPwV+R0qwjm+BQ="
       ]
       ++ lib.optionals isHyprland [
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="

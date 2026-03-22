@@ -26,4 +26,13 @@
     asusd.enable = true;
     usbmuxd.enable = true;
   };
+
+  nix.settings = {
+    substituters = [
+      "https://logsmart-cache.cachix.org"
+    ];
+    trusted-public-keys = [
+      "logsmart-cache.cachix.org-1:nhxeVYtlgc5IZ+6zALnIT/6PdZQHpjPwV+R0qwjm+BQ="
+    ];
+  };
 }
