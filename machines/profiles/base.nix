@@ -21,6 +21,7 @@
 
   useNvidia = false;
   useNvidiaPrime = false;
+  enableNvidiaOffload = false;
   intelBusId = "PCI:0:2:0";
   nvidiaBusId = "PCI:1:0:0";
 

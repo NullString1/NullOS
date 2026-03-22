@@ -18,6 +18,8 @@ with lib;
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
     prime = mkIf vars.useNvidiaPrime {
+      offload.enable = vars.enableNvidiaOffload;
+      offload.enableOffloadCmd = vars.enableNvidiaOffload;
       intelBusId = vars.intelBusId;
       nvidiaBusId = vars.nvidiaBusId;
     };
