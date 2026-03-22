@@ -27,6 +27,15 @@
     ananicy.package = pkgs.ananicy-cpp;
 
     irqbalance.enable = true;
-    usbmuxd.enable = true;
+    avahi = {
+      enable = true;
+      nssmdns4 = true;
+      openFirewall = true;
+      publish = {
+        enable = true;
+        addresses = true;
+        workstation = true;
+      };
+    };
   };
 }
