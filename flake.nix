@@ -45,11 +45,31 @@
       loadMachineConfig =
         hostname:
         let
-          machineConfig = import ./machines/${hostname}/default.nix { inherit self; };
+          machineConfig = import ./machines/${hostname}/default.nix {
+            inherit
+              self
+              pkgs
+              lib
+              inputs
+              ;
+          };
           baseConfig = import ./machines/profiles/base.nix { inherit pkgs; };
           profileConfig = import ./machines/profiles/${machineConfig.profile}.nix;
+          reservedMachineKeys = [
+            "profile"
+            "extraNixosConfig"
+          ];
+          machineVarOverrides = removeAttrs machineConfig reservedMachineKeys;
+          vars = lib.attrsets.recursiveUpdate (lib.attrsets.recursiveUpdate baseConfig profileConfig) machineVarOverrides;
+          knownVarKeys = (builtins.attrNames vars) ++ reservedMachineKeys;
+          inferredExtraNixosConfig = removeAttrs machineConfig knownVarKeys;
         in
-        lib.attrsets.recursiveUpdate (lib.attrsets.recursiveUpdate baseConfig profileConfig) machineConfig;
+        {
+          inherit vars;
+          extraNixosConfig = lib.attrsets.recursiveUpdate inferredExtraNixosConfig (
+            machineConfig.extraNixosConfig or { }
+          );
+        };
 
       lib = nixpkgs.lib;
 
@@ -105,6 +125,27 @@
         }
       ];
 
+      machineHostnames = [
+        "nslapt"
+        "nspc"
+        "nsminipc"
+      ];
+
+      mkHome =
+        hostname:
+        let
+          machine = loadMachineConfig hostname;
+        in
+        home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          extraSpecialArgs = {
+            vars = machine.vars;
+            inherit inputs;
+            username = username;
+          };
+          modules = homeManagerModules machine.vars;
+        };
+
       mkSystem =
         {
           hostname,
@@ -112,7 +153,8 @@
           extraModules ? [ ],
         }:
         let
-          vars = loadMachineConfig hostname;
+          machine = loadMachineConfig hostname;
+          vars = machine.vars;
         in
         nixpkgs.lib.nixosSystem {
           inherit system;
@@ -181,6 +223,7 @@
             ./modules/software
             ./modules/system
             hardware
+            machine.extraNixosConfig
           ]
           ++ extraModules;
         };
@@ -189,15 +232,12 @@
     {
       formatter.x86_64-linux = pkgs.nixfmt;
 
-      homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        extraSpecialArgs = {
-          vars = loadMachineConfig "nslapt";
-          inherit inputs;
-          username = username;
-        };
-        modules = homeManagerModules (loadMachineConfig "nslapt");
-      };
+      homeConfigurations = builtins.listToAttrs (
+        map (hostname: {
+          name = "${username}@${hostname}";
+          value = mkHome hostname;
+        }) machineHostnames
+      );
 
       nixosConfigurations = {
         nslapt = mkSystem {
