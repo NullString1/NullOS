@@ -10,6 +10,9 @@
   waybarConfig = self + /home/waybar/default.nix;
   animationSet = self + /home/hyprland/animations-end4.nix;
 
+  requirePasswordForSudo = false;
+  enableAudio = false;
+  
   useNvidia = false;
 
   enableResticBackup = false;

@@ -22,6 +22,10 @@
   enableResticBackup = true;
   enableWinboat = true;
 
+  requirePasswordForSudo = false;
+
+  laptopPowerManagement = true;
+
   services = {
     asusd.enable = true;
     usbmuxd.enable = true;

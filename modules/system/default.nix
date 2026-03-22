@@ -1,7 +1,6 @@
-{ ... }:
+{ vars, lib, ... }:
 {
   imports = [
-    ./power.nix
     ./security.nix
     ./nvidia.nix
     ./boot.nix
@@ -10,5 +9,6 @@
     ./printing.nix
     ./hardware_add.nix
     ./audio.nix
-  ];
+  ]
+  ++ lib.optionals (vars.laptopPowerManagement) [ ./power.nix ];
 }

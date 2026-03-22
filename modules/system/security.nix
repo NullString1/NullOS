@@ -1,7 +1,7 @@
-{ ... }:
+{ vars, ... }:
 {
   security = {
-    sudo.wheelNeedsPassword = false;
+    sudo.wheelNeedsPassword = vars.requirePasswordForSudo;
     rtkit.enable = true;
     polkit = {
       enable = true;

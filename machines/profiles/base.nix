@@ -16,8 +16,14 @@
   terminal = "ghostty";
   browser = pkgs.brave;
 
+  requirePasswordForSudo = true;
+  
+  laptopPowerManagement = false;
+
   printEnable = false;
   printDrivers = [ ];
+
+  enableAudio = true;
 
   useNvidia = false;
   useNvidiaPrime = false;

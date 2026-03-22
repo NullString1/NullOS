@@ -1,7 +1,7 @@
-{ ... }:
+{ vars, lib, ... }:
 {
   services = {
-    pipewire = {
+    pipewire = lib.mkIf vars.enableAudio {
       enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;

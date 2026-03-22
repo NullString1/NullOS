@@ -7,4 +7,6 @@
   enableDirenv = true;
 
   enableTailscale = true;
+
+  enableAudio = false;
 }

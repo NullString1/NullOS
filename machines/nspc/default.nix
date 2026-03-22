@@ -13,6 +13,8 @@
   enableResticBackup = false;
   enableOllama = true;
 
+  requirePasswordForSudo = false;
+
   enableAndroid = false;
   enableDBGate = false;
   enableSteam = false;
