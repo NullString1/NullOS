@@ -54,6 +54,7 @@
   enableFlatpak = false;
   enableQBittorrent = false;
   enableGnomeNetworkDisplays = false;
+  enableWinboat = false;
 
   enableResticBackup = false;
 }

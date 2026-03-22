@@ -85,12 +85,9 @@ in
       mpv # Incredible Video Player
       playerctl # Allows Changing Media Volume Through Scripts
       sox # audio support for FFMPEG
-
-      freerdp
-      winboat
     ]
     ++ lib.optionals (vars.enableWine) [ wineWow64Packages.wayland ]
     ++ lib.optionals (vars.enableMoonlight) [ moonlight-qt ]
     ++ lib.optionals (vars.enableQBittorrent) [ qbittorrent ]
-    ++ lib.optionals (vars.enableGnomeNetworkDisplays) [ gnome-network-displays ];
+    ++ lib.optionals (vars.enableWinboat) [ winboat ];
 }

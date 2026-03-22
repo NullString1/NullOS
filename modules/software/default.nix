@@ -10,6 +10,7 @@ in
     ./sddm.nix
     ./dolphin.nix
     ./devtools.nix
+    ./gstreamer.nix
     inputs.stylix.nixosModules.stylix
   ]
   ++ optionals (vars.enableAndroid) [ ./android-studio.nix ]

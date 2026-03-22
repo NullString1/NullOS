@@ -20,6 +20,7 @@
   animationSet = self + /home/hyprland/animations-end4.nix;
 
   enableResticBackup = true;
+  enableWinboat = true;
 
   services = {
     asusd.enable = true;

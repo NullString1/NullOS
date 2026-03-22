@@ -55,14 +55,29 @@
           };
           baseConfig = import ./machines/profiles/base.nix { inherit pkgs; };
           profileConfig = import ./machines/profiles/${machineConfig.profile}.nix;
+          baseVars = lib.attrsets.recursiveUpdate baseConfig profileConfig;
+          machineOnlyVarDefaults = {
+            hostname = "";
+            stylixImage = self + /wallpapers/screen.jpg;
+            waybarConfig = self + /home/waybar/default.nix;
+            animationSet = self + /home/hyprland/animations-end4.nix;
+            extraMonitorSettings = "";
+            enableNvidiaOffload = false;
+          };
+          knownVarDefaults = lib.attrsets.recursiveUpdate baseVars machineOnlyVarDefaults;
           reservedMachineKeys = [
             "profile"
+            "vars"
             "extraNixosConfig"
           ];
-          machineVarOverrides = removeAttrs machineConfig reservedMachineKeys;
-          vars = lib.attrsets.recursiveUpdate (lib.attrsets.recursiveUpdate baseConfig profileConfig) machineVarOverrides;
-          knownVarKeys = (builtins.attrNames vars) ++ reservedMachineKeys;
-          inferredExtraNixosConfig = removeAttrs machineConfig knownVarKeys;
+          legacyMachineVarOverrides = builtins.intersectAttrs knownVarDefaults machineConfig;
+          machineVarOverrides = lib.attrsets.recursiveUpdate legacyMachineVarOverrides (
+            machineConfig.vars or { }
+          );
+          vars = lib.attrsets.recursiveUpdate knownVarDefaults machineVarOverrides;
+          inferredExtraNixosConfig = removeAttrs machineConfig (
+            (builtins.attrNames legacyMachineVarOverrides) ++ reservedMachineKeys
+          );
         in
         {
           inherit vars;
