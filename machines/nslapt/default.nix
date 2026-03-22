@@ -20,4 +20,9 @@
   animationSet = self + /home/hyprland/animations-end4.nix;
 
   enableResticBackup = true;
+
+  services = {
+    asusd.enable = true;
+    usbmuxd.enable = true;
+  };
 }
