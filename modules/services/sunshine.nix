@@ -4,7 +4,7 @@
   ...
 }:
 let
-  sunshine = inputs.nixpkgs-stable.legacyPackages.${pkgs.system}.sunshine;
+  sunshine = inputs.nixpkgs-stable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.sunshine;
 in
 {
   services.sunshine = {
