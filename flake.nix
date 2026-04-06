@@ -97,13 +97,13 @@
           final: prev:
           let
             stable = import nixpkgs-stable {
-              inherit system;
+              localSystem = final.stdenv.hostPlatform;
               config.allowUnfree = true;
             };
           in
           {
             stable = stable;
-            fusion360 = fusion360.packages.${system}.default;
+            fusion360 = fusion360.packages.${final.stdenv.hostPlatform.system}.default;
             sunshine = stable.sunshine;
           }
         )
@@ -117,14 +117,25 @@
           ];
         })
         (final: prev: {
-          hyprland = inputs.hyprland.packages.${system}.hyprland;
-          xdg-desktop-portal-hyprland = inputs.hyprland.packages.${system}.xdg-desktop-portal-hyprland;
+          hyprland = inputs.hyprland.packages.${final.stdenv.hostPlatform.system}.hyprland;
+          xdg-desktop-portal-hyprland = inputs.hyprland.packages.${final.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+        })
+        (final: prev: {
+          ananicy-rules-cachyos = prev.ananicy-rules-cachyos.overrideAttrs (oldAttrs: {
+            version = "1.1.31";
+            src = prev.fetchFromGitHub {
+              owner = "CachyOS";
+              repo = "ananicy-rules";
+              rev = "1.1.31";
+              hash = "sha256-Owa4j+7FrgkvCvTk9q66h0Kk5PO/rL6r7jCsxVgxRlg=";
+            };
+          });
         })
         inputs.dolphin-overlay.overlays.default
       ];
 
       pkgs = import nixpkgs {
-        inherit system;
+        localSystem = system;
         inherit overlays;
         config = {
           allowUnfree = true;

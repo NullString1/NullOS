@@ -23,8 +23,11 @@
 
     fwupd.enable = true;
 
-    ananicy.enable = true;
-    ananicy.package = pkgs.ananicy-cpp;
+    ananicy = {
+      enable = true;
+      package = pkgs.ananicy-cpp;
+      rulesProvider = pkgs.ananicy-rules-cachyos;
+    };
 
     irqbalance.enable = true;
     avahi = {
