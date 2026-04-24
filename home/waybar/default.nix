@@ -1,15 +1,14 @@
 {
   pkgs,
   lib,
+  vars,
   ...
 }:
 let
-  terminal = "ghostty";
+  terminal = vars.terminal;
   base00 = "0F1419";
   base01 = "131721";
-  base03 = "3E4B59";
   base05 = "E6E1CF";
-  base06 = "E6E1CF";
   base07 = "F3F4F5";
   base08 = "F07178";
   base09 = "FF8F40";
@@ -257,32 +256,14 @@ with lib;
             font-weight: bold;
           }
           window#waybar {
-            /*
-
-              background-color: rgba(26,27,38,0);
-              border-bottom: 1px solid rgba(26,27,38,0);
-              border-radius: 0px;
-              color: #${base0F};
-            */
-
             background-color: rgba(26,27,38,0);
             border-bottom: 1px solid rgba(26,27,38,0);
             border-radius: 0px;
             color: #${base0F};
           }
           #workspaces {
-            /*
-              Eternal
-              background: linear-gradient(180deg, #${base00}, #${base01});
-              margin: 5px 5px 5px 0px;
-              padding: 0px 10px;
-              border-radius: 0px 15px 15px 0px;
-              border: 0px;
-              font-style: normal;
-              color: #${base00};
-            */
             background: linear-gradient(45deg, #${base01}, #${base01});
-            margin: 5px;
+            margin: 4px;
             padding: 0px 1px;
             border-radius: 15px;
             border: 0px;
@@ -290,9 +271,9 @@ with lib;
             color: #${base00};
           }
           #workspaces button {
-            padding: 0px 5px;
+            padding: 0px 4px;
             margin: 4px 3px;
-            border-radius: 15px;
+            border-radius: 12px;
             border: 0px;
             color: #${base00};
             background: linear-gradient(45deg, #${base0D}, #${base0E});
@@ -300,18 +281,18 @@ with lib;
             transition: all 0.3s ease-in-out;
           }
           #workspaces button.active {
-            padding: 0px 5px;
+            padding: 0px 4px;
             margin: 4px 3px;
-            border-radius: 15px;
+            border-radius: 12px;
             border: 0px;
             color: #${base00};
             background: linear-gradient(45deg, #${base0D}, #${base0E});
             opacity: 1.0;
-            min-width: 40px;
+            min-width: 30px;
             transition: all 0.3s ease-in-out;
           }
           #workspaces button:hover {
-            border-radius: 15px;
+            border-radius: 12px;
             color: #${base00};
             background: linear-gradient(45deg, #${base0D}, #${base0E});
             opacity: 0.8;
@@ -325,32 +306,17 @@ with lib;
             color: #${base07};
           }
           #window {
-            /*
-              Eternal
-              color: #${base05};
-              background: #${base00};
-              border-radius: 15px;
-              margin: 5px;
-              padding: 2px 20px;
-            */
             margin: 5px;
-            padding: 2px 20px;
+            padding: 2px 15px;
             color: #${base05};
             background: #${base01};
             border-radius: 15px 15px 15px 15px;
           }
           #memory {
             color: #${base0F};
-            /*
-              Eternal
-              background: #${base00};
-              border-radius: 15px 15px 15px 15px;
-              margin: 5px;
-              padding: 2px 20px;
-            */
             background: #${base01};
             margin: 5px 2.5px;
-            padding: 2px 20px;
+            padding: 2px 15px;
             border-radius: 15px 15px 15px 15px;
           }
           #clock {
@@ -358,42 +324,42 @@ with lib;
               background: #${base00};
               border-radius: 15px 15px 15px 15px;
               margin: 5px 2.5px;
-              padding: 2px 20px;
+              padding: 2px 15px;
           }
           #idle_inhibitor {
             color: #${base0A};
               background: #${base00};
               border-radius: 15px 15px 15px 15px;
               margin: 3px 1.5px;
-              padding: 2px 20px;
+              padding: 2px 15px;
           }
           #cpu {
             color: #${base07};
               background: #${base00};
               border-radius: 15px 15px 15px 15px;
               margin: 5px 2.5px;
-              padding: 2px 20px;
+              padding: 2px 15px;
           }
           #disk {
             color: #${base0F};
               background: #${base00};
               border-radius: 15px 15px 15px 15px;
               margin: 5px 2.5px;
-              padding: 2px 20px;
+              padding: 2px 15px;
           }
           #battery {
             color: #${base08};
             background: #${base00};
             border-radius: 15px 15px 15px 15px;
             margin: 5px 2.5px;
-            padding: 2px 20px;
+            padding: 2px 15px;
           }
           #network {
             color: #${base09};
             background: #${base00};
             border-radius: 15px 15px 15px 15px;
             margin: 5px 2.5px;
-            padding: 2px 20px;
+            padding: 2px 15px;
           }
           #tray {
             color: #${base05};
@@ -404,16 +370,9 @@ with lib;
           }
           #pulseaudio {
             color: #${base0D};
-            /*
-              Eternal
-              background: #${base00};
-              border-radius: 15px 15px 15px 15px;
-              margin: 5px;
-              padding: 2px 20px;
-            */
             background: #${base01};
             margin: 4px 2px;
-            padding: 2px 20px;
+            padding: 2px 15px;
             border-radius: 15px 15px 15px 15px;
           }
           #custom-notification {
@@ -421,7 +380,7 @@ with lib;
             background: #${base00};
             border-radius: 15px 15px 15px 15px;
             margin: 5px 2.5px;
-            padding: 2px 20px;
+            padding: 2px 15px;
           }
           #custom-tlp {
             color: #${base0A};
@@ -435,14 +394,14 @@ with lib;
             background: #${base00};
             border-radius: 0px 15px 15px 0px;
             margin: 5px 5px 5px 0px;
-            padding: 2px 20px;
+            padding: 2px 15px;
           }
           #custom-exit {
             color: #${base0E};
             background: #${base00};
             border-radius: 15px 0px 0px 15px;
             margin: 5px 0px 5px 2.5px;
-            padding: 2px 20px;
+            padding: 2px 15px;
           }
         ''
       ];
