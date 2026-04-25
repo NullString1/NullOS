@@ -11,7 +11,8 @@
   animationSet = self + /home/hyprland/animations-end4.nix;
 
   enableResticBackup = false;
-  enableOllama = true;
+  enableOllama = false;
+  enableExposeOllama = false;
 
   requirePasswordForSudo = false;
 
@@ -27,4 +28,8 @@
   enableLibreOffice = false;
   enableQBittorrent = false;
   enableGnomeNetworkDisplays = false;
+
+  hardware.nvidia = {
+    open = true;
+  };
 }
