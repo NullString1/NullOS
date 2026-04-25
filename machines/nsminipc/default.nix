@@ -16,7 +16,7 @@
   useNvidia = false;
 
   enableResticBackup = false;
-  enableMinecraft = true;
+  enableMinecraft = false;
 
   enableVSCode = false;
   enableAndroid = false;
@@ -34,4 +34,9 @@
   enableFlatpak = false;
   enableQBittorrent = false;
   enableGnomeNetworkDisplays = false;
+
+  boot = {
+    devSize = "32m";
+    devShmSize = "256m";
+  };
 }
