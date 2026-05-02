@@ -21,7 +21,7 @@
   enableCloudflareWarp = true;
   enableOpenFortiVPN = true;
 
-  enableLibreOffice = true;
+  enableLibreOffice = false;
   enableFlatpak = true;
   enableQBittorrent = true;
   enableGnomeNetworkDisplays = true;

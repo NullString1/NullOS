@@ -38,5 +38,6 @@
     trusted-public-keys = [
       "logsmart-cache.cachix.org-1:nhxeVYtlgc5IZ+6zALnIT/6PdZQHpjPwV+R0qwjm+BQ="
     ];
+    system-features = [ "gccarch-x86-64-v3" "gccarch-tigerlake" ];
   };
 }

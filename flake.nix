@@ -136,6 +136,11 @@
             };
           });
         })
+        (final: prev: {
+          openldap = prev.openldap.overrideAttrs (oldAttrs: {
+            doCheck = false;
+          });
+        })
         inputs.dolphin-overlay.overlays.default
       ];
 
@@ -168,12 +173,15 @@
       ];
 
       mkHome =
-        hostname:
+        {
+          hostname, 
+          chosenPkgs ? pkgs,
+        }:
         let
           machine = loadMachineConfig hostname;
         in
         home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
+          pkgs = chosenPkgs;
           extraSpecialArgs = {
             vars = machine.vars;
             inherit inputs;
@@ -186,6 +194,7 @@
         {
           hostname,
           hardware,
+          chosenPkgs ? pkgs,
           extraModules ? [ ],
         }:
         let
@@ -212,7 +221,7 @@
               };
             }
             {
-              nixpkgs.pkgs = pkgs;
+              nixpkgs.pkgs = chosenPkgs;
             }
             {
               sops.defaultSopsFile = ./machines/${hostname}/secrets.yaml;
@@ -271,7 +280,7 @@
       homeConfigurations = builtins.listToAttrs (
         map (hostname: {
           name = "${username}@${hostname}";
-          value = mkHome hostname;
+          value = mkHome { hostname = hostname; chosenPkgs = pkgs; };
         }) machineHostnames
       );
 

@@ -1,4 +1,4 @@
-{ self, ... }:
+{ self, lib, ... }:
 
 {
   profile = "pc";
@@ -30,6 +30,10 @@
   enableGnomeNetworkDisplays = false;
 
   hardware.nvidia = {
-    open = true;
+    open = lib.mkForce true;
+  };
+
+  nix.settings = {
+    system-features = [ "gccarch-x86-64-v3" ];
   };
 }
