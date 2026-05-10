@@ -2,12 +2,11 @@
 {
   wayland.windowManager.hyprland.settings = {
     bindr = [
-      "SUPER,SUPER_L,exec,rofi-launcher"
+      "SUPER,SUPER_L,exec, pkill rofi || rofi -show drun"
     ];
     bind = [
       "SUPER,Return,exec,${vars.terminal}"
-      "SUPER,K,exec,list-keybinds"
-      "SUPER SHIFT,Return,exec,rofi-launcher"
+      "SUPER SHIFT,Return,exec, pkill rofi || rofi -show drun"
       "SUPER,D,exec,dolphin"
       "SUPER,W,exec,${vars.browser.meta.mainProgram}"
       "SUPER,Y,exec,${vars.terminal} -e yazi"

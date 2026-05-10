@@ -14,9 +14,12 @@ in
     (import ./scripts/screenshotin.nix { inherit pkgs; })
     (import ./scripts/screenshot-ocr.nix { inherit pkgs; })
     (import ./scripts/keybinds.nix { inherit pkgs; })
-    (import ./scripts/rofi-launcher.nix { inherit pkgs; })
     (import ./scripts/wallsetter.nix { inherit pkgs; })
     pkgs.tesseract
+    pkgs.papirus-icon-theme
+    pkgs.bibata-cursors
+    pkgs.nerd-fonts.jetbrains-mono
+    pkgs.font-awesome
   ];
 
   imports = [
@@ -33,7 +36,6 @@ in
     ./bat.nix
     ./qt.nix
     ./zoxide.nix
-    ./stylix.nix
     ./tealdeer.nix
   ]
   # Hyprland-specific modules
@@ -61,4 +63,18 @@ in
   ++ optionals (vars.enableBottles) [ ./bottles.nix ]
   ++ optionals (vars.enableLibreOffice) [ ./libreoffice.nix ]
   ++ optionals (vars.enableOpencode) [ ./opencode.nix ];
+
+  # Catppuccin Mocha configuration
+  catppuccin = {
+    enable = true;
+    flavor = "mocha";
+    accent = "mauve";
+    hyprland.enable = true;
+    swaync.enable = true;
+    wlogout.enable = true;
+    starship.enable = true;
+    yazi.enable = false;
+  };
+
+  services.blueman-applet.enable = true;
 }

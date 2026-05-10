@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   home.packages = with pkgs; [ nixd ];
 
@@ -9,7 +9,6 @@
     profiles = {
       default = {
         extensions = with pkgs.vscode-extensions; [
-          #jeff-hykin.better-nix-syntax
           ms-vscode.cpptools-extension-pack
           mads-hartmann.bash-ide-vscode
           vadimcn.vscode-lldb
@@ -24,11 +23,29 @@
           ms-vscode.hexeditor
           ms-toolsai.jupyter
           ms-python.python
-          rust-lang.rust-analyzer
           svelte.svelte-vscode
           mechatroner.rainbow-csv
           dbaeumer.vscode-eslint
         ];
+        userSettings = {
+          "git.enableSmartCommit" = true;
+          "git.confirmSync" = false;
+          "editor.formatOnSave" = true;
+          "git.enableCommitSigning" = true;
+          "explorer.confirmDelete" = false;
+          "editor.fontFamily" = "JetBrainsMono Nerd Font Mono";
+          "editor.fontSize" = 14;
+          "editor.fontLigatures" = true;
+          "terminal.integrated.fontFamily" = "JetBrainsMono Nerd Font Mono";
+          "diffEditor.renderSideBySide" = true;
+          "nix.enableLanguageServer" = true;
+          "nix.serverPath" = "${pkgs.nixd}/bin/nixd";
+          "svelte.enable-ts-plugin" = true;
+          "git.blame.editorDecoration.enabled" = true;
+          "diffEditor.ignoreTrimWhitespace" = false;
+          "workbench.colorTheme" = lib.mkForce "Dark+";
+          "notebook.markup.fontSize" = 14;
+        };
       };
     };
   };

@@ -131,7 +131,7 @@ with lib;
           "custom/exit" = {
             tooltip = false;
             format = "⏻";
-            on-click = "wlogout";
+            on-click = "wleave -p layer-shell";
           };
           "custom/startmenu" = {
             tooltip = false;
@@ -251,9 +251,9 @@ with lib;
       style = concatStrings [
         ''
           * {
-            font-size: 16px;
+            font-size: 15px;
             font-family: JetBrainsMono Nerd Font, Font Awesome, sans-serif;
-            font-weight: bold;
+            font-weight: 500;
           }
           window#waybar {
             background-color: rgba(26,27,38,0);

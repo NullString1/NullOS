@@ -1,12 +1,4 @@
-{
-  config,
-  lib,
-  ...
-}:
-let
-  accent = "#${config.lib.stylix.colors.base0D}";
-  background-alt = "#${config.lib.stylix.colors.base01}";
-in
+{ lib, ... }:
 {
   programs.starship = {
     enable = true;
@@ -23,11 +15,11 @@ in
         "$character"
       ];
       directory = {
-        style = accent;
+        style = "blue";
       };
 
       character = {
-        success_symbol = "[❯](${accent})";
+        success_symbol = "[❯](blue)";
         error_symbol = "[❯](red)";
         vimcmd_symbol = "[❮](cyan)";
       };
@@ -39,9 +31,8 @@ in
       };
 
       git_branch = {
-        symbol = "[](${background-alt}) ";
-        style = "fg:${accent} bg:${background-alt}";
-        format = "on [$symbol$branch]($style)[](${background-alt}) ";
+        symbol = " ";
+        style = "blue";
       };
 
       git_status = {
@@ -50,7 +41,7 @@ in
         conflicted = "";
         renamed = "";
         deleted = "";
-        stashed = "≡";
+        staged = "≡";
       };
 
       git_state = {

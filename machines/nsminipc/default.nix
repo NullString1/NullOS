@@ -1,4 +1,4 @@
-{ self, ... }:
+{ self, pkgs, ... }:
 
 {
   profile = "server";
@@ -38,5 +38,20 @@
   boot = {
     devSize = "32m";
     devShmSize = "256m";
+  };
+  systemd.services.periodic-reboot = {
+  description = "Periodic Reboot";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.systemd}/bin/reboot";
+    };
+  };
+
+  systemd.timers.periodic-reboot = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "Sun *-*-* 00:00:00";
+      Unit = "periodic-reboot.service";
+    };
   };
 }

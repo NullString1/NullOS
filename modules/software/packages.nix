@@ -89,5 +89,6 @@ in
     ++ lib.optionals (vars.enableWine) [ wineWow64Packages.wayland ]
     ++ lib.optionals (vars.enableMoonlight) [ moonlight-qt ]
     ++ lib.optionals (vars.enableQBittorrent) [ qbittorrent ]
-    ++ lib.optionals (vars.enableWinboat) [ winboat ];
+    ++ lib.optionals (vars.enableWinboat) [ winboat ]
+    ++ lib.optionals isHyprland [ wleave ];
 }

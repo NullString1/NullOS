@@ -20,6 +20,10 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    catppuccin = {
+      url = "github:catppuccin/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     fusion360 = {
       url = "github:nullstring1/fusion-360-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -123,7 +127,8 @@
         })
         (final: prev: {
           hyprland = inputs.hyprland.packages.${final.stdenv.hostPlatform.system}.hyprland;
-          xdg-desktop-portal-hyprland = inputs.hyprland.packages.${final.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+          xdg-desktop-portal-hyprland =
+            inputs.hyprland.packages.${final.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
         })
         (final: prev: {
           ananicy-rules-cachyos = prev.ananicy-rules-cachyos.overrideAttrs (oldAttrs: {
@@ -154,7 +159,7 @@
       };
 
       homeManagerModules = vars: [
-        inputs.stylix.homeModules.stylix
+        inputs.catppuccin.homeModules.catppuccin
         ./home/default.nix
         {
           nixpkgs.overlays = overlays;
@@ -174,7 +179,7 @@
 
       mkHome =
         {
-          hostname, 
+          hostname,
           chosenPkgs ? pkgs,
         }:
         let
@@ -231,7 +236,10 @@
                 githubToken = { };
               }
               // lib.optionalAttrs vars.enableResticBackup {
-                resticRepository = { };
+                resticRepository = {
+                  owner = vars.username;
+                  group = "users";
+                };
               };
             }
             {
@@ -280,7 +288,10 @@
       homeConfigurations = builtins.listToAttrs (
         map (hostname: {
           name = "${username}@${hostname}";
-          value = mkHome { hostname = hostname; chosenPkgs = pkgs; };
+          value = mkHome {
+            hostname = hostname;
+            chosenPkgs = pkgs;
+          };
         }) machineHostnames
       );
 

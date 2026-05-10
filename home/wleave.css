@@ -1,0 +1,20 @@
+* {
+  background-color: #1e1e2eee;
+  color: #cdd6f4;
+}
+
+button {
+  background-color: #313244;
+  border: 1px solid #45475a;
+  border-radius: 8px;
+  padding: 8px 16px;
+}
+
+button:hover {
+  background-color: #45475a;
+}
+
+button:focus {
+  background-color: #89b4fa;
+  color: #1e1e2e;
+}

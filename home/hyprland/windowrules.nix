@@ -43,6 +43,10 @@
         "match:class ^(Mullvad VPN|Cloudflare Zero Trust)$, tag +vpn"
         "match:class ^(swappy)$, tag +image-editor"
         "match:class ^(hyprpolkitagent)$, tag +dialog"
+        "match:class ^(hyprpolkitagent)$, pin on"
+        "match:class ^(polkit-gnome-authentication-agent-1)$, pin on"
+        "match:title ^(Authentication Required)$, pin on"
+        "match:title ^(Policy Kit)$, pin on"
 
         # Tagging Dialogs & Popups
         "match:title ^(Open File)$, tag +dialog"
@@ -170,6 +174,8 @@
         "match:class ^([Ff]erdium)$, float on"
         "match:class ^([Ff]erdium)$, center on"
         "match:class ^([Ff]erdium)$, size 60% 70%"
+
+        # Wleave (logout menu) - layer-shell handles positioning
 
         # Global Idle Inhibit
         "match:class .*, idle_inhibit fullscreen"

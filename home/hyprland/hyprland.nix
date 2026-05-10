@@ -4,6 +4,20 @@
   vars,
   ...
 }:
+let
+  # Catppuccin Mocha colors
+  red = "f38ba8";
+  blue = "89b4fa";
+  mauve = "cba6f7";
+  teal = "94e2d5";
+  green = "a6e3a1";
+  yellow = "f9e2af";
+  peach = "fab387";
+  surface1 = "313244";
+  base00 = "1e1e2e";
+  base01 = "181825";
+  base05 = "cdd6f4";
+in
 {
   home.packages = with pkgs; [
     awww
@@ -27,6 +41,9 @@
     };
     ".face.icon".source = ./face.jpg;
     ".config/face.jpg".source = ./face.jpg;
+    ".local/share/icons/Bibata-Modern-Ice" = {
+      source = "${pkgs.bibata-cursors}/share/icons/Bibata-Modern-Ice";
+    };
   };
   wayland.windowManager.hyprland = {
     enable = true;
@@ -34,7 +51,11 @@
     systemd = {
       enable = true;
       enableXdgAutostart = true;
-      variables = [ "--all" ];
+      variables = [
+        "--all"
+        "XCURSOR_THEME=Bibata-Modern-Ice"
+        "XCURSOR_SIZE=24"
+      ];
     };
     xwayland = {
       enable = true;
@@ -46,6 +67,8 @@
         "dbus-update-activation-environment --all --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "systemctl --user start hyprpolkitagent"
+        "systemctl --user start blueman-applet"
+        "systemctl --user start warp-taskbar"
         "killall -q awww;sleep .5 && awww-daemon &"
         "killall -q waybar;sleep .5 && waybar"
         "killall -q swaync;sleep .5 && swaync"
@@ -53,6 +76,7 @@
         "swayosd-server &"
         "pypr &"
         "sleep 1.5 && awww img ${vars.stylixImage}"
+        "sleep 2 && hyprctl setcursor Bibata-Modern-Ice 24"
       ];
 
       input = {
@@ -81,9 +105,8 @@
         gaps_out = 8;
         border_size = 2;
         resize_on_border = true;
-        "col.active_border" =
-          "rgb(${config.lib.stylix.colors.base08}) rgb(${config.lib.stylix.colors.base0C}) 45deg";
-        "col.inactive_border" = "rgb(${config.lib.stylix.colors.base01})";
+        "col.active_border" = "rgb(${red}) rgb(${blue}) 45deg";
+        "col.inactive_border" = "rgb(${surface1})";
       };
 
       misc = {
@@ -130,8 +153,8 @@
 
       cursor = {
         sync_gsettings_theme = true;
-        no_hardware_cursors = 2; # change to 1 if want to disable
-        enable_hyprcursor = true;
+        no_hardware_cursors = 2;
+        enable_hyprcursor = false;
         warp_on_change_workspace = 2;
         no_warps = true;
       };

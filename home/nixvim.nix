@@ -409,10 +409,10 @@
         })
       end
 
-      -- Notify background using Stylix palette
+      -- Notify background using Catppuccin palette
       local ok, notify = pcall(require, 'notify')
       if ok then
-        notify.setup({ background_colour = "#${config.lib.stylix.colors.base01}" })
+        notify.setup({ background_colour = "#${config.catppuccin.colors.base01}" })
         vim.notify = notify
       end
 
