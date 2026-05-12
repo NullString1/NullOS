@@ -37,6 +37,7 @@ in
     ./qt.nix
     ./zoxide.nix
     ./tealdeer.nix
+    ./ssh.nix
   ]
   # Hyprland-specific modules
   ++ optionals isHyprland [
@@ -62,7 +63,8 @@ in
   ++ optionals (vars.enableDevMisc) [ ./httpie-desktop.nix ]
   ++ optionals (vars.enableBottles) [ ./bottles.nix ]
   ++ optionals (vars.enableLibreOffice) [ ./libreoffice.nix ]
-  ++ optionals (vars.enableOpencode) [ ./opencode.nix ];
+  ++ optionals (vars.enableOpencode) [ ./opencode.nix ]
+  ++ optionals (vars.enableWayVNC) [ ./wayvnc.nix ];
 
   # Catppuccin Mocha configuration
   catppuccin = {

@@ -60,6 +60,7 @@ in
       ripgrep # Improved Grep
       socat # Needed For Screenshots
       usbutils # Good Tools For USB Devices
+      remmina # VNC and RDP client
 
       #
       # Development

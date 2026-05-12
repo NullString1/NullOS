@@ -2,6 +2,7 @@
   vars,
   options,
   pkgs,
+  config,
   ...
 }:
 {
@@ -37,7 +38,12 @@
         25565
         8123
       ];
-      allowedTCPPortRanges = [ { from = 32768; to = 61000; } ];
+      allowedTCPPortRanges = [
+        {
+          from = 32768;
+          to = 61000;
+        }
+      ];
       allowedUDPPorts = [
         59010
         59011
@@ -60,8 +66,20 @@
       extraStopCommands = ''
         iptables -D INPUT -i p2p-wlo1-+ -j ACCEPT || true
       '';
+      trustedInterfaces = [ "tailscale0" ];
     };
   };
+
+  assertions = [
+    {
+      assertion = !(vars.enableWayVNC && builtins.elem 5900 config.networking.firewall.allowedTCPPorts);
+      message = "SECURITY RISK: Port 5900 (VNC) is globally exposed! Remove it from allowedTCPPorts.";
+    }
+  ];
+
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="1a2b", RUN+="${pkgs.usb-modeswitch}/bin/usb_modeswitch -K -v 0bda -p 1a2b"
+  '';
 
   environment.systemPackages = with pkgs; [ networkmanagerapplet ];
 }

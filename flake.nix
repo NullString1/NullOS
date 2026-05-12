@@ -33,7 +33,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hyprland = {
-      url = "github:hyprwm/Hyprland/v0.54.3";
+      url = "github:hyprwm/Hyprland/v0.55.0";
     };
     dolphin-overlay = {
       url = "github:rumboon/dolphin-overlay";

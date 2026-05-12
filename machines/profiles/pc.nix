@@ -5,7 +5,7 @@
   enableVSCode = true;
   enableOpencode = true;
   enableAndroid = true;
-  enableNVIM = true;
+  enableNVIM = false;
   enableDirenv = true;
   enableDBGate = true;
   enableDevMisc = true;
@@ -20,6 +20,7 @@
   enableTailscale = true;
   enableCloudflareWarp = true;
   enableOpenFortiVPN = true;
+  enableWayVNC = true;
 
   enableLibreOffice = false;
   enableFlatpak = true;

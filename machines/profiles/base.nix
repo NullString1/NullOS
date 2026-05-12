@@ -17,7 +17,7 @@
   browser = pkgs.brave;
 
   requirePasswordForSudo = true;
-  
+
   laptopPowerManagement = false;
 
   printEnable = false;
@@ -54,6 +54,7 @@
   enableMullvadVPN = false;
   enableCloudflareWarp = false;
   enableOpenFortiVPN = false;
+  enableWayVNC = false;
 
   enableFusion360 = false;
   enableLibreOffice = false;

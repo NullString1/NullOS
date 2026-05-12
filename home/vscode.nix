@@ -31,7 +31,6 @@
           "git.enableSmartCommit" = true;
           "git.confirmSync" = false;
           "editor.formatOnSave" = true;
-          "git.enableCommitSigning" = true;
           "explorer.confirmDelete" = false;
           "editor.fontFamily" = "JetBrainsMono Nerd Font Mono";
           "editor.fontSize" = 14;

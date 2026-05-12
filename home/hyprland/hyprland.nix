@@ -117,14 +117,12 @@ in
         disable_hyprland_logo = true;
         disable_splash_rendering = true;
         enable_swallow = false;
-        vfr = true;
         vrr = 2;
         enable_anr_dialog = true;
         anr_missed_pings = 20;
       };
 
       dwindle = {
-        pseudotile = true;
         preserve_split = true;
         force_split = 2;
       };
