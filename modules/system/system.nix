@@ -9,6 +9,19 @@ let
 in
 {
   nix = {
+    distributedBuilds = true;
+    buildMachines = [
+      {
+        hostName = "nspc";
+        system = "x86_64-linux";
+        protocol = "ssh-ng";
+        maxJobs = 1;
+        speedFactor = 2;
+      }
+    ];
+    extraOptions = ''
+      builders-use-substitutes = true
+    '';
     settings = {
       download-buffer-size = 1024000000; # 1 GB
       auto-optimise-store = true;
