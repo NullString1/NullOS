@@ -55,6 +55,7 @@
   enableCloudflareWarp = false;
   enableOpenFortiVPN = false;
   enableWayVNC = false;
+  enableNextDNS = false;
 
   enableFusion360 = false;
   enableLibreOffice = false;

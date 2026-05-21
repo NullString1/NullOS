@@ -12,12 +12,12 @@
 
   requirePasswordForSudo = false;
   enableAudio = false;
-  
+
   useNvidia = false;
 
   enableResticBackup = false;
   enableMinecraft = false;
-
+  enableNVIM = false;
   enableVSCode = false;
   enableAndroid = false;
   enableDBGate = false;
@@ -40,7 +40,7 @@
     devShmSize = "256m";
   };
   systemd.services.periodic-reboot = {
-  description = "Periodic Reboot";
+    description = "Periodic Reboot";
     serviceConfig = {
       Type = "oneshot";
       ExecStart = "${pkgs.systemd}/bin/reboot";
@@ -52,6 +52,20 @@
     timerConfig = {
       OnCalendar = "Sun *-*-* 00:00:00";
       Unit = "periodic-reboot.service";
+    };
+  };
+  systemd.services.nextdnsip = {
+    description = "NextDNS IP Update Service";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.curl}/bin/curl -s $(cat ${config.sops.secrets.nextdnsIpUpdateUrl.path})";
+    };
+  };
+  systemd.timers.nextdnsip = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "*-*-* 00:00:00"; # Run daily at midnight
+      Unit = "nextdnsip.service";
     };
   };
 }

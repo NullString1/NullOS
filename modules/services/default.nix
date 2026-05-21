@@ -12,5 +12,6 @@ in
   ]
   ++ optionals vars.enableOllama [ ./ollama.nix ]
   ++ optionals vars.enableResticBackup [ ./backup.nix ]
-  ++ optionals vars.enableMinecraft [ ./minecraft.nix ];
+  ++ optionals vars.enableMinecraft [ ./minecraft.nix ]
+  ++ optionals vars.enableNextDNS [ ./nextdns.nix ];
 }

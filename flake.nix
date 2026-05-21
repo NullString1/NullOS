@@ -235,6 +235,11 @@
               sops.secrets = {
                 githubToken = { };
               }
+              // lib.optionalAttrs vars.enableNextDNS {
+                nextdnsServerName = { };
+                nextdnsStamp = { };
+                nextdnsIpUpdateUrl = { };
+              }
               // lib.optionalAttrs vars.enableResticBackup {
                 resticRepository = {
                   owner = vars.username;
