@@ -1,4 +1,9 @@
-{ self, ... }:
+{
+  self,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   profile = "pc";
@@ -7,7 +12,7 @@
   useNvidia = true;
   useNvidiaPrime = true;
   enableNvidiaOffload = true;
-  
+
   intelBusId = "PCI:0:2:0";
   nvidiaBusId = "PCI:2:0:0";
 
@@ -39,6 +44,10 @@
     trusted-public-keys = [
       "logsmart-cache.cachix.org-1:nhxeVYtlgc5IZ+6zALnIT/6PdZQHpjPwV+R0qwjm+BQ="
     ];
-    system-features = [ "gccarch-x86-64-v3" "gccarch-tigerlake" ];
+    system-features = [
+      "gccarch-x86-64-v3"
+      "gccarch-tigerlake"
+    ];
   };
+  hardware.nvidia.package = lib.mkForce pkgs.linuxPackages_latest.nvidiaPackages.legacy_580;
 }

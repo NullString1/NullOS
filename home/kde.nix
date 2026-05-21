@@ -8,7 +8,7 @@
     MOZ_ENABLE_WAYLAND = "1";
     ELECTRON_OZONE_PLATFORM_HINT = "auto";
     SDL_VIDEODRIVER = "x11";
-    EDITOR = "nvim";
+    EDITOR = "nano";
     TERMINAL = vars.terminal;
     XDG_TERMINAL_EMULATOR = vars.terminal;
   };

@@ -95,7 +95,7 @@
       {
         _args = [
           "EDITOR"
-          "nvim"
+          "nano"
         ];
       }
       {

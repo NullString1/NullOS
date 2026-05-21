@@ -1,6 +1,7 @@
 {
   pkgs,
   vars,
+  lib,
   ...
 }:
 let
@@ -19,7 +20,10 @@ in
     };
     dconf.enable = true;
     seahorse.enable = true;
-    hyprland.enable = isHyprland;
+    hyprland = {
+      enable = isHyprland;
+      xwayland.enable = true;
+    };
     hyprlock.enable = isHyprland;
     fuse.userAllowOther = true;
     gnupg.agent = {
@@ -32,6 +36,10 @@ in
       silent = true;
     };
     gamemode.enable = vars.enableSteam || vars.enableLutris;
+    appimage = {
+      enable = true;
+      binfmt = true;
+    };
   };
 
   environment.systemPackages =
@@ -41,7 +49,6 @@ in
       # System Tools
       #
       alsa-utils # For Alsa Mixer
-      appimage-run # Needed For AppImage Support
       btop # btop like util
       brightnessctl # For Screen Brightness Control
       busybox # Provides Many Common Unix Utilities In A Single Binary
