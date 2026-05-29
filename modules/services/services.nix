@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  lib,
+  vars,
+  ...
+}:
 {
   zramSwap = {
     enable = true;
@@ -43,5 +48,8 @@
         workstation = true;
       };
     };
+  };
+  security.pam.services = lib.mkIf vars.enableWayVNC {
+    wayvnc = { };
   };
 }

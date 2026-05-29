@@ -77,6 +77,9 @@
     }
   ];
 
+  boot.initrd.systemd.network.wait-online.enable = false;
+  systemd.network.wait-online.enable = false;
+
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="1a2b", RUN+="${pkgs.usb-modeswitch}/bin/usb_modeswitch -K -v 0bda -p 1a2b"
   '';

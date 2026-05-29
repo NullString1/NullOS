@@ -9,4 +9,6 @@
   enableTailscale = true;
 
   enableAudio = false;
+  enableBluetooth = false;
+  printEnable = false;
 }

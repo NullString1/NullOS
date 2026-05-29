@@ -8,15 +8,16 @@ Understanding the NullOS directory structure will help you navigate and customiz
 NullOS/
 ├── flake.nix              # Main flake configuration
 ├── flake.lock            # Locked flake dependencies
-├── variables.nix         # Per-machine variables (gitignored)
-├── variables.nix.example # Template for variables
 ├── .gitignore           # Git ignore rules
 ├── .gitattributes       # Git attributes
 ├── .envrc               # Direnv configuration
+├── .sops.yaml           # sops-nix encryption rules
 ├── README.md            # Main documentation
 ├── WIKI.md              # Wiki index
+├── AGENTS.md            # Agent/automation documentation
 ├── _screenshots/        # Screenshots directory
 ├── wallpapers/          # Wallpaper images
+├── machines/            # Per-machine configurations
 ├── home/               # Home Manager configurations
 ├── modules/            # NixOS system modules
 └── wiki/               # Documentation wiki
@@ -93,7 +94,54 @@ home/
         └── p10k.zsh
 ```
 
-## ⚙️ Modules Directory (`modules/`)
+## ⚙️ Machines Directory (`machines/`)
+
+Per-machine NixOS configurations:
+
+```
+machines/
+├── profiles/
+│   ├── base.nix          # Default feature flags and common settings
+│   ├── pc.nix            # PC profile (20+ features enabled)
+│   └── server.nix        # Server profile (minimal, headless)
+├── nslapt/
+│   ├── default.nix       # Laptop machine config (NVIDIA Prime, etc.)
+│   └── secrets.yaml      # Encrypted secrets (sops-nix)
+├── nspc/
+│   ├── default.nix       # Desktop machine config (Steam, etc.)
+│   └── secrets.yaml      # Encrypted secrets
+└── nsminipc/
+    ├── default.nix       # Server machine config (headless)
+    └── secrets.yaml      # Encrypted secrets
+```
+
+**Understanding per-machine configs:**
+
+Each `machines/{hostname}/default.nix` defines:
+- User settings (username, git email, timezone)
+- Desktop environment choice (hyprland, kde, or null)
+- Hardware config (GPU, monitor settings)
+- Feature toggles (Docker, VSCode, Android, Steam, etc.)
+- Service config (Restic backup target, VPN, etc.)
+- Theming overrides (wallpaper image, Stylix settings)
+
+Example structure in `machines/nslapt/default.nix`:
+```nix
+{
+  # Loaded into vars, merged with base → pc profile
+  username = "nullstring1";
+  gitUsername = "Null String";
+  gitEmail = "user@example.com";
+  
+  timeZone = "Europe/London";
+  locale = "en_GB.UTF-8";
+  desktopEnvironment = "hyprland";
+  
+  useNvidiaPrime = true;
+  intelBusId = "PCI:0:2:0";
+  nvidiaBusId = "PCI:2:0:0";
+}
+```
 
 System-level NixOS modules:
 
@@ -140,33 +188,66 @@ modules/
 
 ## 🔧 Configuration Flow
 
-### System-Level Flow
+### Three-Stage Configuration Loading
 
-1. **flake.nix** - Entry point that defines:
-   - Flake inputs (nixpkgs, home-manager, etc.)
-   - System configurations (nslapt, nspc)
-   - User configuration via home-manager integration
+1. **Base Defaults** (`machines/profiles/base.nix`)
+   - Common system settings (keyboard, locale, git)
+   - ~70 feature flags, mostly disabled
+   - Applies to all machines
 
-2. **variables.nix** - Imported by flake.nix:
-   - Contains per-machine settings
-   - User preferences
-   - Hardware-specific options
+2. **Profile Configuration** (`machines/profiles/{pc,server}.nix`)
+   - Merges with base defaults
+   - `pc.nix`: Enables 20+ features (Docker, VSCode, Android, Wine, Steam, Tailscale, etc.)
+   - `server.nix`: Minimal (Docker, Git, Direnv, Tailscale only)
 
-3. **modules/** - Imported by system configuration:
-   - System-level packages and services
-   - Hardware configuration
-   - Service enablement
+3. **Machine Overrides** (`machines/{hostname}/default.nix`)
+   - Final per-machine customization
+   - Overrides anything from base or profile
+   - Results in `vars` object passed to all modules via `specialArgs`
 
-### User-Level Flow
+**Example:** Setting up nslapt laptop
+```
+base.nix (common defaults)
+    ↓
+pc.nix (enables Docker, VSCode, Steam, etc.)
+    ↓
+machines/nslapt/default.nix (laptop-specific: NVIDIA Prime, Restic, iOS support)
+    ↓
+vars object available to all modules
+```
+
+### System-Level Configuration Flow
+
+1. **flake.nix** - Entry point:
+   - Defines flake inputs (nixpkgs, home-manager, etc.)
+   - Loads machine config: base → profile → machine overrides
+   - Creates `vars` object via `specialArgs`
+   - Defines `nixosConfigurations.{hostname}`
+
+2. **machines/{hostname}/default.nix** - Machine config:
+   - Per-machine settings merged into `vars`
+   - Settings available to all modules
+
+3. **modules/** - System modules:
+   - Access settings via `vars` parameter
+   - System-level packages, services, hardware config
+   - Organized as: system/ (boot, hardware, NVIDIA), software/ (packages, SDDM), services/
+
+4. **home/default.nix** - Home-manager entry:
+   - User-level configuration
+   - Desktop environment conditional (Hyprland/KDE/null)
+   - Imports application-specific modules
+
+### User-Level Configuration Flow
 
 1. **home/default.nix** - Home Manager entry point:
-   - Imports all user-level modules
-   - Defines custom scripts
+   - Conditionally imports modules based on desktop environment
+   - Defines custom scripts and utilities
 
 2. **home/*/**.nix** - Individual application configs:
    - Application-specific settings
    - User packages
-   - Dotfile configurations
+   - Dotfile configurations (git, zsh, neovim, etc.)
 
 ## 📝 Key Files
 
@@ -175,14 +256,15 @@ modules/
 - **flake.nix** - The heart of NullOS. Defines:
   - System configurations
   - Home-manager integration
-  - Flake inputs and outputs
-  - User and system module imports
+  - Three-stage loading: base → profile → machine overrides
+  - User and system module imports via `specialArgs`
 
-- **variables.nix** - Per-machine customization:
-  - Username, hostname, locale
+- **machines/{hostname}/default.nix** - Per-machine customization:
+  - Username, hostname, locale, timezone
   - Git credentials
   - Application preferences
   - Hardware settings (NVIDIA, monitors)
+  - Desktop environment selection
   - Theming choices
 
 ### Hardware Configuration
@@ -210,6 +292,9 @@ Each application has its own Nix file:
 
 ## 🎯 Where to Make Changes
 
+### Enable/Disable Features for a Machine
+→ Edit `machines/{hostname}/default.nix`
+
 ### Adding System Packages
 → `modules/software/packages.nix`
 
@@ -226,7 +311,7 @@ Each application has its own Nix file:
 → `home/zsh/zshrc-personal.nix`
 
 ### Theming Changes
-→ `variables.nix` (change stylixImage)
+→ `machines/{hostname}/default.nix` (set `stylixImage`)
 → `home/stylix.nix` (override specific theme elements)
 
 ### System Services
@@ -234,16 +319,20 @@ Each application has its own Nix file:
 
 ### Hardware Settings
 → `modules/system/hardware_yourhostname.nix`
-→ `variables.nix` (monitor config, NVIDIA settings)
+→ `machines/{hostname}/default.nix` (GPU, monitor config)
 
 ## 🔄 Import Chain
 
-Understanding how files are imported:
+Understanding how files are imported and merged:
 
 ```
-flake.nix
-├── variables.nix (imported as vars)
-└── nixosConfigurations.yourhostname
+flake.nix (entry point)
+├── machines/profiles/base.nix (stage 1: common defaults)
+│   └── machines/profiles/{pc,server}.nix (stage 2: profile features)
+│       └── machines/{hostname}/default.nix (stage 3: machine overrides)
+│           └── vars object created and passed to all modules
+│
+└── nixosConfigurations.{hostname}
     ├── modules/misc/default.nix
     │   ├── fonts.nix
     │   └── user.nix
@@ -258,17 +347,20 @@ flake.nix
     │   ├── audio.nix
     │   ├── boot.nix
     │   └── ...
-    ├── modules/system/hardware_yourhostname.nix
-    └── home-manager.users.yourusername
-        └── home/default.nix
-            ├── hyprland/default.nix
+    ├── modules/system/hardware_{hostname}.nix
+    └── home-manager.users.{username}
+        └── home/default.nix (conditional on desktopEnvironment)
+            ├── home/hyprland/default.nix (if Hyprland)
             │   ├── binds.nix
             │   ├── hyprland.nix
             │   └── ...
-            ├── scripts/*.nix
-            ├── waybar/default.nix
+            ├── home/kde.nix (if KDE)
+            ├── home/scripts/*.nix
+            ├── home/waybar/default.nix
             └── ...
 ```
+
+**Key:** The three-stage merge (base → profile → machine) creates `vars`, which is then passed to all modules via `specialArgs`, making settings available everywhere.
 
 ## 💡 Tips
 

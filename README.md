@@ -212,11 +212,11 @@ Located in `home/scripts/`:
 
 ### Prerequisites
 
-1. A working NixOS installation
+1. A working NixOS installation with flakes enabled
 2. Git installed
-3. Flakes enabled in your Nix configuration
+3. Your system hostname and desired username
 
-### Enable Flakes
+### Enable Flakes (if needed)
 
 If you haven't enabled flakes, add to `/etc/nixos/configuration.nix`:
 
@@ -224,7 +224,7 @@ If you haven't enabled flakes, add to `/etc/nixos/configuration.nix`:
 nix.settings.experimental-features = [ "nix-command" "flakes" ];
 ```
 
-Rebuild: `sudo nixos-rebuild switch`
+Then rebuild: `sudo nixos-rebuild switch`
 
 ### Clone Repository
 
@@ -233,60 +233,76 @@ git clone https://github.com/nullstring1/NullOS.git ~/NullOS
 cd ~/NullOS
 ```
 
-### Configure Variables
+### Quick Start: Use an Existing Machine Config
 
-1. Copy the example variables file:
+NullOS includes pre-configured machines in `machines/`:
+
+- **nslapt** - Laptop (NVIDIA Prime, passwordless sudo, Restic backup, iOS support)
+- **nspc** - Desktop (full NVIDIA, Steam enabled)
+- **nsminipc** - Headless server (minimal, no desktop environment)
+
+To use an existing config:
+
 ```bash
-cp variables.nix.example variables.nix
+# For nslapt (laptop)
+sudo nixos-rebuild switch --flake .#nslapt
+
+# For nspc (desktop)
+sudo nixos-rebuild switch --flake .#nspc
 ```
 
-2. Edit `variables.nix` with your details:
+### Custom Setup: Create Your Machine Configuration
+
+For a new machine, create `machines/yourhostname/default.nix`:
+
 ```nix
 {
+  # User settings
   username = "youruser";
-  hostname = "yourhostname";
   gitUsername = "Your Name";
   gitEmail = "your@email.com";
-  # ... customize other settings
+
+  # System settings
+  timeZone = "Europe/London";
+  locale = "en_GB.UTF-8";
+  keyboardLayout = "gb";
+
+  # Optional: Desktop environment (default: "hyprland")
+  # desktopEnvironment = "hyprland";  # or "kde" or null for headless
+
+  # Optional: NVIDIA (if applicable)
+  # useNvidiaPrime = true;
+  # intelBusId = "PCI:0:2:0";
+  # nvidiaBusId = "PCI:2:0:0";
+
+  # Optional: Customizations
+  # stylixImage = ./wallpapers/screen.jpg;
+  # resticRepository = "sftp:user@host:/backup/path";
 }
 ```
 
-See [Configuration](#configuration) for detailed variable options.
+Create hardware config:
 
-### Add Hardware Configuration
-
-1. Generate hardware config for your machine:
 ```bash
+# Generate your hardware configuration
 sudo nixos-generate-config --show-hardware-config > /tmp/hardware.nix
-```
 
-2. Create a hardware file in `modules/system/`:
-```bash
+# Copy template and edit
 cp modules/system/hardware_nslapt.nix modules/system/hardware_yourhostname.nix
+# Edit the file and paste your hardware config from /tmp/hardware.nix
 ```
 
-3. Update the hardware file with your configuration from `/tmp/hardware.nix`
-
-### Update Flake
-
-Edit `flake.nix` to add your machine configuration (or modify existing ones):
-
-```nix
-nixosConfigurations = {
-  yourhostname = nixpkgs.lib.nixosSystem {
-    # ... (copy from existing config and adjust)
-    modules = [
-      # ... other modules
-      ./modules/system/hardware_yourhostname.nix
-    ];
-  };
-};
-```
+Update `flake.nix` to include your machine. Refer to the existing `nslapt` and `nspc` configurations as templates.
 
 ### Build and Switch
 
 ```bash
+# For custom hostname
 sudo nixos-rebuild switch --flake .#yourhostname
+
+# Or use the convenient alias (requires nix develop)
+nix develop
+fr  # rebuilds current machine (via nh)
 ```
 
 ### First Boot Setup
@@ -300,73 +316,125 @@ sudo nixos-rebuild switch --flake .#yourhostname
 
 ## Configuration
 
-### Variables File
+### Understanding the Configuration Hierarchy
 
-The `variables.nix` file contains all per-machine customization options:
+NullOS uses a three-stage configuration system:
+
+1. **Base defaults** (`machines/profiles/base.nix`) - Common settings, most features disabled
+2. **Profile config** (`machines/profiles/pc.nix` or `server.nix`) - Sets 20+ features based on machine class
+3. **Machine overrides** (`machines/{hostname}/default.nix`) - Per-machine customization
+
+This design allows sharing common configs while easily overriding for individual machines.
+
+### Per-Machine Configuration
+
+Each machine config lives in `machines/{hostname}/default.nix`. This is where you customize:
+
+- **User settings**: `username`, `gitUsername`, `gitEmail`
+- **System settings**: `timeZone`, `locale`, `keyboardLayout`
+- **Desktop environment**: `desktopEnvironment` ("hyprland", "kde", or null for headless)
+- **Hardware**: GPU configuration, monitor settings
+- **Features**: Enable/disable Docker, VSCode, Android Studio, Steam, etc.
+- **Secrets**: Reference to `machines/{hostname}/secrets.yaml`
+
+Example structure:
 
 ```nix
 {
-  # User Configuration
-  username = "youruser";          # System username
-  hostname = "yourhostname";      # Machine hostname
-  gitUsername = "Your Name";      # Git commit name
-  gitEmail = "your@email.com";    # Git commit email
+  # Identifiers
+  username = "nullstring1";
+  gitUsername = "Null String";
+  gitEmail = "null@example.com";
 
-  # System Configuration
-  system = "x86_64-linux";        # Architecture
-  timeZone = "Europe/London";     # Timezone
-  locale = "en_GB.UTF-8";         # System locale
-  keyboardLayout = "gb";          # X11 keyboard layout
-  consoleKeyMap = "uk";           # Console keymap
+  # Locale
+  timeZone = "Europe/London";
+  locale = "en_GB.UTF-8";
+  keyboardLayout = "gb";
 
-  # Applications
-  terminal = "ghostty";           # Default terminal
-  browser = pkgs.brave;           # Default browser
+  # Desktop (optional, defaults to "hyprland")
+  desktopEnvironment = "hyprland";
 
-  # NVIDIA Configuration (for laptops with hybrid graphics)
-  useNvidiaPrime = true;          # Enable NVIDIA PRIME
-  intelBusId = "PCI:0:2:0";       # Intel GPU bus ID
-  nvidiaBusId = "PCI:2:0:0";      # NVIDIA GPU bus ID
+  # GPU (optional, for NVIDIA laptops)
+  useNvidiaPrime = true;
+  intelBusId = "PCI:0:2:0";
+  nvidiaBusId = "PCI:2:0:0";
 
-  # Theming
-  stylixImage = wallpapers/screen.jpg;           # Base wallpaper for theming
-  waybarConfig = home/waybar/default.nix;        # Waybar configuration
-  animationSet = home/hyprland/animations-end4.nix;  # Hyprland animations
-
-  # Backup Configuration
-  resticRepository = "sftp:user@host:/backup/path";  # Restic backup target
-
-  # Monitor Configuration
-  extraMonitorSettings = ''
-    monitor = eDP-1, 1920x1080@60,auto,1
-    monitor = HDMI-A-1, 1920x1080@60,1920x0,1
-  '';
-
-  # Printing
-  printEnable = true;             # Enable printing support
-  printDrivers = [ ];             # Additional printer drivers
-
-  # Hardware Additions
-  add_rtl8852cu = false;          # Add RTL8852CU WiFi driver
+  # Optional customizations
+  stylixImage = ./wallpapers/mywall.jpg;
+  resticRepository = "sftp:user@host:/backup";
 }
 ```
 
-### Per-Machine Configurations
+### Supported Machines
 
-The flake supports multiple machine configurations:
+**nslapt** (Laptop)
+- NVIDIA PRIME (Intel iGPU + NVIDIA dGPU)
+- Passwordless sudo
+- Restic backups enabled
+- iOS device support
+- Power-efficient specialisation
 
-- **nslapt**: Laptop configuration with NVIDIA PRIME
-- **nspc**: Desktop configuration
+**nspc** (Desktop)
+- Full NVIDIA GPU support
+- Steam with gamemode
+- High-performance settings
+- Distributed build machine setup
 
-Each has its own hardware configuration file in `modules/system/`.
+**nsminipc** (Headless Server)
+- No desktop environment
+- Minimal services
+- Docker support
+- Tailscale VPN
 
-### Specialisations
+### Desktop Environment Selection
 
-The laptop configuration includes a `power-efficient` specialisation that disables NVIDIA for better battery life:
+NullOS supports both Hyprland (primary) and KDE (secondary). Set in machine config:
 
-Boot into it from GRUB or switch with:
+```nix
+# Hyprland (default)
+desktopEnvironment = "hyprland";
+
+# KDE
+desktopEnvironment = "kde";
+
+# Headless (no DE)
+desktopEnvironment = null;
+```
+
+### Secrets Management
+
+Real secrets (API keys, tokens, backup credentials) use sops-nix with age encryption:
+
+1. Create `machines/{hostname}/secrets.yaml` with encrypted secrets
+2. NixOS decrypts at system activation using age key at `~/.config/sops/age/keys.txt`
+3. Access in configs via `config.sops.secrets.secretname.path`
+
+Example secrets:
+- `githubToken` - For GitHub CLI access
+- `nextdnsServerName`, `nextdnsStamp` - If NextDNS enabled
+- `resticRepository` - Backup target credentials
+
+See `.sops.yaml` for encryption rules matching `machines/.*/secrets.yaml`.
+
+### Build Aliases
+
+Convenient shell aliases (defined in `home/zsh/default.nix`):
+
 ```bash
-sudo nixos-rebuild switch --flake .#nslapt --specialisation power-efficient
+fr   # nh os switch --hostname {hostname}
+     # Fast rebuild current machine
+
+fu   # nh os switch --hostname {hostname} --update
+     # Rebuild with flake input updates
+
+ncg  # Garbage collection + bootloader cleanup + home-manager generations
+```
+
+To use these, enter the dev shell first:
+
+```bash
+nix develop
+fr  # Now you can use the alias
 ```
 
 ---
@@ -378,11 +446,11 @@ sudo nixos-rebuild switch --flake .#nslapt --specialisation power-efficient
 NullOS uses Stylix for automatic theming based on wallpapers.
 
 1. Add your wallpaper to `wallpapers/`
-2. Update `variables.nix`:
+2. Update your machine config (`machines/{hostname}/default.nix`):
 ```nix
-stylixImage = wallpapers/yourwallpaper.jpg;
+stylixImage = ./wallpapers/yourwallpaper.jpg;
 ```
-3. Rebuild: `sudo nixos-rebuild switch --flake .#yourhostname`
+3. Rebuild: `fr` or `sudo nixos-rebuild switch --flake .#yourhostname`
 
 ### Adding Applications
 
@@ -430,14 +498,15 @@ bind = [
 ];
 ```
 
-View current keybinds: Press `SUPER+K` or run `list-keybinds`
+View current keybinds: Press `SUPER+K` or run `keybinds`
 
 #### Animations
 
-Change animation style by updating `variables.nix`:
+Change animation style by updating your machine config:
 
 ```nix
-animationSet = home/hyprland/animations-end4.nix;  # or create your own
+# In machines/{hostname}/default.nix (optional, defaults to animations-end4)
+# animationSet = ./home/hyprland/animations-yourname.nix;
 ```
 
 #### Window Rules
@@ -452,11 +521,12 @@ windowrule = [
 
 #### Monitor Configuration
 
-Monitor config can be handled by nwg-displays launched with the F8 key by default, or can be set declaratively:
+Monitor config can be handled at runtime with `nwg-displays` (F8 key), or declaratively:
 
-Edit `variables.nix`:
+Edit your machine config:
 
 ```nix
+# In machines/{hostname}/default.nix
 extraMonitorSettings = ''
   monitor = DP-1, 2560x1440@144, 0x0, 1
   monitor = HDMI-A-1, 1920x1080@60, 2560x0, 1
@@ -506,9 +576,10 @@ NullOS uses Nixvim as the primary Neovim configuration. Edit `home/nixvim.nix` t
 
 ### Git Configuration
 
-Edit `variables.nix` to set your git identity:
+Set your git identity in your machine config:
 
 ```nix
+# In machines/{hostname}/default.nix
 gitUsername = "Your Name";
 gitEmail = "your@email.com";
 ```
@@ -519,39 +590,47 @@ Additional git config can be added in `home/git.nix`.
 
 ## Managing Secrets
 
-### Per-Machine Files
+### Per-Machine Secrets
 
-For files like `variables.nix` that contain sensitive information but must exist for Nix to see them:
+Real secrets (API keys, backup credentials, etc.) are encrypted using sops-nix with age encryption.
 
-**Option 1: Use `--impure` flag (recommended for simplicity)**
+**Setup (first time):**
+
+1. Generate age keys:
+```bash
+mkdir -p ~/.config/sops/age
+age-keygen -o ~/.config/sops/age/keys.txt
+```
+
+2. Create `machines/{hostname}/secrets.yaml` with your secrets:
+```yaml
+githubToken: your-secret-token
+resticPassword: your-backup-password
+nextdnsServerName: your.server.name
+```
+
+3. Encrypt with sops (automatic via `.sops.yaml` rules):
+```bash
+sops machines/yourhostname/secrets.yaml
+```
+
+4. Reference in your machine config or modules using `config.sops.secrets.secretname.path`
+
+**Secrets are automatically:**
+- Encrypted at rest (age encryption)
+- Stored in git safely
+- Decrypted during system activation
+- Made available to services
+
+### Impure Mode (if needed)
+
+Some configurations may require `--impure` flag during development:
 
 ```bash
-# Add to .gitignore
-echo "variables.nix" >> .gitignore
-echo "face.jpg" >> .gitignore
-
-# Keep example files tracked
-git add variables.nix.example
-
-# Rebuild with --impure flag
 sudo nixos-rebuild switch --flake .#yourhostname --impure
 ```
 
-Create an alias to make it easier:
-```bash
-alias rebuild='sudo nixos-rebuild switch --flake .#yourhostname --impure'
-```
-
-**Option 2: Use agenix for real secrets**
-
-For actual secrets (API keys, passwords), use [agenix](https://github.com/ryantm/agenix):
-
-1. Install agenix and generate keys
-2. Create encrypted secret files
-3. Reference in your configuration
-4. Secrets are decrypted at system activation
-
-See [agenix documentation](https://github.com/ryantm/agenix) for detailed setup.
+However, with the sops-nix secrets system, you typically don't need this flag.
 
 ---
 
@@ -560,16 +639,20 @@ See [agenix documentation](https://github.com/ryantm/agenix) for detailed setup.
 ### Useful Commands
 
 ```bash
-# Rebuild system (flake reload) 
-fr # alias of nh os switch --hostname (hostname)
+# Enter dev shell (provides aliases and build tools)
+nix develop
+direnv allow  # Auto-activate on cd (if using direnv)
 
-# Update flake inputs (flake update)
-fu # alias of nh os switch --hostname (hostname) --update
+# Rebuild system (flake reload) 
+fr # = nh os switch --hostname {hostname}
+
+# Update flake inputs and rebuild
+fu # = nh os switch --hostname {hostname} --update
 
 # Garbage collection
-ncg # alias of nix-collect-garbage --delete-old && sudo nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot
+ncg # = nix-collect-garbage --delete-old && sudo nix-collect-garbage -d && bootloader cleanup
 
-# Check flake
+# Validate flake
 nix flake check
 
 # List generations
@@ -578,7 +661,7 @@ sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 # Rollback to previous generation
 sudo nh os rollback
 
-# Home manager switch (if using standalone)
+# Home manager switch (standalone)
 home-manager switch --flake .
 ```
 
@@ -615,9 +698,10 @@ glxinfo | grep "OpenGL renderer"
 
 ### Backup and Restore
 
-The system includes Restic backup configuration. Configure in `variables.nix`:
+The system includes Restic backup configuration. Configure in your machine config:
 
 ```nix
+# In machines/{hostname}/default.nix
 resticRepository = "sftp:user@host:/backup/path";
 ```
 

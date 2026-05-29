@@ -72,6 +72,7 @@ in
     flavor = "mocha";
     accent = "mauve";
     hyprland.enable = false;
+    hyprlock.enable = false;
     swaync.enable = true;
     wlogout.enable = true;
     starship.enable = true;

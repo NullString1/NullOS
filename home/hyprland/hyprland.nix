@@ -74,15 +74,15 @@ in
           "hyprland.start"
           (lib.generators.mkLuaInline ''
             function()
-              hl.exec_cmd("dbus-update-activation-environment --all --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
-              hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
-              
+              hl.exec_cmd("dbus-update-activation-environment --all --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE")
+              hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE")
+
               hl.exec_cmd("systemctl --user start hyprland-session.target")
 
               hl.exec_cmd("wl-paste --type text --watch cliphist store")
               hl.exec_cmd("wl-paste --type image --watch cliphist store")
 
-              hl.exec_cmd("killall -q waybar; sleep .5 && waybar &")
+              hl.exec_cmd("waybar &")
               hl.exec_cmd("killall -q swaync; sleep .5 && swaync &")
               hl.exec_cmd("pypr &")
               hl.exec_cmd("sleep 1.5 && hyprctl hyprpaper wallpaper 'eDP-1,${vars.stylixImage},cover'")

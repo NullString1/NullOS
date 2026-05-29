@@ -1,5 +1,6 @@
 {
   pkgs,
+  vars,
   ...
 }:
 {
@@ -31,7 +32,7 @@
     };
     enableRedistributableFirmware = true;
     keyboard.qmk.enable = true;
-    bluetooth.enable = true;
-    bluetooth.powerOnBoot = true;
+    bluetooth.enable = vars.enableBluetooth;
+    bluetooth.powerOnBoot = vars.enableBluetooth;
   };
 }

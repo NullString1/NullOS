@@ -44,6 +44,7 @@
           "diffEditor.ignoreTrimWhitespace" = false;
           "workbench.colorTheme" = lib.mkForce "Dark+";
           "notebook.markup.fontSize" = 14;
+          "git.openRepositoryInParentFolders" = "always";
         };
       };
     };

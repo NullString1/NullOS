@@ -25,6 +25,11 @@
     };
     historySubstringSearch.enable = true;
 
+    envExtra = ''
+      export DISABLE_UNTRACKED_FILES_DIRTY="true"
+      export DISABLE_MAGIC_FUNCTIONS="true"
+    '';
+
     history = {
       ignoreDups = true;
       save = 10000;

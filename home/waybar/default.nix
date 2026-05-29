@@ -26,7 +26,24 @@ with lib;
   programs = {
     waybar = {
       enable = true;
-      package = pkgs.waybar;
+      package =
+        (pkgs.waybar.override {
+          cavaSupport = false;
+          runTests = false;
+        }).overrideAttrs
+          (oldAttrs: {
+            version = "git-master";
+            src = pkgs.fetchFromGitHub {
+              owner = "Alexays";
+              repo = "Waybar";
+              # Pulling directly from the cutting-edge development head
+              rev = "master";
+              # Leaving this blank initially forces Nix to complain and output the correct hash
+              hash = "sha256-51R3mIt8cLNvh/X5qe9vOqeJCj0U9KRyemVE5y+OhiU=";
+            };
+            doInstallCheck = false;
+            doCheck = false;
+          });
       settings = [
         {
           layer = "top";
@@ -59,8 +76,8 @@ with lib;
               active = " ";
               urgent = " ";
             };
-            on-scroll-up = "hyprctl dispatch workspace e+1";
-            on-scroll-down = "hyprctl dispatch workspace e-1";
+            on-scroll-up = "hyprctl dispatch 'hl.dsp.focus({ workspace = \"r+1\" })'";
+            on-scroll-down = "hyprctl dispatch 'hl.dsp.focus({ workspace = \"r-1\" })'";
           };
           "clock" = {
             format = " {:%H:%M}";

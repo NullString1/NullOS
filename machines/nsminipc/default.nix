@@ -1,17 +1,23 @@
-{ self, pkgs, ... }:
+{
+  self,
+  pkgs,
+  ...
+}:
 
 {
   profile = "server";
   hostname = "nsminipc";
 
-  desktopEnvironment = "hyprland";
+  desktopEnvironment = null;
 
   stylixImage = self + /wallpapers/screen.jpg;
   waybarConfig = self + /home/waybar/default.nix;
   animationSet = self + /home/hyprland/animations-end4.nix;
 
   requirePasswordForSudo = false;
+  autoUpgrade = false;
   enableAudio = false;
+  enableBluetooth = true;
 
   useNvidia = false;
 
@@ -54,18 +60,53 @@
       Unit = "periodic-reboot.service";
     };
   };
-  systemd.services.nextdnsip = {
-    description = "NextDNS IP Update Service";
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.curl}/bin/curl -s $(cat ${config.sops.secrets.nextdnsIpUpdateUrl.path})";
-    };
-  };
-  systemd.timers.nextdnsip = {
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "*-*-* 00:00:00"; # Run daily at midnight
-      Unit = "nextdnsip.service";
-    };
+  extraNixosConfig = {
+    imports = [
+      (
+        { config, lib, ... }:
+        {
+          services.xserver.enable = false;
+          services.displayManager.enable = lib.mkForce false;
+          boot.plymouth.enable = lib.mkForce false;
+          xdg.portal.enable = lib.mkForce false;
+          environment.pathsToLink = [
+            "/share/applications"
+            "/share/xdg-desktop-portal"
+          ];
+          sops.secrets.nextdnsIpUpdateUrl = { };
+          systemd.services.nextdnsip = {
+            description = "NextDNS IP Update Service";
+            serviceConfig = {
+              Type = "oneshot";
+              ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.curl}/bin/curl -s $(cat ${config.sops.secrets.nextdnsIpUpdateUrl.path})'";
+            };
+          };
+          systemd.timers.nextdnsip = {
+            wantedBy = [ "timers.target" ];
+            timerConfig = {
+              OnCalendar = "*-*-* 00:00:00"; # Run daily at midnight
+              Unit = "nextdnsip.service";
+            };
+          };
+          services.ananicy.settings = {
+            apply_cgroup = false;
+          };
+          services.journald.extraConfig = ''
+            SystemMaxUse=50M
+            MaxRetentionSec=1month
+            CommitIntervalSec=10
+          '';
+          virtualisation.docker.daemon.settings = {
+            "max-concurrent-downloads" = 1;
+            "max-concurrent-uploads" = 1;
+            "log-driver" = "json-file";
+            "log-opts" = {
+              "max-size" = "10m";
+              "max-file" = "3";
+            };
+          };
+        }
+      )
+    ];
   };
 }

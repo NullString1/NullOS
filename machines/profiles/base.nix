@@ -20,9 +20,12 @@
 
   laptopPowerManagement = false;
 
+  autoUpgrade = true;
+
   printEnable = false;
   printDrivers = [ ];
 
+  enableBluetooth = true;
   enableAudio = true;
 
   useNvidia = false;

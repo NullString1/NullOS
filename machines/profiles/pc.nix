@@ -21,6 +21,7 @@
   enableCloudflareWarp = true;
   enableOpenFortiVPN = true;
   enableWayVNC = true;
+  enableNextDNS = true;
 
   enableLibreOffice = false;
   enableFlatpak = true;

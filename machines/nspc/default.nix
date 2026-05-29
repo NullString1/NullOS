@@ -18,7 +18,7 @@
 
   enableAndroid = false;
   enableDBGate = false;
-  enableSteam = false;
+  enableSteam = true;
   enableLutris = false;
   enableBottles = false;
   enableMoonlight = false;

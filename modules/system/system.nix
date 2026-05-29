@@ -66,7 +66,7 @@ in
   system = {
     stateVersion = "25.11";
     autoUpgrade = {
-      enable = true;
+      enable = vars.autoUpgrade;
       flake = "/mdata/NS/NullOS";
       runGarbageCollection = true;
     };

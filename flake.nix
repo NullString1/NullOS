@@ -132,12 +132,12 @@
         })
         (final: prev: {
           ananicy-rules-cachyos = prev.ananicy-rules-cachyos.overrideAttrs (oldAttrs: {
-            version = "1.1.31";
+            version = "1.1.38";
             src = prev.fetchFromGitHub {
               owner = "CachyOS";
               repo = "ananicy-rules";
-              rev = "1.1.31";
-              hash = "sha256-Owa4j+7FrgkvCvTk9q66h0Kk5PO/rL6r7jCsxVgxRlg=";
+              rev = "1.1.38";
+              hash = "sha256-g9Vitk0QHLSVNnOUzblVk8ot6YQ3twbv5nPa4njRZ8c=";
             };
           });
         })
