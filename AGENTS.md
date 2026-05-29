@@ -1,157 +1,88 @@
 # AGENTS.md for NullOS
 
-Declarative NixOS + home-manager configuration with Hyprland support (primary) and KDE (secondary). Multi-machine via flakes.
+Declarative NixOS + home-manager configuration with Hyprland (primary) and KDE (secondary) desktop support, or headless. Multi-machine via flakes.
 
-## Build & Rebuild
+## Quick Reference
 
-NullOS requires `nix develop` first to access build tools. Convenient aliases in `home/zsh/default.nix`:
-
-- `fr` → `nh os switch --hostname ${hostname}` (fast rebuild current machine)
-- `fu` → `nh os switch --hostname ${hostname} --update` (rebuild + update flake inputs)
-- `ncg` → garbage collection + bootloader cleanup + home-manager generations
-
-Standard rebuild:
+**Rebuild** (requires `nix develop` first):
 ```bash
 nix develop
-sudo nixos-rebuild switch --flake .#hostname
+fr   # rebuild current machine (alias for: nh os switch --hostname ${hostname})
+fu   # rebuild + update inputs (alias for: nh os switch --hostname ${hostname} --update)
+ncg  # garbage collection + bootloader cleanup
 ```
 
 **Specialisations** (nslapt only):
-- `power-efficient`: Disables NVIDIA GPU, uses modesetting + Intel PSR/FBC for battery life
 ```bash
 sudo nixos-rebuild boot --flake .#nslapt --specialisation power-efficient
-sudo reboot
+sudo reboot  # disables NVIDIA for battery life
 ```
 
-## Architecture
+## Configuration Loading (Critical)
 
-**Configuration Loading Pipeline** (flake.nix lines 58-100):
-1. Load base defaults from `machines/profiles/base.nix` (~70 feature flags, most false)
-2. Merge profile config from `machines/profiles/{base.profile}.nix` (pc or server)
-3. Apply machine overrides from `machines/{hostname}/default.nix`
-4. Result: `vars` object passed to all modules via `specialArgs`
+Three-stage pipeline (flake.nix:58-100):
+1. **Base** (`machines/profiles/base.nix`) - ~70 feature flags, most false
+2. **Profile** (`machines/profiles/{pc,server}.nix`) - Feature sets based on machine class
+3. **Machine** (`machines/{hostname}/default.nix`) - Per-machine overrides
 
-**Machines:**
-- `nslapt`: Laptop, profile=pc, NVIDIA Prime (Intel iGPU + NVIDIA dGPU), passwordless sudo
-- `nspc`: Desktop, profile=pc, full NVIDIA (open driver), Steam enabled
-- `nsminipc`: Headless server, profile=server, `desktopEnvironment = null`, minimal services
+Result: `vars` object available to all modules via `specialArgs`. Machines define configs inline OR nested in `.vars` object (flake auto-detects and merges).
 
-**Profiles** (`machines/profiles/`):
-- `base.nix`: Common defaults (keyboard, locale, git, browser, all feature flags disabled)
-- `pc.nix`: Enable 20+ features (Docker, VSCode, Android, Wine, Tailscale, Flatpak, etc.)
-- `server.nix`: Minimal (Docker, Git, Direnv, Tailscale only)
+**Key quirk**: Non-reserved attributes in machine config become `extraNixosConfig`, allowing arbitrary NixOS config in machine file (e.g., `boot.devSize`, `services.periodic-reboot` in nsminipc).
 
-**Module Structure:**
-- `modules/system/` → NixOS core (boot, hardware, network, nvidia, audio, security, printing, system)
-- `modules/software/` → Packages, programs, SDDM display manager, conditional features
-- `modules/services/` → Systemd services (ollama, backup, minecraft, nextdns, vpn, etc.)
-- `home/` → Home-manager config (97 files); DE-agnostic + DE-specific branches
+## Machines
 
-**Flake Outputs:**
-- `nixosConfigurations.{hostname}` → Full system (hardware + home-manager embedded)
-- `homeConfigurations.username@hostname` → Standalone home-manager (3 instances: nullstring1@nslapt/nspc/nsminipc)
-- `formatter.x86_64-linux` → nixfmt
+- **nslapt** (pc) - NVIDIA Prime (Intel iGPU + dGPU), passwordless sudo, Restic, iOS support (usbmuxd)
+- **nspc** (pc) - Full NVIDIA (open driver), Steam enabled
+- **nsminipc** (server) - Headless (`desktopEnvironment = null`), minimal services
 
-## Key Design Quirks
+## Architecture Notes
 
-**Machine Config Polymorphism**: Machine configs in `machines/{hostname}/default.nix` can define variables inline (legacy style) OR nested in `.vars` object (modern style). Flake auto-detects and merges both. Any attribute not matching reserved keywords or known defaults becomes `extraNixosConfig`, allowing machine configs to define arbitrary NixOS settings.
+**Desktop polymorphism**: `vars.desktopEnvironment` selects "hyprland", "kde", or null. Single config tree supports all; home-manager conditionally imports DE modules.
 
-**Type Inference Example** (nsminipc):
-```nix
-desktopEnvironment = null;  # Vars attribute (disables SDDM, X server, desktop modules)
-boot.devSize = "8G";        # Auto-inferred as NixOS config (not vars)
-services.periodic-reboot = {...};  # Auto-inferred as NixOS config
-```
+**Hyprland Lua config**: Uses `configType = "lua"`; monitor setup dynamically loaded via `require("monitors")` from `vars.extraMonitorSettings`.
 
-**Hyprland Config is Lua-Based**: Modern config uses `configType = "lua"` with Nix generating Lua. Monitor setup dynamically loaded via `require("monitors")` from `vars.extraMonitorSettings`.
+**Secrets with sops-nix**: `machines/{hostname}/secrets.yaml` encrypted with age key at `~/.config/sops/age/keys.txt`. Expected: `githubToken`, plus conditionals (`nextdnsServerName`, `nextdnsStamp`, `nextdnsIpUpdateUrl` if NextDNS enabled; `resticRepository` if Restic enabled).
 
-**Desktop Environment Polymorphism**: Single config tree supports Hyprland (primary) and KDE via `vars.desktopEnvironment` ("hyprland", "kde", or null). Home-manager conditionally imports DE-specific modules.
+**Distributed builds**: nspc configured as SSH build machine (speedFactor 2x) for all hosts. Requires pre-configured SSH keys.
 
-**Catppuccin Theme Selective Enable**: Theme config has `enable = false` for hyprland/hyprlock (custom theme?) but true for swaync/wlogout/starship. Non-standard pattern; suggests incomplete migration or intentional override.
+**Architecture-specific caching**: nslapt has `gccarch-tigerlake` (Intel 11th gen); nspc has `gccarch-x86-64-v3`. Enables targeted binary cache.
 
-**Distributed Builds**: nspc statically configured as build machine for all hosts via SSH (speedFactor 2x). Requires pre-configured SSH keys.
+**Catppuccin theme quirk**: Theme `enable = false` for hyprland/hyprlock but true for swaync/wlogout/starship. Suggests custom theme or incomplete migration.
 
-**Architecture-Specific Caching**: nslapt includes gccarch-tigerlake system feature (Intel 11th gen); nspc uses gccarch-x86-64-v3. Enables targeted binary caching.
+## Important File Locations
 
-**NextDNS Under Refactor** (staged changes): Old approach uses direct `lib.readFile` from sops secrets; new uses sops template generation + dnscrypt-proxy. Existing NextDNS setups will break on rebuild with staged changes.
+| File | Purpose |
+|------|---------|
+| `flake.nix` | Machine definitions, profile loading, overlays |
+| `machines/{hostname}/default.nix` | Per-machine vars + NixOS overrides |
+| `machines/profiles/base.nix` | Feature flags, system defaults |
+| `modules/system/` | Boot, hardware, network, NVIDIA, audio, security, printing |
+| `modules/software/packages.nix` | System packages, feature gating |
+| `home/default.nix` | Home-manager conditional imports |
+| `home/hyprland/binds.nix` | Hyprland keybindings |
+| `home/zsh/default.nix` | Shell aliases (`fr`, `fu`, `ncg` defined here) |
 
-## Secrets & Per-Machine Overrides
+## Common Edits
 
-Per-machine config lives in `machines/{hostname}/default.nix` (no separate variables.nix). Feature flags and settings can be overridden there.
+- **Feature toggle** (per machine): Edit `machines/{hostname}/default.nix`, add `enableX = true/false`
+- **System package**: Edit `modules/software/packages.nix` (environment.systemPackages)
+- **Home-manager app**: Create `home/myapp.nix`, import in `home/default.nix` (conditionally if feature-gated)
+- **Keybinding**: Edit `home/hyprland/binds.nix`
+- **Theme/wallpaper**: Update `stylixImage` in machine config
+- **Shell aliases**: Edit `home/zsh/default.nix` (shellAliases) or `home/zsh/zshrc-personal.nix`
+- **Monitor config**: Declarative via `extraMonitorSettings` in machine config, or runtime via `nwg-displays` (F8 key)
+- **Service**: Create `modules/services/myservice.nix`, conditionally import in `modules/services/default.nix`
 
-**Real secrets** (API keys, tokens): Use `machines/{hostname}/secrets.yaml` with sops-nix:
-- Encrypted with age key at `~/.config/sops/age/keys.txt`
-- Expected secrets: `githubToken`, and conditional (`nextdnsServerName`, `nextdnsStamp`, `nextdnsIpUpdateUrl` if NextDNS enabled; `resticRepository` if Restic backup enabled)
-- Rules in `.sops.yaml` match `machines/.*/secrets.yaml`
-
-**.envrc Git Filter** (if variables.nix existed): `.envrc` has git config to mask `variables.nix` from diffs. Currently unused but framework in place.
-
-## Important Files
-
-- `flake.nix` → Defines machines, profiles, overlays, loadMachineConfig logic
-- `machines/{hostname}/default.nix` → Per-machine vars + NixOS config overrides
-- `machines/profiles/base.nix` → Default feature flags and system defaults
-- `modules/system/` → Hardware, boot, network, NVIDIA, audio, security, printing, system.nix
-- `modules/software/packages.nix` → Base system packages; feature gating via `enable*` vars
-- `modules/software/sddm.nix` → Display manager (conditional on desktopEnvironment != null)
-- `modules/services/services.nix` → Always-on systemd services
-- `home/default.nix` → Home-manager module imports (conditional on vars.desktopEnvironment)
-- `home/hyprland/` → Hyprland config (Lua-based, binds.nix, animations, pyprland scratchpads, windowrules.nix)
-- `home/waybar/default.nix` → Status bar layout and modules
-- `home/zsh/` → Shell config, aliases, Powerlevel10k prompt
-- `home/nixvim.nix` → Neovim config (Nixvim, if enableNVIM=true)
-
-## Common Tasks
-
-**Enable/disable feature for machine**: Edit `machines/{hostname}/default.nix`, add `enableX = true/false`
-
-**Add system package**: Edit `modules/software/packages.nix` (environment.systemPackages)
-
-**Add home-manager module**: Create `home/myapp.nix`, import in `home/default.nix` (conditionally if feature-gated)
-
-**Change wallpaper/theme**: Update `stylixImage` in machine config, rebuild
-
-**Add Hyprland keybinding**: Edit `home/hyprland/binds.nix`
-
-**Customize shell**: Edit `home/zsh/default.nix` (shellAliases) or `home/zsh/zshrc-personal.nix` (custom functions)
-
-**Monitor config**: Runtime via `nwg-displays` (F8 key), or declarative via `extraMonitorSettings` in machine config
-
-**Add service**: Create `modules/services/myservice.nix`, conditionally import in `modules/services/default.nix`
-
-## Entering Dev Shell
+## Debugging Commands
 
 ```bash
-nix develop
-# or with direnv (auto):
-direnv allow
-```
-
-Provides nixfmt (formatter) and build tools.
-
-## Testing & Debugging
-
-Check flake syntax:
-```bash
-nix flake check
-```
-
-Dry-run (shows what would rebuild):
-```bash
-sudo nixos-rebuild build --flake .#hostname
-```
-
-Evaluate home-manager output:
-```bash
-nix eval .#homeConfigurations.username@hostname
-```
-
-View current generation:
-```bash
+nix flake check                                              # Validate flake syntax
+sudo nixos-rebuild build --flake .#hostname                 # Dry-run (no reboot)
+nix eval .#homeConfigurations.username@hostname             # Inspect home-manager output
 sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
+sudo nh os rollback                                          # Rollback to previous generation
 ```
 
-Rollback to previous generation:
-```bash
-sudo nh os rollback
-```
+## Known Issues
+
+**NextDNS refactoring** (staged changes): Old approach uses direct `lib.readFile` from sops secrets; new uses sops template generation + dnscrypt-proxy. Existing NextDNS setups will break on rebuild with staged changes.
