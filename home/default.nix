@@ -69,6 +69,7 @@ in
   # Catppuccin Mocha configuration
   catppuccin = {
     enable = true;
+    autoEnable = true;
     flavor = "mocha";
     accent = "mauve";
     hyprland.enable = false;

@@ -15,10 +15,7 @@
     fstrim.enable = true;
     gvfs.enable = true;
     openssh.enable = true;
-    blueman = {
-      enable = true;
-      withApplet = false;
-    };
+    blueman.enable = true;
     tumbler.enable = true;
     gnome.gnome-keyring.enable = true;
     resolved.enable = true;

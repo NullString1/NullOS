@@ -39,7 +39,7 @@ in
 
     [scratchpads.term]
     animation = "fromTop"
-    command = "ghostty"
+    command = "ghostty +new-window"
     class = "com.mitchellh.ghostty"
     size = "80% 80%"
     max_size = "1920px 100%"

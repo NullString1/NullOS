@@ -36,13 +36,12 @@ with lib;
             src = pkgs.fetchFromGitHub {
               owner = "Alexays";
               repo = "Waybar";
-              # Pulling directly from the cutting-edge development head
               rev = "master";
-              # Leaving this blank initially forces Nix to complain and output the correct hash
-              hash = "sha256-51R3mIt8cLNvh/X5qe9vOqeJCj0U9KRyemVE5y+OhiU=";
+              hash = "sha256-bFbNSboU5ZElzVdeKQ9AnAj4lG4aTouAFYdTpSZUulQ=";
             };
             doInstallCheck = false;
             doCheck = false;
+            buildInputs = oldAttrs.buildInputs ++ [ pkgs.modemmanager ];
           });
       settings = [
         {

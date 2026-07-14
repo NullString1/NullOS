@@ -1,6 +1,12 @@
-{ pkgs, vars, lib, ... }:
 {
-  environment.systemPackages = lib.optionals vars.enableDBGate [ pkgs.dbgate ]
+  pkgs,
+  vars,
+  lib,
+  ...
+}:
+{
+  environment.systemPackages =
+    lib.optionals vars.enableDBGate [ pkgs.dbgate ]
     ++ lib.optionals vars.enableDevMisc [
       pkgs.p7zip
       pkgs.binwalk

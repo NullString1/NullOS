@@ -113,7 +113,6 @@
           {
             stable = stable;
             fusion360 = fusion360.packages.${final.stdenv.hostPlatform.system}.default;
-            sunshine = stable.sunshine;
           }
         )
         (final: prev: {

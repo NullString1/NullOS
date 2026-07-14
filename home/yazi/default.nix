@@ -9,7 +9,6 @@ in
     enable = true;
     enableZshIntegration = true;
     enableBashIntegration = true;
-    enableFishIntegration = true;
     shellWrapperName = "yy";
     settings = settings;
     keymap = keymap;

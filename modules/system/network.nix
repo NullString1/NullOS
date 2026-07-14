@@ -8,14 +8,15 @@
 {
   networking = {
     hostName = "${vars.hostname}";
-    networkmanager.enable = true;
+    networkmanager = {
+      enable = true;
+      wifi.backend = "iwd";
+    };
     wireless.dbusControlled = true;
     wireless.userControlled = true;
-    # wireless.extraConfig = ''
-    #   ctrl_interface=DIR=/run/wpa_supplicant GROUP=wheel
-    # '';
-    #wireless.driver = "nl80211,wext -C /run/wpa_supplicant"; # Inject -C to prevent wpa_supplicant from trying to control the interface itself
-    #wireless.interfaces = [ "wlo1" ];
+    wireless.iwd = {
+      enable = true;
+    };
     timeServers = options.networking.timeServers.default ++ [ "pool.ntp.org" ];
     firewall = {
       enable = true;

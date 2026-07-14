@@ -82,7 +82,3 @@ nix eval .#homeConfigurations.username@hostname             # Inspect home-manag
 sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 sudo nh os rollback                                          # Rollback to previous generation
 ```
-
-## Known Issues
-
-**NextDNS refactoring** (staged changes): Old approach uses direct `lib.readFile` from sops secrets; new uses sops template generation + dnscrypt-proxy. Existing NextDNS setups will break on rebuild with staged changes.
