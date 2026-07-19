@@ -63,12 +63,8 @@
   extraNixosConfig = {
     imports = [
       (
-        { config, lib, ... }:
+        { config, ... }:
         {
-          services.xserver.enable = false;
-          services.displayManager.enable = lib.mkForce false;
-          boot.plymouth.enable = lib.mkForce false;
-          xdg.portal.enable = lib.mkForce false;
           environment.pathsToLink = [
             "/share/applications"
             "/share/xdg-desktop-portal"

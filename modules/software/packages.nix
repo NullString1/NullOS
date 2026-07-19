@@ -5,8 +5,8 @@
   ...
 }:
 let
-  isHyprland = vars.desktopEnvironment == "hyprland";
-  isKDE = vars.desktopEnvironment == "kde";
+  inherit (lib) optionals;
+  inherit (vars) isHyprland isKDE;
 in
 {
   # Enable KDE Plasma 6 desktop environment when selected
@@ -18,13 +18,16 @@ in
       enable = vars.enableNVIM;
       defaultEditor = vars.enableNVIM;
     };
+
     dconf.enable = true;
     seahorse.enable = true;
-    hyprland = {
-      enable = isHyprland;
+
+    hyprland = optionals isHyprland {
+      enable = true;
       xwayland.enable = true;
     };
     hyprlock.enable = isHyprland;
+
     fuse.userAllowOther = true;
     gnupg.agent = {
       enable = true;
@@ -35,7 +38,13 @@ in
       enableZshIntegration = true;
       silent = true;
     };
-    gamemode.enable = vars.enableSteam || vars.enableLutris;
+    gamemode.enable =
+      vars.enableGamemode
+      || vars.enableSteam
+      || vars.enableLutris
+      || vars.enableMoonlight
+      || vars.enableBottles
+      || vars.enableMinecraft;
     appimage = {
       enable = true;
       binfmt = true;

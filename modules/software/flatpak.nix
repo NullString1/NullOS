@@ -1,11 +1,10 @@
 { pkgs, vars, ... }:
 let
-  isHyprland = vars.desktopEnvironment == "hyprland";
-  isKDE = vars.desktopEnvironment == "kde";
+  inherit (vars) isHyprland isKDE isHeadless;
 in
 {
   xdg.portal = {
-    enable = true;
+    enable = !isHeadless;
     extraPortals =
       if isHyprland then
         [ pkgs.xdg-desktop-portal-hyprland ]

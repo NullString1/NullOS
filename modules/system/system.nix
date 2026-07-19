@@ -1,6 +1,6 @@
 { vars, lib, ... }:
 let
-  isHyprland = vars.desktopEnvironment == "hyprland";
+  inherit (vars) isHyprland;
   lowPriority = {
     Nice = 19;
     IOSchedulingClass = "idle";

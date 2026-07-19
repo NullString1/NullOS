@@ -47,6 +47,7 @@
   enableGit = false;
   enableWine = false;
 
+  enableGamemode = false;
   enableSteam = false;
   enableLutris = false;
   enableBottles = false;

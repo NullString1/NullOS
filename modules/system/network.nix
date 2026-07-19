@@ -12,10 +12,11 @@
       enable = true;
       wifi.backend = "iwd";
     };
-    wireless.dbusControlled = true;
-    wireless.userControlled = true;
-    wireless.iwd = {
-      enable = true;
+    wireless = {
+      enable = false;
+      iwd.enable = true;
+      dbusControlled = true;
+      userControlled = true;
     };
     timeServers = options.networking.timeServers.default ++ [ "pool.ntp.org" ];
     firewall = {

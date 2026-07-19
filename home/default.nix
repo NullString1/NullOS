@@ -6,8 +6,7 @@
 }:
 let
   inherit (lib) optionals;
-  isHyprland = vars.desktopEnvironment == "hyprland";
-  isKDE = vars.desktopEnvironment == "kde";
+  inherit (vars) isHyprland isKDE;
 in
 {
   home.packages = optionals isHyprland [

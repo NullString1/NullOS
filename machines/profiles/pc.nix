@@ -12,6 +12,7 @@
   enableGit = true;
   enableWine = true;
 
+  enableGamemode = true;
   enableSteam = true;
   enableLutris = true;
   enableBottles = true;
