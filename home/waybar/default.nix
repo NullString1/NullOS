@@ -37,7 +37,7 @@ with lib;
               owner = "Alexays";
               repo = "Waybar";
               rev = "master";
-              hash = "sha256-bFbNSboU5ZElzVdeKQ9AnAj4lG4aTouAFYdTpSZUulQ=";
+              hash = "sha256-su7t3Ub+XH8xxI1WRLzTjVgSd6p9R4dSUGdc9AHYROM=";
             };
             doInstallCheck = false;
             doCheck = false;

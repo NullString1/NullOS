@@ -116,15 +116,6 @@
           }
         )
         (final: prev: {
-          pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-            (python-final: python-prev: {
-              picosvg = python-prev.picosvg.overridePythonAttrs (oldAttrs: {
-                doCheck = false;
-              });
-            })
-          ];
-        })
-        (final: prev: {
           hyprland = inputs.hyprland.packages.${final.stdenv.hostPlatform.system}.hyprland;
           xdg-desktop-portal-hyprland =
             inputs.hyprland.packages.${final.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
@@ -141,9 +132,13 @@
           });
         })
         (final: prev: {
-          openldap = prev.openldap.overrideAttrs (oldAttrs: {
-            doCheck = false;
-          });
+          pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+            (python-final: python-prev: {
+              patool = python-prev.patool.overridePythonAttrs (oldAttrs: {
+                doCheck = false;
+              });
+            })
+          ];
         })
         inputs.dolphin-overlay.overlays.default
       ];

@@ -214,6 +214,16 @@
           tag = "settings";
         }
         {
+          name = "pavucontrol-popup";
+          match = {
+            class = "^(pavucontrol|org.pulseaudio.pavucontrol|com.saivert.pwvucontrol)$";
+          };
+          float = true;
+          size = "70% 70%";
+          center = true;
+          pin = false;
+        }
+        {
           name = "nwg-look-tag";
           match = {
             class = "^(nwg-look|qt5ct|qt6ct|[Yy]ad)$";

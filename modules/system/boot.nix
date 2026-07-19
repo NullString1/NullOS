@@ -21,6 +21,6 @@
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
     loader.timeout = 3;
-    plymouth.enable = true;
+    plymouth.enable = false;
   };
 }

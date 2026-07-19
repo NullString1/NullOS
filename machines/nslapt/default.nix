@@ -26,7 +26,7 @@
   enableNVIM = false;
 
   enableResticBackup = true;
-  enableWinboat = true;
+  enableWinboat = false;
 
   requirePasswordForSudo = false;
 
