@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (lib) optionals;
+  inherit (lib) mkIf;
   inherit (vars) isHyprland isKDE;
 in
 {
@@ -22,7 +22,7 @@ in
     dconf.enable = true;
     seahorse.enable = true;
 
-    hyprland = optionals isHyprland {
+    hyprland = mkIf isHyprland {
       enable = true;
       xwayland.enable = true;
     };
