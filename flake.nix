@@ -87,7 +87,7 @@
           machineVarOverrides = lib.attrsets.recursiveUpdate legacyMachineVarOverrides (
             machineConfig.vars or { }
           );
-          vars = lib.attrsets.recursiveUpdate knownVarDefaults machineVarOverrides ++ {
+          vars = (lib.attrsets.recursiveUpdate knownVarDefaults machineVarOverrides) // {
             isHyprland = vars.desktopEnvironment == "hyprland";
             isKDE = vars.desktopEnvironment == "kde";
             isHeadless = vars.desktopEnvironment == null;
