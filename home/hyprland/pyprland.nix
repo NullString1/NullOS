@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, vars, ... }:
 let
   warp-show = pkgs.writeShellScript "warp-show" ''
     PID=$(pidof -s warp-taskbar)
@@ -39,16 +39,29 @@ in
 
     [scratchpads.term]
     animation = "fromTop"
-    command = "ghostty +new-window"
-    class = "com.mitchellh.ghostty"
+    command = "ghostty --class=scratchpad.ghostty"
+    class = "scratchpad.ghostty"
+    match_by="class"
     size = "80% 80%"
     max_size = "1920px 100%"
+    process_tracking=false
+
+    [scratchpads.gemini]
+    animation = "fromRight"
+    command = "${vars.browser.meta.mainProgram} --profile-directory=Default --app=https://gemini.google.com/app"
+    process_tracking=false
+    initialClass = "brave-gemini.google.com__app-Default"
+    match_by="initialClass"
+    size = "20% 90%"
+    position = "78% 5%"
 
     [scratchpads.vpn]
     animation = "fromTop"
     class = "Cloudflare Zero Trust"
-    match_by="class"
-    process_tracking=false
+    match_by = "class"
+    process_tracking = false
+    close_on_hide = true
+    lazy = true
     command = "${warp-show}"
   '';
 

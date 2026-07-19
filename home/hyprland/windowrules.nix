@@ -257,6 +257,7 @@
             class = "^(Mullvad VPN|Cloudflare Zero Trust)$";
           };
           tag = "vpn";
+          center = true;
         }
         {
           name = "swappy-tag";
@@ -381,7 +382,6 @@
           };
           float = true;
           size = "300 400";
-          move = "75% 5%";
         }
         {
           name = "mullvad-special";
@@ -711,6 +711,21 @@
           no_focus = true;
           fullscreen = false;
           pin = false;
+        }
+        {
+          name = "scratchpad-ghostty";
+          match = {
+            class = "scratchpad.ghostty";
+          };
+          float = true;
+          tag = "terminal";
+        }
+        {
+          name = "scratchpad-gemini";
+          match = {
+            initial_class = "brave-gemini.google.com__app-Default";
+          };
+          float = true;
         }
       ];
     };

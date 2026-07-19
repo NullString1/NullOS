@@ -78,6 +78,12 @@ in
       }
       {
         _args = [
+          "SUPER + G"
+          (lib.generators.mkLuaInline "hl.dsp.exec_cmd(\"pypr toggle gemini\")")
+        ];
+      }
+      {
+        _args = [
           "SUPER + Q"
           (lib.generators.mkLuaInline "hl.dsp.window.close()")
         ];
