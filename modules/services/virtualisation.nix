@@ -5,7 +5,13 @@
 }:
 {
   virtualisation = {
-    docker.enable = vars.enableDocker;
+    docker = {
+      enable = vars.enableDocker;
+      daemon.settings = {
+        fixed-cidr-v6 = "fd00::/80";
+        ipv6 = true;
+      };
+    };
     libvirtd = {
       enable = false;
     };

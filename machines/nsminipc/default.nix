@@ -65,6 +65,42 @@
       (
         { config, ... }:
         {
+          networking.firewall = {
+            allowedTCPPorts = [
+              5540
+              5541
+              8482
+              5353
+            ];
+            allowedUDPPorts = [
+              5540
+              5541
+              8482
+              5353
+            ];
+          };
+          boot.kernel.sysctl = {
+            "net.ipv6.conf.enp1s0.accept_ra" = 2; # For HA matterhub
+            "net.ipv6.conf.wlp2s0.accept_ra" = 2; # For HA matterhub
+            "net.ipv6.conf.enp1s0.accept_ra_rt_info_max_plen" = 64; # For HA matterhub
+            "net.ipv6.conf.wlp2s0.accept_ra_rt_info_max_plen" = 64; # For HA matterhub
+          };
+          services.radvd = {
+            enable = true;
+            config = ''
+              interface enp1s0 {
+                AdvSendAdvert on;
+                MinRtrAdvInterval 3;
+                MaxRtrAdvInterval 10;
+                
+                prefix fd00:dead:beef::/64 {
+                  AdvOnLink on;
+                  AdvAutonomous on;
+                  AdvRouterAddr off;
+                };
+              };
+            '';
+          };
           environment.pathsToLink = [
             "/share/applications"
             "/share/xdg-desktop-portal"
