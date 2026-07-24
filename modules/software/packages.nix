@@ -9,7 +9,6 @@ let
   inherit (vars) isHyprland isKDE;
 in
 {
-  # Enable KDE Plasma 6 desktop environment when selected
   services.desktopManager.plasma6.enable = isKDE;
 
   programs = {
@@ -91,7 +90,6 @@ in
       vars.browser # User Preferred Browser
       eog # For Image Viewing
       rhythmbox # Music Player
-      teams-for-linux # Unofficial Microsoft Teams Client
       wget # Tool For Fetching Files With Links
 
       #
@@ -99,9 +97,9 @@ in
       #
       ffmpeg # Terminal Video / Audio Editing
       mesa-demos # Needed for inxi -G GPU info
-      mpv # Incredible Video Player
+      mpv # Video Player
       playerctl # Allows Changing Media Volume Through Scripts
-      sox # audio support for FFMPEG
+      sox # Audio support for FFMPEG
 
       sops
     ]

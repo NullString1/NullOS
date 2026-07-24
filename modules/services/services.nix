@@ -15,7 +15,7 @@
     fstrim.enable = true;
     gvfs.enable = true;
     openssh.enable = true;
-    blueman.enable = true;
+    blueman.enable = vars.enableBluetooth;
     tumbler.enable = true;
     gnome.gnome-keyring.enable = true;
     resolved.enable = true;

@@ -1,25 +1,5 @@
-{ pkgs, vars, ... }:
-let
-  inherit (vars) isHyprland isKDE isHeadless;
-in
+{ pkgs, ... }:
 {
-  xdg.portal = {
-    enable = !isHeadless;
-    extraPortals =
-      if isHyprland then
-        [ pkgs.xdg-desktop-portal-hyprland ]
-      else if isKDE then
-        [ pkgs.xdg-desktop-portal-kde ]
-      else
-        [ ];
-    configPackages =
-      if isHyprland then
-        [ pkgs.hyprland ]
-      else if isKDE then
-        [ pkgs.kdePackages.plasma-workspace ]
-      else
-        [ ];
-  };
   services = {
     flatpak.enable = true;
   };

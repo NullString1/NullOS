@@ -269,15 +269,9 @@
         {
           name = "hyprpolkit-tag";
           match = {
-            class = "^(hyprpolkitagent)$";
+            title = "Hyprland Polkit Agent";
           };
           tag = "dialog";
-        }
-        {
-          name = "hyprpolkit-pin";
-          match = {
-            class = "^(hyprpolkitagent)$";
-          };
           pin = true;
         }
         {
