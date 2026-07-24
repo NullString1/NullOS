@@ -11,8 +11,8 @@
   animationSet = self + /home/hyprland/animations-end4.nix;
 
   enableResticBackup = false;
-  enableOllama = false;
-  enableExposeOllama = false;
+  enableLlamaCpp = false;
+  enableExposeLlamaCpp = false;
 
   requirePasswordForSudo = false;
 

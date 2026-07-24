@@ -42,8 +42,8 @@
   enableDirenv = false;
   enableDBGate = false;
   enableDevMisc = false;
-  enableOllama = false;
-  enableExposeOllama = false;
+  enableLlamaCpp = false;
+  enableExposeLlamaCpp = false;
   enableGit = false;
   enableWine = false;
 

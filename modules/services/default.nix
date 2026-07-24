@@ -10,7 +10,7 @@ in
     ./xserver.nix
     ./sunshine.nix
   ]
-  ++ optionals vars.enableOllama [ ./ollama.nix ]
+  ++ optionals vars.enableLlamaCpp [ ./llamacpp.nix ]
   ++ optionals vars.enableResticBackup [ ./backup.nix ]
   ++ optionals vars.enableMinecraft [ ./minecraft.nix ]
   ++ optionals vars.enableNextDNS [ ./nextdns.nix ];
