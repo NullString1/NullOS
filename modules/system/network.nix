@@ -10,11 +10,9 @@
     hostName = "${vars.hostname}";
     networkmanager = {
       enable = true;
-      wifi.backend = "iwd";
     };
     wireless = {
-      enable = false;
-      iwd.enable = true;
+      enable = true;
       dbusControlled = true;
       userControlled = true;
     };
