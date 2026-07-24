@@ -1,8 +1,68 @@
 {
+  pkgs,
   vars,
   config,
   ...
 }:
+let
+  mkHomeExcludes = paths: map (path: "/home/${vars.username}/${path}") paths;
+  expand =
+    str:
+    let
+      m = builtins.match "(.*)[{]([^}]+)[}](.*)" str;
+    in
+    if m == null then
+      [ str ]
+    else
+      let
+        prefix = builtins.elemAt m 0;
+        options = builtins.filter builtins.isString (builtins.split "," (builtins.elemAt m 1));
+        suffix = builtins.elemAt m 2;
+      in
+      builtins.concatMap (opt: expand "${prefix}${opt}${suffix}") options;
+  homeExcludes = [
+    ".arduino15"
+    ".bubblewrap"
+    ".minecraft"
+    ".lunarclient"
+    ".bun"
+    ".net"
+    ".javacpp"
+    ".objection"
+    ".gemini"
+    ".winboat"
+    ".nv"
+    ".platformio"
+    ".rustup"
+    ".wine"
+    "nixpkgs"
+    ".cache"
+    ".npm"
+    ".android"
+    ".cargo"
+    ".gradle"
+    ".nix-defexpr"
+    ".ServiceHub"
+    ".skiko"
+    ".stremio-server"
+    ".templateengine"
+    ".var"
+    "Android"
+    ".local"
+    ".BurpSuite"
+    ".bash_history"
+    ".config"
+    ".dotnet"
+    ".ipython"
+    ".java"
+    ".vscode"
+    "winboat"
+    ".autodesk_fusion"
+    "Games"
+    "Downloads/*.iso"
+    "Downloads/.npm"
+  ];
+in
 {
   services.restic.backups.nsdata = {
     paths = [
@@ -21,41 +81,12 @@
     ];
     initialize = true;
     runCheck = true;
-    exclude = [
-      "/home/${vars.username}/.arduino15"
-      "/home/${vars.username}/.platformio"
-      "/home/${vars.username}/.rustup"
-      "/home/${vars.username}/.wine"
-      "/home/${vars.username}/nixpkgs"
-      "/home/${vars.username}/.cache"
-      "/home/${vars.username}/.android"
-      "/home/${vars.username}/.cargo"
-      "/home/${vars.username}/.gradle"
-      "/home/${vars.username}/.nix-defexpr"
-      "/home/${vars.username}/.ServiceHub"
-      "/home/${vars.username}/.skiko"
-      "/home/${vars.username}/.stremio-server"
-      "/home/${vars.username}/.templateengine"
-      "/home/${vars.username}/.var"
-      "/home/${vars.username}/Android"
-      "/home/${vars.username}/.local"
-      "/home/${vars.username}/.BurpSuite"
-      "/home/${vars.username}/.bash_history"
-      "/home/${vars.username}/.config"
-      "/home/${vars.username}/.dotnet"
-      "/home/${vars.username}/.ipython"
-      "/home/${vars.username}/.java"
-      "/home/${vars.username}/.vscode"
-      "/home/${vars.username}/winboat"
-      "/home/${vars.username}/.autodesk_fusion"
-      "/home/${vars.username}/Games"
-      "/home/${vars.username}/Downloads/*.iso"
-      "/home/${vars.username}/Downloads/.npm"
-      "/mdata/**/openwrt/build_dir"
-      "/mdata/**/openwrt/staging_dir"
+    exclude = pkgs.lib.flatten [
+      (mkHomeExcludes homeExcludes)
+      (expand "/mdata/**/openwrt/{build_dir,staging_dir,dl,tmp,feeds}")
       "/mdata/**/target"
-      "**/node_modules"
       "/mdata/**/.direnv"
+      "**/node_modules"
       "**/ipch"
       "**/.venv"
       ".trash/"
