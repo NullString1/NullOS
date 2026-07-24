@@ -286,7 +286,7 @@
 
     in
     {
-      formatter.x86_64-linux = pkgs.nixfmt;
+      formatter.x86_64-linux = pkgs.nixfmt-tree;
 
       homeConfigurations = builtins.listToAttrs (
         map (hostname: {

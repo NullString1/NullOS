@@ -15,7 +15,7 @@
       pkgs.unzip
       pkgs.waypipe # For Running Wayland Apps Over SSH
       pkgs.cachix # Cachix Client
-      pkgs.nixfmt # Nix Formatter
+      pkgs.nixfmt-tree # Nix Formatter
       pkgs.devenv
     ];
 }

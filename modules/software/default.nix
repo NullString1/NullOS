@@ -1,5 +1,10 @@
-{ inputs, vars, lib, ... }:
-let 
+{
+  inputs,
+  vars,
+  lib,
+  ...
+}:
+let
   inherit (lib) optionals;
 in
 {

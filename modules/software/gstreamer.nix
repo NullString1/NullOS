@@ -15,5 +15,5 @@
     pkgs.gnome-network-displays
   ];
 
-  services.gnome.glib-networking.enable = vars.enableGnomeNetworkDisplays;  
+  services.gnome.glib-networking.enable = vars.enableGnomeNetworkDisplays;
 }
