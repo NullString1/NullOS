@@ -1,5 +1,5 @@
 { vars, pkgs, ... }:
-let 
+let
   inherit (vars) enableExposeLlamaCpp;
 in
 {
@@ -23,19 +23,21 @@ in
       gpu-layers = 99;
       no-mmproj = "";
     };
-    package = (pkgs.llama-cpp.override {
-      cudaSupport = true;
-      blasSupport = true;
-      rocmSupport = false;
-      metalSupport = false;
-    }).overrideAttrs (oldAttrs: {
-      cmakeFlags = (oldAttrs.cmakeFlags or []) ++ [
-        "-DGGML_NATIVE=ON"
-      ];
-      preConfigure = ''
-        export NIX_ENFORCE_NO_NATIVE=0
-        ${oldAttrs.preConfigure or ""}
-      '';
-    });
+    package =
+      (pkgs.llama-cpp.override {
+        cudaSupport = true;
+        blasSupport = true;
+        rocmSupport = false;
+        metalSupport = false;
+      }).overrideAttrs
+        (oldAttrs: {
+          cmakeFlags = (oldAttrs.cmakeFlags or [ ]) ++ [
+            "-DGGML_NATIVE=ON"
+          ];
+          preConfigure = ''
+            export NIX_ENFORCE_NO_NATIVE=0
+            ${oldAttrs.preConfigure or ""}
+          '';
+        });
   };
 }
