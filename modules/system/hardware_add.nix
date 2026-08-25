@@ -13,8 +13,8 @@
       disabledDefaultBackends = [ "escl" ];
     };
     graphics = {
-      enable = true;
-      enable32Bit = true;
+      enable = vars.desktopEnvironment != null;
+      enable32Bit = vars.desktopEnvironment != null;
       extraPackages = with pkgs; [
         intel-media-driver
         intel-vaapi-driver

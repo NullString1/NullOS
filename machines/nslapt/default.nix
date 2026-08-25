@@ -54,6 +54,7 @@
               "gccarch-tigerlake"
             ];
           };
+          boot.kernelModules = [ "kvm-intel" ];
           hardware.nvidia.package = lib.mkForce pkgs.linuxPackages_latest.nvidiaPackages.legacy_580;
         }
       )
