@@ -70,6 +70,11 @@ in
       require("workspaces")
     '';
     settings = {
+      gesture = {
+        fingers = 3;
+        direction = "horizontal";
+        action = "workspace";
+      };
       on = {
         _args = [
           "hyprland.start"
@@ -86,7 +91,7 @@ in
               hl.exec_cmd("waybar &")
               hl.exec_cmd("killall -q swaync; sleep .5 && swaync &")
               hl.exec_cmd("capsh --caps=\"\" -- pypr &")
-              hl.exec_cmd("sleep 1.5 && hyprctl hyprpaper wallpaper 'eDP-1,${vars.stylixImage},cover'")
+              hl.exec_cmd("sleep 1.5 && hyprctl hyprpaper wallpaper ',${vars.stylixImage},cover'")
               hl.exec_cmd("sleep 2 && hyprctl setcursor Bibata-Modern-Ice 24")
             end
           '')
@@ -120,7 +125,7 @@ in
         };
         ecosystem = {
           no_donation_nag = true;
-          no_update_news = false;
+          no_update_news = true;
         };
         general = {
           allow_tearing = true;
@@ -152,6 +157,7 @@ in
             natural_scroll = true;
             disable_while_typing = true;
             scroll_factor = 0.8;
+            tap_to_click = true;
           };
         };
         master = {
