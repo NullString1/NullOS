@@ -67,6 +67,7 @@ in
     };
     extraConfig = ''
       require("monitors")
+      require("workspaces")
     '';
     settings = {
       on = {
@@ -84,7 +85,7 @@ in
 
               hl.exec_cmd("waybar &")
               hl.exec_cmd("killall -q swaync; sleep .5 && swaync &")
-              hl.exec_cmd("pypr &")
+              hl.exec_cmd("capsh --caps=\"\" -- pypr &")
               hl.exec_cmd("sleep 1.5 && hyprctl hyprpaper wallpaper 'eDP-1,${vars.stylixImage},cover'")
               hl.exec_cmd("sleep 2 && hyprctl setcursor Bibata-Modern-Ice 24")
             end
