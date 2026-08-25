@@ -40,7 +40,6 @@
   enableAndroid = false;
   enableNVIM = false;
   enableDirenv = false;
-  enableDBGate = false;
   enableDevMisc = false;
   enableLlamaCpp = false;
   enableExposeLlamaCpp = false;
@@ -71,4 +70,6 @@
   enableWinboat = false;
 
   enableResticBackup = false;
+  enableSunshine = false;
+  enableIPForwarding = false;
 }

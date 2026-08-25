@@ -2,12 +2,12 @@
   desktopEnvironment = "hyprland";
 
   enableDocker = true;
+  enableIPForwarding = true;
   enableVSCode = true;
   enableOpencode = true;
   enableAndroid = true;
   enableNVIM = false;
   enableDirenv = true;
-  enableDBGate = true;
   enableDevMisc = true;
   enableGit = true;
   enableWine = true;

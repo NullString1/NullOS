@@ -91,10 +91,11 @@
           topLevelVarOverrides = removeAttrs machineConfig reservedMachineKeys;
           machineVarOverrides = lib.attrsets.recursiveUpdate topLevelVarOverrides (machineConfig.vars or { });
 
-          vars = (lib.attrsets.recursiveUpdate knownVarDefaults machineVarOverrides) // {
-            isHyprland = vars.desktopEnvironment == "hyprland";
-            isKDE = vars.desktopEnvironment == "kde";
-            isHeadless = vars.desktopEnvironment == null;
+          mergedVars = lib.attrsets.recursiveUpdate knownVarDefaults machineVarOverrides;
+          vars = mergedVars // {
+            isHyprland = mergedVars.desktopEnvironment == "hyprland";
+            isKDE = mergedVars.desktopEnvironment == "kde";
+            isHeadless = mergedVars.desktopEnvironment == null;
           };
         in
         {

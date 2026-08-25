@@ -22,8 +22,8 @@
   requirePasswordForSudo = false;
 
   enableAndroid = false;
-  enableDBGate = false;
   enableSteam = true;
+  enableBluetooth = false;
   enableLutris = false;
   enableRare = true;
   enableBottles = false;
