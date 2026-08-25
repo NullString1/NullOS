@@ -107,5 +107,6 @@ in
     ++ lib.optionals (vars.enableMoonlight) [ moonlight-qt ]
     ++ lib.optionals (vars.enableQBittorrent) [ qbittorrent ]
     ++ lib.optionals (vars.enableWinboat) [ winboat ]
-    ++ lib.optionals isHyprland [ wleave ];
+    ++ lib.optionals isHyprland [ wleave ]
+    ++ lib.optionals (vars.enableRare) [ rare ];
 }

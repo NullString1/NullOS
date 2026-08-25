@@ -20,6 +20,7 @@
   enableDBGate = false;
   enableSteam = true;
   enableLutris = false;
+  enableRare = true;
   enableBottles = false;
   enableMoonlight = false;
   enableWine = false;

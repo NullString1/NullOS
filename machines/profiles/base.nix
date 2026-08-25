@@ -53,6 +53,7 @@
   enableBottles = false;
   enableMoonlight = false;
   enableMinecraft = false;
+  enableRare = false;
 
   enableTailscale = false;
   enableMullvadVPN = false;
