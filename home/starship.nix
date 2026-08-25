@@ -16,6 +16,7 @@
       ];
       directory = {
         style = "blue";
+        read_only = " 󰌾";
       };
 
       character = {
@@ -26,12 +27,12 @@
 
       nix_shell = {
         format = "[$symbol]($style) ";
-        symbol = "🐚";
+        symbol = " ";
         style = "";
       };
 
       git_branch = {
-        symbol = " ";
+        symbol = " ";
         style = "blue";
       };
 
@@ -47,6 +48,61 @@
       git_state = {
         format = "([$state( $progress_current/$progress_total)]($style)) ";
         style = "bright-black";
+      };
+
+      buf = {
+        symbol = " ";
+      };
+      c = {
+        symbol = " ";
+      };
+      docker_context = {
+        symbol = " ";
+      };
+      fossil_branch = {
+        symbol = " ";
+      };
+      golang = {
+        symbol = " ";
+      };
+      hg_branch = {
+        symbol = " ";
+      };
+      hostname = {
+        ssh_symbol = " ";
+      };
+      lua = {
+        symbol = " ";
+      };
+      memory_usage = {
+        symbol = "󰍛 ";
+      };
+      meson = {
+        symbol = "󰔷 ";
+      };
+      nim = {
+        symbol = "󰆥 ";
+      };
+      nodejs = {
+        symbol = " ";
+      };
+      ocaml = {
+        symbol = " ";
+      };
+      package = {
+        symbol = "󰏗 ";
+      };
+      python = {
+        symbol = " ";
+      };
+      rust = {
+        symbol = " ";
+      };
+      swift = {
+        symbol = " ";
+      };
+      zig = {
+        symbol = " ";
       };
     };
   };

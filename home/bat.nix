@@ -13,7 +13,7 @@
       style = "full";
       # Bat has other thems as well
       # ansi,Catppuccin,base16,base16-256,GitHub,Nord,etc
-      theme = lib.mkForce "Dracula";
+      theme = "Catppuccin Mocha";
     };
     extraPackages = with pkgs.bat-extras; [
       batman

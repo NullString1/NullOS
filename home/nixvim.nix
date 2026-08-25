@@ -412,7 +412,7 @@
       -- Notify background using Catppuccin palette
       local ok, notify = pcall(require, 'notify')
       if ok then
-        notify.setup({ background_colour = "#${config.catppuccin.colors.base01}" })
+        notify.setup({ background_colour = "#1e1e2e" })
         vim.notify = notify
       end
 

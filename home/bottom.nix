@@ -4,7 +4,7 @@
     enable = true;
     settings = {
       enable_gpu = true;
-      theme = "nord";
+      theme = "catppuccin";
       flags.group_processes = true;
       row = [
         {
