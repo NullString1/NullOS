@@ -24,51 +24,13 @@ in
       enable = true;
       checkReversePath = "loose";
       allowedTCPPorts = [
-        22
-        80
-        443
-        59010
-        59011
-        8080
-        161
-        162
-        9100
-        11470
-        7236
-        7237
-        7238
-        7250
-        25565
-        8123
-      ];
-      allowedTCPPortRanges = [
-        {
-          from = 32768;
-          to = 61000;
-        }
+        22 # ssh
+        11470 # stremio
       ];
       allowedUDPPorts = [
-        59010
-        59011
-        161
-        162
-        9100
-        11470
-        7236
-        7237
-        7238
-        7250
-        25565
-        8123
-        1900
-        5353
+        11470 # stremio
+        5353 # mdns
       ];
-      extraCommands = ''
-        iptables -A INPUT -i p2p-wlo1-+ -j ACCEPT
-      '';
-      extraStopCommands = ''
-        iptables -D INPUT -i p2p-wlo1-+ -j ACCEPT || true
-      '';
       trustedInterfaces = [ "tailscale0" ];
     };
   };

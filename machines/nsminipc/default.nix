@@ -8,38 +8,13 @@
   profile = "server";
   hostname = "nsminipc";
 
-  desktopEnvironment = null;
-
   stylixImage = self + /wallpapers/screen.jpg;
-  waybarConfig = self + /home/waybar/default.nix;
-  animationSet = self + /home/hyprland/animations-end4.nix;
 
   requirePasswordForSudo = false;
   autoUpgrade = false;
   enableAudio = false;
   enableBluetooth = true;
-
-  useNvidia = false;
-
-  enableResticBackup = false;
-  enableMinecraft = false;
-  enableNVIM = false;
-  enableVSCode = false;
-  enableAndroid = false;
-  enableDBGate = false;
-  enableDevMisc = false;
-  enableOpencode = false;
-  enableWine = false;
-  enableSteam = false;
-  enableLutris = false;
-  enableBottles = false;
-  enableMoonlight = false;
-  enableCloudflareWarp = false;
-  enableOpenFortiVPN = false;
-  enableLibreOffice = false;
-  enableFlatpak = false;
-  enableQBittorrent = false;
-  enableGnomeNetworkDisplays = false;
+  enableIPForwarding = true;
 
   extraNixosConfig = {
     imports = [
@@ -48,20 +23,21 @@
         {
           networking.firewall = {
             allowedTCPPorts = [
-              5540
-              5541
-              8482
-              5353
-              67
-              68
+              5540 # for rtsp
+              5541 # for rtsp
+              8482 # for home assistant matterhub
+              67 # for dhcp
+              68 # for dhcp
+              8123 # for home assistant
+              8080 # for evolution_api
             ];
             allowedUDPPorts = [
-              5540
-              5541
-              8482
-              5353
-              67
-              68
+              5540 # for rtsp
+              5541 # for rtsp
+              8482 # for home assistant matterhub
+              67 # for dhcp
+              68 # for dhcp
+              8123 # for home assistant
             ];
           };
           boot = {
@@ -112,7 +88,7 @@
                 description = "NextDNS IP Update Service";
                 serviceConfig = {
                   Type = "oneshot";
-                  ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.curl}/bin/curl -s $(cat ${config.sops.secrets.nextdnsIpUpdateUrl.path})'";
+                  ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.curl}/bin/curl -s \"$(cat ${config.sops.secrets.nextdnsIpUpdateUrl.path})\"'";
                 };
               };
               periodic-reboot = {
