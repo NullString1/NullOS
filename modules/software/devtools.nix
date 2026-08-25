@@ -6,8 +6,7 @@
 }:
 {
   environment.systemPackages =
-    lib.optionals vars.enableDBGate [ pkgs.dbgate ]
-    ++ lib.optionals vars.enableDevMisc [
+    lib.optionals vars.enableDevMisc [
       pkgs.p7zip
       pkgs.binwalk
       pkgs.hexdump
