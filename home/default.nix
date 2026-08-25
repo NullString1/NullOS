@@ -63,7 +63,8 @@ in
   ++ optionals (vars.enableBottles) [ ./bottles.nix ]
   ++ optionals (vars.enableLibreOffice) [ ./libreoffice.nix ]
   ++ optionals (vars.enableOpencode) [ ./opencode.nix ]
-  ++ optionals (vars.enableWayVNC) [ ./wayvnc.nix ];
+  ++ optionals (vars.enableWayVNC) [ ./wayvnc.nix ]
+  ++ optionals (vars.enableKDEConnect) [ ./kdeconnect.nix ];
 
   # Catppuccin Mocha configuration
   catppuccin = {

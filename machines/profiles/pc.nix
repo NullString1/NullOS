@@ -23,6 +23,7 @@
   enableOpenFortiVPN = true;
   enableWayVNC = true;
   enableNextDNS = true;
+  enableKDEConnect = true;
 
   enableLibreOffice = false;
   enableFlatpak = true;

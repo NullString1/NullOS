@@ -39,6 +39,10 @@
       url = "github:MattiDragon/dolphin-overlay/b9dabd238054ff973e45c05a72345c756e0f286e";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    hypr-kdeconnect-fix = {
+      url = "github:nullstring1/hypr-kdeconnect-fix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -281,7 +285,8 @@
             hardware
             machine.extraNixosConfig
           ]
-          ++ extraModules;
+          ++ extraModules
+          ++ lib.optionals vars.enableKDEConnect [ inputs.hypr-kdeconnect-fix.nixosModules.default ];
         };
 
     in

@@ -60,6 +60,7 @@
   enableOpenFortiVPN = false;
   enableWayVNC = false;
   enableNextDNS = false;
+  enableKDEConnect = false;
 
   enableFusion360 = false;
   enableLibreOffice = false;
