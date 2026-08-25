@@ -60,6 +60,12 @@ in
       }
       {
         _args = [
+          "SUPER + V"
+          (lib.generators.mkLuaInline "hl.dsp.exec_cmd(\"cliphist list | rofi -dmenu -l 10 | wl-copy\")")
+        ];
+      }
+      {
+        _args = [
           "SUPER + C"
           (lib.generators.mkLuaInline "hl.dsp.exec_cmd(\"code\")")
         ];

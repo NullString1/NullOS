@@ -83,6 +83,7 @@ in
       home-manager # Home Manager CLI
       libsecret # For Storing Passwords Securely
       pkg-config # Wrapper Script For Allowing Packages To Get Info On Others
+      lazygit # Terminal UI for git
 
       #
       # Desktop Utilities
@@ -100,8 +101,11 @@ in
       mpv # Video Player
       playerctl # Allows Changing Media Volume Through Scripts
       sox # Audio support for FFMPEG
+      yt-dlp # Video downloader
 
       sops
+      wttrbar # Weather widget for waybar
+      gpu-usage-waybar # GPU usage widget for waybar
     ]
     ++ lib.optionals (vars.enableWine) [ wineWow64Packages.wayland ]
     ++ lib.optionals (vars.enableMoonlight) [ moonlight-qt ]

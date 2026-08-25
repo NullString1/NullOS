@@ -43,6 +43,26 @@
           shadow_passes = 2;
         }
       ];
+      clock = [
+        {
+          position = "0, 80";
+          halign = "center";
+          valign = "center";
+          font_size = 48;
+          color = "rgb(CFE6F4)";
+          format = "{:%H:%M}";
+        }
+      ];
+      date = [
+        {
+          position = "0, 30";
+          halign = "center";
+          valign = "center";
+          font_size = 18;
+          color = "rgb(657DC2)";
+          format = "{:%A, %d %B %Y}";
+        }
+      ];
     };
   };
 }
