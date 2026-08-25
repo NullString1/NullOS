@@ -12,7 +12,6 @@ in
   home.packages = optionals isHyprland [
     (import ./scripts/screenshotin.nix { inherit pkgs; })
     (import ./scripts/screenshot-ocr.nix { inherit pkgs; })
-    (import ./scripts/keybinds.nix { inherit pkgs; })
     (import ./scripts/wallsetter.nix { inherit pkgs; })
     pkgs.tesseract
     pkgs.papirus-icon-theme
@@ -37,6 +36,7 @@ in
     ./zoxide.nix
     ./tealdeer.nix
     ./ssh.nix
+    ./fzf.nix
   ]
   # Hyprland-specific modules
   ++ optionals isHyprland [
@@ -74,6 +74,7 @@ in
     accent = "mauve";
     hyprland.enable = false;
     hyprlock.enable = false;
+    waybar.enable = false;
     swaync.enable = true;
     wlogout.enable = true;
     starship.enable = true;

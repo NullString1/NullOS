@@ -58,12 +58,19 @@ with lib;
             "idle_inhibitor"
             "custom/notification"
             "pulseaudio"
+          ]
+          ++ optionals vars.enableBluetooth [ "bluetooth" ]
+          ++ [
             "cpu"
             "memory"
+            "custom/gpu-usage"
             "disk"
             "network"
             "battery"
-            "custom/ppd"
+          ]
+          ++ optionals vars.laptopPowerManagement [ "custom/ppd" ]
+          ++ [
+            "custom/weather"
             "clock"
             "custom/exit"
           ];
@@ -255,165 +262,224 @@ with lib;
             on-click = "";
             tooltip = false;
           };
+          "custom/gpu-usage" = {
+            interval = 5;
+            return-type = "json";
+            format = "{icon} {text}";
+            format-icons = "󰍛";
+            exec = "${pkgs.gpu-usage-waybar}/bin/gpu-usage-waybar";
+            on-click = "${terminal} -e btop";
+          };
+          "custom/weather" = {
+            tooltip = true;
+            format = "{}°";
+            return-type = "json";
+            exec = "${pkgs.wttrbar}/bin/wttrbar --nerd";
+            interval = 3600;
+          };
+          "bluetooth" = {
+            format = "{icon}";
+            format-icons = {
+              on = "󰂯";
+              off = "󰂲";
+              disabled = "󰂲";
+              connected = "󰂱";
+            };
+            format-connected = "{icon}";
+            tooltip-format = "{device_enumerate}";
+            tooltip-enumerate-connected = true;
+            on-click = "blueman-manager";
+          };
         }
       ];
-      style = concatStrings [
-        ''
-          * {
-            font-size: 15px;
-            font-family: JetBrainsMono Nerd Font, Font Awesome, sans-serif;
-            font-weight: 500;
-          }
-          window#waybar {
-            background-color: rgba(26,27,38,0);
-            border-bottom: 1px solid rgba(26,27,38,0);
-            border-radius: 0px;
-            color: #${base0F};
-          }
-          #workspaces {
-            background: linear-gradient(45deg, #${base01}, #${base01});
-            margin: 4px;
-            padding: 0px 1px;
-            border-radius: 15px;
-            border: 0px;
-            font-style: normal;
-            color: #${base00};
-          }
-          #workspaces button {
-            padding: 0px 4px;
-            margin: 4px 3px;
-            border-radius: 12px;
-            border: 0px;
-            color: #${base00};
-            background: linear-gradient(45deg, #${base0D}, #${base0E});
-            opacity: 0.5;
-            transition: all 0.3s ease-in-out;
-          }
-          #workspaces button.active {
-            padding: 0px 4px;
-            margin: 4px 3px;
-            border-radius: 12px;
-            border: 0px;
-            color: #${base00};
-            background: linear-gradient(45deg, #${base0D}, #${base0E});
-            opacity: 1.0;
-            min-width: 30px;
-            transition: all 0.3s ease-in-out;
-          }
-          #workspaces button:hover {
-            border-radius: 12px;
-            color: #${base00};
-            background: linear-gradient(45deg, #${base0D}, #${base0E});
-            opacity: 0.8;
-          }
-          tooltip {
-            background: #${base00};
-            border: 1px solid #${base0E};
-            border-radius: 10px;
-          }
-          tooltip label {
-            color: #${base07};
-          }
-          #window {
-            margin: 5px;
-            padding: 2px 15px;
-            color: #${base05};
-            background: #${base01};
-            border-radius: 15px 15px 15px 15px;
-          }
-          #memory {
-            color: #${base0F};
-            background: #${base01};
-            margin: 5px 2.5px;
-            padding: 2px 15px;
-            border-radius: 15px 15px 15px 15px;
-          }
-          #clock {
-            color: #${base0B};
+      style = concatStrings (
+        [
+          ''
+            * {
+              font-size: 15px;
+              font-family: JetBrainsMono Nerd Font, Font Awesome, sans-serif;
+              font-weight: 500;
+            }
+            window#waybar {
+              background-color: rgba(26,27,38,0);
+              border-bottom: 1px solid rgba(26,27,38,0);
+              border-radius: 0px;
+              color: #${base0F};
+            }
+            #workspaces {
+              background: linear-gradient(45deg, #${base01}, #${base01});
+              margin: 4px;
+              padding: 0px 1px;
+              border-radius: 15px;
+              border: 0px;
+              font-style: normal;
+              color: #${base00};
+            }
+            #workspaces button {
+              padding: 0px 4px;
+              margin: 4px 3px;
+              border-radius: 12px;
+              border: 0px;
+              color: #${base00};
+              background: linear-gradient(45deg, #${base0D}, #${base0E});
+              opacity: 0.5;
+              transition: all 0.3s ease-in-out;
+            }
+            #workspaces button.active {
+              padding: 0px 4px;
+              margin: 4px 3px;
+              border-radius: 12px;
+              border: 0px;
+              color: #${base00};
+              background: linear-gradient(45deg, #${base0D}, #${base0E});
+              opacity: 1.0;
+              min-width: 30px;
+              transition: all 0.3s ease-in-out;
+            }
+            #workspaces button:hover {
+              border-radius: 12px;
+              color: #${base00};
+              background: linear-gradient(45deg, #${base0D}, #${base0E});
+              opacity: 0.8;
+            }
+            tooltip {
+              background: #${base00};
+              border: 1px solid #${base0E};
+              border-radius: 10px;
+            }
+            tooltip label {
+              color: #${base07};
+            }
+            #window {
+              margin: 5px;
+              padding: 2px 15px;
+              color: #${base05};
+              background: #${base01};
+              border-radius: 15px 15px 15px 15px;
+            }
+            #memory {
+              color: #${base0F};
+              background: #${base01};
+              margin: 5px 2.5px;
+              padding: 2px 15px;
+              border-radius: 15px 15px 15px 15px;
+            }
+            #clock {
+              color: #${base0B};
+                background: #${base00};
+                border-radius: 15px 15px 15px 15px;
+                margin: 5px 2.5px;
+                padding: 2px 15px;
+            }
+            #idle_inhibitor {
+              color: #${base0A};
+                background: #${base00};
+                border-radius: 15px 15px 15px 15px;
+                margin: 3px 1.5px;
+                padding: 2px 15px;
+            }
+            #cpu {
+              color: #${base07};
+                background: #${base00};
+                border-radius: 15px 15px 15px 15px;
+                margin: 5px 2.5px;
+                padding: 2px 15px;
+            }
+            #disk {
+              color: #${base0F};
+                background: #${base00};
+                border-radius: 15px 15px 15px 15px;
+                margin: 5px 2.5px;
+                padding: 2px 15px;
+            }
+            #battery {
+              color: #${base08};
               background: #${base00};
               border-radius: 15px 15px 15px 15px;
               margin: 5px 2.5px;
               padding: 2px 15px;
-          }
-          #idle_inhibitor {
-            color: #${base0A};
-              background: #${base00};
-              border-radius: 15px 15px 15px 15px;
-              margin: 3px 1.5px;
-              padding: 2px 15px;
-          }
-          #cpu {
-            color: #${base07};
+            }
+            #network {
+              color: #${base09};
               background: #${base00};
               border-radius: 15px 15px 15px 15px;
               margin: 5px 2.5px;
               padding: 2px 15px;
-          }
-          #disk {
-            color: #${base0F};
+            }
+            #tray {
+              color: #${base05};
+              background: #${base00};
+              border-radius: 15px 15px 15px 15px;
+              margin: 5px;
+              padding: 2px 15px;
+            }
+            #pulseaudio {
+              color: #${base0D};
+              background: #${base01};
+              margin: 4px 2px;
+              padding: 2px 15px;
+              border-radius: 15px 15px 15px 15px;
+            }
+            #custom-notification {
+              color: #${base0C};
               background: #${base00};
               border-radius: 15px 15px 15px 15px;
               margin: 5px 2.5px;
               padding: 2px 15px;
-          }
-          #battery {
-            color: #${base08};
-            background: #${base00};
-            border-radius: 15px 15px 15px 15px;
-            margin: 5px 2.5px;
-            padding: 2px 15px;
-          }
-          #network {
-            color: #${base09};
-            background: #${base00};
-            border-radius: 15px 15px 15px 15px;
-            margin: 5px 2.5px;
-            padding: 2px 15px;
-          }
-          #tray {
-            color: #${base05};
-            background: #${base00};
-            border-radius: 15px 15px 15px 15px;
-            margin: 5px;
-            padding: 2px 15px;
-          }
-          #pulseaudio {
-            color: #${base0D};
-            background: #${base01};
-            margin: 4px 2px;
-            padding: 2px 15px;
-            border-radius: 15px 15px 15px 15px;
-          }
-          #custom-notification {
-            color: #${base0C};
-            background: #${base00};
-            border-radius: 15px 15px 15px 15px;
-            margin: 5px 2.5px;
-            padding: 2px 15px;
-          }
-          #custom-ppd {
-            color: #${base0A};
-            background: #${base00};
-            border-radius: 15px 15px 15px 15px;
-            margin: 5px 2.5px;
-            padding: 2px 10px;
-          }
-          #custom-startmenu {
-            color: #${base0E};
-            background: #${base00};
-            border-radius: 0px 15px 15px 0px;
-            margin: 5px 5px 5px 0px;
-            padding: 2px 15px;
-          }
-          #custom-exit {
-            color: #${base0E};
-            background: #${base00};
-            border-radius: 15px 0px 0px 15px;
-            margin: 5px 0px 5px 2.5px;
-            padding: 2px 15px;
-          }
-        ''
-      ];
+            }
+            #custom-ppd {
+              color: #${base0A};
+              background: #${base00};
+              border-radius: 15px 15px 15px 15px;
+              margin: 5px 2.5px;
+              padding: 2px 10px;
+            }
+            #custom-startmenu {
+              color: #${base0E};
+              background: #${base00};
+              border-radius: 0px 15px 15px 0px;
+              margin: 5px 5px 5px 0px;
+              padding: 2px 15px;
+            }
+            #custom-exit {
+              color: #${base0E};
+              background: #${base00};
+              border-radius: 15px 0px 0px 15px;
+              margin: 5px 0px 5px 2.5px;
+              padding: 2px 15px;
+            }
+          ''
+        ]
+        ++ optionals vars.enableBluetooth [
+          ''
+            #bluetooth {
+              color: #${base0D};
+              background: #${base00};
+              border-radius: 15px 15px 15px 15px;
+              margin: 5px 2.5px;
+              padding: 2px 15px;
+            }
+          ''
+        ]
+        ++ [
+          ''
+            #custom-gpu-usage {
+              color: #${base0E};
+              background: #${base00};
+              border-radius: 15px 15px 15px 15px;
+              margin: 5px 2.5px;
+              padding: 2px 10px;
+            }
+            #custom-weather {
+              color: #${base0C};
+              background: #${base00};
+              border-radius: 15px 15px 15px 15px;
+              margin: 5px 2.5px;
+              padding: 2px 10px;
+            }
+          ''
+        ]
+      );
     };
     jq.enable = true;
   };
