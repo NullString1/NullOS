@@ -37,6 +37,24 @@
     ];
   };
 
+  fileSystems."/run/mount/sda2" = {
+    device = "/dev/disk/by-uuid/A87A252203143D6A";
+    fsType = "ntfs3";
+    options = [
+      "uid=1000"
+      "gid=100"
+    ];
+  };
+
+  fileSystems."/run/mount/sda3" = {
+    device = "/dev/disk/by-uuid/FEFC81F95F036D54";
+    fsType = "ntfs3";
+    options = [
+      "uid=1000"
+      "gid=100"
+    ];
+  };
+
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
