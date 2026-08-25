@@ -37,7 +37,7 @@ with lib;
               owner = "Alexays";
               repo = "Waybar";
               rev = "master";
-              hash = "sha256-su7t3Ub+XH8xxI1WRLzTjVgSd6p9R4dSUGdc9AHYROM=";
+              hash = "sha256-1JFW1v/v539cS0M3KwCf3NAo9ulNawyaOTxDe1naPe4=";
             };
             doInstallCheck = false;
             doCheck = false;
@@ -63,7 +63,7 @@ with lib;
             "disk"
             "network"
             "battery"
-            "custom/tlp"
+            "custom/ppd"
             "clock"
             "custom/exit"
           ];
@@ -80,7 +80,6 @@ with lib;
           };
           "clock" = {
             format = " {:%H:%M}";
-            # ''{: %I:%M %p}'';
             tooltip = true;
             tooltip-format = "<big>{:%A, %d.%B %Y }</big><tt><small>{calendar}</small></tt>";
           };
@@ -162,31 +161,25 @@ with lib;
             };
             tooltip = "true";
           };
-          "custom/tlp" = {
+          "custom/ppd" = {
             tooltip = true;
             tooltip-format = "{}";
             format = "{icon} {text}";
             format-icons = {
-              "Battery (auto)" = "✨";
-              "AC (auto)" = "✨";
-              "AC (manual)" = "🔌";
-              "Battery (manual)" = "🔋";
+              performance = "🚀";
+              balanced = "⚖️";
+              "power-saver" = "🐢";
             };
             return-type = "json";
-            exec = pkgs.writeShellScript "tlp-status" ''
-              power_source=$(${pkgs.tlp}/bin/tlp-stat -s 2>/dev/null | grep 'Power source' | awk '{print $4}')
-              case "$power_source" in
-                "AC" ) mode="AC (auto)" ;;
-                "Battery" ) mode="Battery (auto)" ;;
-                * ) mode="Unknown" ;;
-              esac
+            exec = pkgs.writeShellScript "ppd-status" ''
+              profile=$(${pkgs.power-profiles-daemon}/bin/powerprofilesctl get 2>/dev/null || echo "unknown")
 
               # Get power consumption
               power_now=""
               power_text=""
 
               # Try battery power_now first (for discharging)
-              if [ -f /sys/class/power_supply/BAT*/power_now ]; then
+              if ls /sys/class/power_supply/BAT*/power_now >/dev/null 2>&1; then
                 power_uw=$(cat /sys/class/power_supply/BAT*/power_now 2>/dev/null | head -1)
                 if [ -n "$power_uw" ] && [ "$power_uw" != "0" ]; then
                   power_w=$(echo "scale=1; $power_uw / 1000000" | bc 2>/dev/null || echo "0.0")
@@ -195,9 +188,8 @@ with lib;
                 fi
               fi
 
-              # If no battery power or plugged in, try RAPL MSR reading as fallback
+              # RAPL MSR fallback
               if [ -z "$power_now" ]; then
-                # Try fast RAPL MSR reading for CPU package power
                 if command -v rdmsr >/dev/null 2>&1; then
                   rapl_w=$(sudo bash -c 'start=$(rdmsr -d 0x611); sleep 1; end=$(rdmsr -d 0x611); esu=$((1<<($(rdmsr -d 0x606) >> 8 & 0x1f))); printf "%.2f W\n" $(echo "($end - $start) / $esu" | bc -l)' 2>/dev/null)
                   if [ -n "$rapl_w" ] && [ "$rapl_w" != "0.00" ]; then
@@ -207,16 +199,17 @@ with lib;
                 fi
               fi
 
-              tooltip="$mode$power_now"
-              printf '{"text": "%s", "alt": "%s", "class": "%s", "tooltip": "%s"}\n' "$power_text" "$mode" "$mode" "$tooltip"
+              tooltip="$profile$power_now"
+              printf '{"text": "%s", "alt": "%s", "class": "%s", "tooltip": "%s"}\n' "$power_text" "$profile" "$profile" "$tooltip"
             '';
             interval = 10;
-            on-click = pkgs.writeShellScript "tlp-toggle" ''
-              power_source=$(${pkgs.tlp}/bin/tlp-stat -s 2>/dev/null | grep 'Power source' | awk '{print $4}')
-              case "$power_source" in
-                "AC" ) ${pkgs.tlp}/bin/tlp bat ;;
-                "Battery" ) ${pkgs.tlp}/bin/tlp ac ;;
-                * ) echo "Unknown power source: $power_source"; exit 1 ;;
+            on-click = pkgs.writeShellScript "ppd-cycle" ''
+              profile=$(${pkgs.power-profiles-daemon}/bin/powerprofilesctl get 2>/dev/null)
+              case "$profile" in
+                "power-saver") ${pkgs.power-profiles-daemon}/bin/powerprofilesctl set balanced ;;
+                "balanced")    ${pkgs.power-profiles-daemon}/bin/powerprofilesctl set performance ;;
+                "performance") ${pkgs.power-profiles-daemon}/bin/powerprofilesctl set power-saver ;;
+                *)             ${pkgs.power-profiles-daemon}/bin/powerprofilesctl set balanced ;;
               esac
             '';
           };
@@ -398,7 +391,7 @@ with lib;
             margin: 5px 2.5px;
             padding: 2px 15px;
           }
-          #custom-tlp {
+          #custom-ppd {
             color: #${base0A};
             background: #${base00};
             border-radius: 15px 15px 15px 15px;

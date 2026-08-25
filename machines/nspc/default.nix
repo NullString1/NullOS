@@ -1,4 +1,9 @@
-{ self, lib, ... }:
+{
+  self,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   profile = "pc";
@@ -30,11 +35,34 @@
   enableQBittorrent = false;
   enableGnomeNetworkDisplays = false;
 
-  hardware.nvidia = {
-    open = lib.mkForce true;
-  };
+  extraNixosConfig = {
+    imports = [
+      (
+        { ... }:
+        {
+          nix.settings = {
+            system-features = [ "gccarch-x86-64-v3" ];
+          };
+          hardware.nvidia = {
+            open = lib.mkForce true;
+          };
+          environment.etc."xdg/weston/weston.ini".text = ''
+            [output]
+            name=DP-3
+            mode=preferred
+            position=0,0
 
-  nix.settings = {
-    system-features = [ "gccarch-x86-64-v3" ];
+            [output]
+            name=HDMI-A-1
+            mode=preferred
+            position=1920,0
+          '';
+          environment.systemPackages = [
+            pkgs.mangohud
+            pkgs.legendary-gl
+          ];
+        }
+      )
+    ];
   };
 }

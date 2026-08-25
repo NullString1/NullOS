@@ -37,17 +37,26 @@
     usbmuxd.enable = true;
   };
 
-  nix.settings = {
-    substituters = [
-      "https://logsmart-cache.cachix.org"
-    ];
-    trusted-public-keys = [
-      "logsmart-cache.cachix.org-1:nhxeVYtlgc5IZ+6zALnIT/6PdZQHpjPwV+R0qwjm+BQ="
-    ];
-    system-features = [
-      "gccarch-x86-64-v3"
-      "gccarch-tigerlake"
+  extraNixosConfig = {
+    imports = [
+      (
+        { ... }:
+        {
+          nix.settings = {
+            substituters = [
+              "https://logsmart-cache.cachix.org"
+            ];
+            trusted-public-keys = [
+              "logsmart-cache.cachix.org-1:nhxeVYtlgc5IZ+6zALnIT/6PdZQHpjPwV+R0qwjm+BQ="
+            ];
+            system-features = [
+              "gccarch-x86-64-v3"
+              "gccarch-tigerlake"
+            ];
+          };
+          hardware.nvidia.package = lib.mkForce pkgs.linuxPackages_latest.nvidiaPackages.legacy_580;
+        }
+      )
     ];
   };
-  hardware.nvidia.package = lib.mkForce pkgs.linuxPackages_latest.nvidiaPackages.legacy_580;
 }

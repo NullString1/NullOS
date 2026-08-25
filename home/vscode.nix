@@ -21,7 +21,7 @@ let
     "nix.serverSettings" = {
       "nixd" = {
         "formatting" = {
-          "command" = [ "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" ];
+          "command" = [ "${pkgs.nixfmt}/bin/nixfmt" ];
         };
       };
     };

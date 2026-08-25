@@ -5,9 +5,12 @@
   config,
   ...
 }:
+let
+  inherit (vars) hostname enableWayVNC;
+in
 {
   networking = {
-    hostName = "${vars.hostname}";
+    hostName = "${hostname}";
     networkmanager = {
       enable = true;
     };
@@ -72,7 +75,7 @@
 
   assertions = [
     {
-      assertion = !(vars.enableWayVNC && builtins.elem 5900 config.networking.firewall.allowedTCPPorts);
+      assertion = !(enableWayVNC && builtins.elem 5900 config.networking.firewall.allowedTCPPorts);
       message = "SECURITY RISK: Port 5900 (VNC) is globally exposed! Remove it from allowedTCPPorts.";
     }
   ];

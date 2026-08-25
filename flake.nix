@@ -87,24 +87,19 @@
             "vars"
             "extraNixosConfig"
           ];
-          legacyMachineVarOverrides = builtins.intersectAttrs knownVarDefaults machineConfig;
-          machineVarOverrides = lib.attrsets.recursiveUpdate legacyMachineVarOverrides (
-            machineConfig.vars or { }
-          );
+
+          topLevelVarOverrides = removeAttrs machineConfig reservedMachineKeys;
+          machineVarOverrides = lib.attrsets.recursiveUpdate topLevelVarOverrides (machineConfig.vars or { });
+
           vars = (lib.attrsets.recursiveUpdate knownVarDefaults machineVarOverrides) // {
             isHyprland = vars.desktopEnvironment == "hyprland";
             isKDE = vars.desktopEnvironment == "kde";
             isHeadless = vars.desktopEnvironment == null;
           };
-          inferredExtraNixosConfig = removeAttrs machineConfig (
-            (builtins.attrNames legacyMachineVarOverrides) ++ reservedMachineKeys
-          );
         in
         {
           inherit vars;
-          extraNixosConfig = lib.attrsets.recursiveUpdate inferredExtraNixosConfig (
-            machineConfig.extraNixosConfig or { }
-          );
+          extraNixosConfig = machineConfig.extraNixosConfig or { };
         };
 
       lib = nixpkgs.lib;
@@ -252,7 +247,7 @@
             {
               users.users.${username} = {
                 isNormalUser = true;
-                description = "NullString1";
+                description = "${username}";
                 extraGroups = [
                   "kvm"
                   "libvirtd"
