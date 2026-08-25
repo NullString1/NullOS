@@ -10,7 +10,6 @@ in
 {
   imports = [
     ./packages.nix
-    ./starship.nix
     ./nh.nix
     ./sddm.nix
     ./dolphin.nix
@@ -20,6 +19,5 @@ in
   ]
   ++ optionals (vars.enableAndroid) [ ./android-studio.nix ]
   ++ optionals (vars.enableSteam) [ ./steam.nix ]
-  ++ optionals (vars.enableFlatpak) [ ./flatpak.nix ]
-  ++ optionals (vars.enableDBGate) [ ./dbgate.nix ];
+  ++ optionals (vars.enableFlatpak) [ ./flatpak.nix ];
 }
