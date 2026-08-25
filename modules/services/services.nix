@@ -14,7 +14,13 @@
     libinput.enable = true;
     fstrim.enable = true;
     gvfs.enable = true;
-    openssh.enable = true;
+    openssh = {
+      enable = true;
+      settings = {
+        PermitRootLogin = "no";
+        MaxAuthTries = 3;
+      };
+    };
     blueman.enable = vars.enableBluetooth;
     tumbler.enable = true;
     gnome.gnome-keyring.enable = true;
@@ -29,12 +35,24 @@
     fwupd.enable = true;
 
     ananicy = {
-      enable = true;
+      enable = vars.desktopEnvironment != null;
       package = pkgs.ananicy-cpp;
       rulesProvider = pkgs.ananicy-rules-cachyos;
     };
 
     irqbalance.enable = true;
+    earlyoom = {
+      enable = true;
+      enableNotifications = true;
+    };
+    systembus-notify.enable = true;
+    fail2ban = {
+      enable = true;
+      ignoreIP = [
+        "127.0.0.1/8"
+        "::1"
+      ];
+    };
     avahi = {
       enable = true;
       nssmdns4 = true;
