@@ -721,6 +721,14 @@
           };
           float = true;
         }
+        {
+          name = "plasticity-dialog";
+          match = {
+            class = "^(Plasticity)$";
+            float = true;
+          };
+          center = true;
+        }
       ];
     };
   };
