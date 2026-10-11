@@ -42,7 +42,11 @@
       url = "github:nullstring1/hypr-kdeconnect-fix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    opencode-v2-overlay = {
+      url = "path:/mdata/NS/Projects/opencode2flake";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
+  };
 
   outputs =
     {
@@ -145,6 +149,7 @@
           ];
         })
         inputs.dolphin-overlay.overlays.default
+        inputs.opencode-v2-overlay.overlays.default
         # sops-nix still builds sops-install-secrets with buildGo125Module,
         # which nixpkgs removed (Go 1.25 EOL). Alias it to the current
         # default Go builder until upstream migrates.
@@ -217,6 +222,7 @@
             inherit vars inputs home-manager;
           };
           modules = [
+            inputs.opencode-v2-overlay.nixosModules.default
             inputs.home-manager.nixosModules.home-manager
             inputs.sops-nix.nixosModules.sops
             {

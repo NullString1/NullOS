@@ -833,6 +833,23 @@
         "type": "github"
       }
     },
+    "opencode-v2-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789650792,
+        "narHash": "sha256-tVTNGfcg488N9YTpwQN+6DKtbhbIOg2GsEd75r9EtZ4=",
+        "path": "/mdata/NS/Projects/opencode2flake",
+        "type": "path"
+      },
+      "original": {
+        "path": "/mdata/NS/Projects/opencode2flake",
+        "type": "path"
+      }
+    },
     "pre-commit-hooks": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -868,6 +885,7 @@
         "nixpkgs-stable": "nixpkgs-stable",
         "nixvim": "nixvim",
         "nvf": "nvf",
+        "opencode-v2-overlay": "opencode-v2-overlay",
         "sops-nix": "sops-nix",
         "stylix": "stylix"
       }

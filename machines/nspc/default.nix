@@ -60,6 +60,7 @@
           environment.systemPackages = [
             pkgs.mangohud
             pkgs.legendary-gl
+            pkgs.opencode2
           ];
         }
       )
