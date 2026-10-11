@@ -2,7 +2,7 @@
 {
   programs.rofi = {
     enable = true;
-    extraConfig = {
+    settings = {
       modi = "drun,filebrowser,run";
       show-icons = true;
       icon-theme = "Papirus";
