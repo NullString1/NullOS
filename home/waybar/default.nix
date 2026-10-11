@@ -36,8 +36,10 @@ with lib;
             src = pkgs.fetchFromGitHub {
               owner = "Alexays";
               repo = "Waybar";
-              rev = "master";
-              hash = "sha256-1JFW1v/v539cS0M3KwCf3NAo9ulNawyaOTxDe1naPe4=";
+              # Pinned 2026-09-17 (was floating `master`, which breaks the
+              # build on every upstream commit due to the fixed hash).
+              rev = "1687ec724a89756e79371784a2ba3f9700f8e5c6";
+              hash = "sha256-OJBVQSIpW0Ozb3czGP3+TQyDC5BBqMQtx2asPsspFHo=";
             };
             doInstallCheck = false;
             doCheck = false;
