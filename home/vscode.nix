@@ -28,7 +28,10 @@ let
   };
 in
 {
-  home.packages = with pkgs; [ nixd ];
+  home.packages = with pkgs; [
+    nixd
+    nixfmt
+  ];
 
   nixpkgs.config.allowUnfree = true;
 
@@ -49,7 +52,6 @@ in
           tamasfe.even-better-toml
           github.vscode-github-actions
           ms-vscode.hexeditor
-          ms-toolsai.jupyter
           ms-python.python
           svelte.svelte-vscode
           mechatroner.rainbow-csv
@@ -62,25 +64,41 @@ in
   };
 
   home.activation.mergeVsCodeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    targetDir="$HOME/.config/Code/User"
+    if [ "$(uname)" = "Darwin" ]; then
+      targetDir="$HOME/Library/Application Support/Code/User"
+    else
+      targetDir="$HOME/.config/Code/User"
+    fi
     targetFile="$targetDir/settings.json"
-    mkdir -p "$targetDir"
 
-    # Remove Nix store symlink if present so we can write a physical file
+    $DRY_RUN_CMD mkdir -p "$targetDir"
+
     if [ -L "$targetFile" ]; then
-      rm -f "$targetFile"
+      $DRY_RUN_CMD rm -f "$targetFile"
     fi
 
     defaults=${lib.escapeShellArg (builtins.toJSON defaultSettings)}
 
     if [ -f "$targetFile" ] && [ -s "$targetFile" ]; then
-      # Merge Nix defaults with user settings, giving priority to user settings
-      ${pkgs.jq}/bin/jq -s '.[0] * .[1]' <(echo "$defaults") "$targetFile" > "$targetFile.tmp"
-      mv "$targetFile.tmp" "$targetFile"
+      tmpFile=$(mktemp "$targetDir/settings.XXXXXX.tmp")
+
+      # Merge chain:
+      # 1. Start with Nix defaults (.[0])
+      # 2. Layer User changes on top (.[1])
+      # 3. Force-layer any value from Nix defaults matching "/nix/store" (.[2])
+      if ${pkgs.jq}/bin/jq -s '
+        (.[0] | with_entries(select(.value | tostring | test("^/nix/store")))) as $nixPaths |
+        (.[0] * .[1]) * $nixPaths
+      ' <(echo "$defaults") "$targetFile" > "$tmpFile" 2>/dev/null; then
+        $DRY_RUN_CMD mv "$tmpFile" "$targetFile"
+      else
+        echo "Warning: Could not parse $targetFile as valid JSON. Retaining existing file." >&2
+        rm -f "$tmpFile"
+      fi
     else
       echo "$defaults" | ${pkgs.jq}/bin/jq '.' > "$targetFile"
     fi
 
-    chmod 644 "$targetFile"
+    $DRY_RUN_CMD chmod 644 "$targetFile"
   '';
 }
