@@ -43,6 +43,7 @@
     options = [
       "uid=1000"
       "gid=100"
+      "nofail"
     ];
   };
 
@@ -52,6 +53,7 @@
     options = [
       "uid=1000"
       "gid=100"
+      "nofail"
     ];
   };
 
