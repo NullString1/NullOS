@@ -68,11 +68,10 @@
               '';
             };
             cloudflared.enable = true;
-            journald.extraConfig = ''
-              SystemMaxUse=50M
-              MaxRetentionSec=1month
-              CommitIntervalSec=10
-            '';
+            journald.settings.Journal = {
+              Storage = "volatile";
+              RuntimeMaxUse = "32M";
+            };
             ananicy.settings = {
               apply_cgroup = false;
             };
