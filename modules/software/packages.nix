@@ -76,6 +76,7 @@ in
       socat # Needed For Screenshots
       usbutils # Good Tools For USB Devices
       remmina # VNC and RDP client
+      file # File type detection
 
       #
       # Development
