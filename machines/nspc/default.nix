@@ -28,7 +28,7 @@
   enableRare = true;
   enableBottles = false;
   enableMoonlight = false;
-  enableWine = false;
+  enableWine = true;
   enableCloudflareWarp = false;
   enableOpenFortiVPN = false;
   enableLibreOffice = false;

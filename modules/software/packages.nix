@@ -108,7 +108,6 @@ in
       wttrbar # Weather widget for waybar
       gpu-usage-waybar # GPU usage widget for waybar
     ]
-    ++ lib.optionals (vars.enableWine) [ wineWow64Packages.wayland ]
     ++ lib.optionals (vars.enableMoonlight) [ moonlight-qt ]
     ++ lib.optionals (vars.enableQBittorrent) [ qbittorrent ]
     ++ lib.optionals (vars.enableWinboat) [ winboat ]

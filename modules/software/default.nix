@@ -19,7 +19,8 @@ in
   ]
   ++ optionals (vars.enableAndroid) [ ./android-studio.nix ]
   ++ optionals (vars.enableSteam) [ ./steam.nix ]
-  ++ optionals (vars.enableFlatpak) [ ./flatpak.nix ];
+  ++ optionals (vars.enableFlatpak) [ ./flatpak.nix ]
+  ++ optionals (vars.enableWine) [ ./wine.nix ];
 
   environment.pathsToLink = [
     "/share/applications"
