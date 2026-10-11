@@ -8,18 +8,20 @@
   profile = "server";
   hostname = "nsminipc";
 
+  desktopEnvironment = "cage";
+
   stylixImage = self + /wallpapers/screen.jpg;
 
   requirePasswordForSudo = false;
   autoUpgrade = false;
-  enableAudio = false;
+  enableAudio = true;
   enableBluetooth = true;
   enableIPForwarding = true;
 
   extraNixosConfig = {
     imports = [
       (
-        { config, ... }:
+        { lib, config, ... }:
         {
           networking.firewall = {
             allowedTCPPorts = [
@@ -100,6 +102,19 @@
                   ExecStart = "${pkgs.systemd}/bin/reboot";
                 };
               };
+              restart-waydroid = {
+                description = "Restart Waydroid session";
+                serviceConfig = {
+                  Type = "oneshot";
+                  ExecStart = "/run/current-system/sw/bin/restart-waydroid";
+                  User = "nullstring1";
+                };
+              };
+              docker = {
+                serviceConfig = {
+                  ExecStartPre = "${pkgs.coreutils}/bin/sleep 30"; # Delay docker start to reduce disk I/O contention during boot
+                };
+              };
             };
             timers = {
               nextdnsip = {
@@ -114,6 +129,14 @@
                 timerConfig = {
                   OnCalendar = "Sun *-*-* 00:00:00";
                   Unit = "periodic-reboot.service";
+                };
+              };
+              restart-waydroid = {
+                wantedBy = [ "timers.target" ];
+                timerConfig = {
+                  OnCalendar = "*-*-* 03:00:00"; # Daily at 3am
+                  Persistent = true;
+                  Unit = "restart-waydroid.service";
                 };
               };
             };

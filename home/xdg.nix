@@ -1,6 +1,11 @@
 { pkgs, vars, ... }:
 let
-  inherit (vars) isHyprland isKDE isHeadless;
+  inherit (vars)
+    isHyprland
+    isKDE
+    isCage
+    isHeadless
+    ;
 in
 {
   xdg = {
@@ -16,6 +21,8 @@ in
           ]
         else if isKDE then
           [ pkgs.kdePackages.xdg-desktop-portal-kde ]
+        else if isCage then
+          [ pkgs.xdg-desktop-portal-wlr ]
         else
           [ ];
       configPackages =
@@ -23,6 +30,8 @@ in
           [ pkgs.hyprland ]
         else if isKDE then
           [ pkgs.kdePackages.plasma-workspace ]
+        else if isCage then
+          [ ]
         else
           [ ];
       config = {
@@ -35,6 +44,8 @@ in
               ]
             else if isKDE then
               [ "kde" ]
+            else if isCage then
+              [ "wlr" ]
             else
               [ ];
           "org.freedesktop.impl.portal.FileChooser" = if isHeadless then null else "kde";

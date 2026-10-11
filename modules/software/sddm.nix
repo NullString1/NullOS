@@ -4,9 +4,9 @@
   ...
 }:
 {
-  environment.systemPackages = [ pkgs.sddm-astronaut ];
+  environment.systemPackages = pkgs.lib.mkIf (vars.isHyprland || vars.isKDE) [ pkgs.sddm-astronaut ];
   services.displayManager =
-    if !vars.isHeadless then
+    if vars.isHyprland || vars.isKDE then
       {
         enable = true;
         defaultSession =
@@ -17,7 +17,7 @@
           else
             null;
         sddm = {
-          enable = !vars.isHeadless;
+          enable = true;
           wayland.enable = true;
           theme = "sddm-astronaut-theme";
           package = pkgs.kdePackages.sddm;

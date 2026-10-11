@@ -35,7 +35,7 @@
     fwupd.enable = true;
 
     ananicy = {
-      enable = vars.desktopEnvironment != null;
+      enable = vars.isHyprland || vars.isKDE;
       package = pkgs.ananicy-cpp;
       rulesProvider = pkgs.ananicy-rules-cachyos;
     };

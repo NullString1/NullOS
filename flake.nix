@@ -94,6 +94,7 @@
           vars = mergedVars // {
             isHyprland = mergedVars.desktopEnvironment == "hyprland";
             isKDE = mergedVars.desktopEnvironment == "kde";
+            isCage = mergedVars.desktopEnvironment == "cage";
             isHeadless = mergedVars.desktopEnvironment == null;
           };
         in
