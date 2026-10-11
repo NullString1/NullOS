@@ -50,6 +50,13 @@
               "net.ipv6.conf.wlp2s0.accept_ra_rt_info_max_plen" = 64; # For HA matterhub
             };
           };
+          systemd.user.services."systemd-tmpfiles-clean".serviceConfig.ExecStartPre =
+            "${pkgs.coreutils}/bin/sleep 60";
+
+          services.udev.extraRules = ''
+            # Set BFQ scheduler for spinning mechanical drives (non-rotational = 0)
+            ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"
+          '';
           services = {
             radvd = {
               enable = true;
@@ -119,6 +126,7 @@
               "max-size" = "10m";
               "max-file" = "3";
             };
+            data-root = "/hdd/docker";
           };
         }
       )
