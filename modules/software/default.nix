@@ -20,4 +20,9 @@ in
   ++ optionals (vars.enableAndroid) [ ./android-studio.nix ]
   ++ optionals (vars.enableSteam) [ ./steam.nix ]
   ++ optionals (vars.enableFlatpak) [ ./flatpak.nix ];
+
+  environment.pathsToLink = [
+    "/share/applications"
+    "/share/xdg-desktop-portal"
+  ];
 }

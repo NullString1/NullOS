@@ -76,10 +76,6 @@
               apply_cgroup = false;
             };
           };
-          environment.pathsToLink = [
-            "/share/applications"
-            "/share/xdg-desktop-portal"
-          ];
           sops.secrets.nextdnsIpUpdateUrl = { };
           systemd = {
             services = {
