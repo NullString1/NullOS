@@ -5,16 +5,15 @@
   ...
 }:
 {
-  environment.systemPackages =
-    lib.optionals vars.enableDevMisc [
-      pkgs.p7zip
-      pkgs.binwalk
-      pkgs.hexdump
-      pkgs.unrar
-      pkgs.unzip
-      pkgs.waypipe # For Running Wayland Apps Over SSH
-      pkgs.cachix # Cachix Client
-      pkgs.nixfmt-tree # Nix Formatter
-      pkgs.devenv
-    ];
+  environment.systemPackages = lib.optionals vars.enableDevMisc [
+    pkgs.p7zip
+    pkgs.binwalk
+    pkgs.hexdump
+    pkgs.unrar
+    pkgs.unzip
+    pkgs.waypipe # For Running Wayland Apps Over SSH
+    pkgs.cachix # Cachix Client
+    pkgs.nixfmt-tree # Nix Formatter
+    pkgs.devenv
+  ];
 }
