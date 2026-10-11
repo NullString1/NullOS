@@ -10,7 +10,7 @@ in
 {
   nix = {
     distributedBuilds = true;
-    buildMachines = [
+    buildMachines = lib.mkIf (vars.hostname != "nspc") [
       {
         hostName = "nspc";
         system = "x86_64-linux";
