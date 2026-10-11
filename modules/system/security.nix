@@ -3,6 +3,7 @@
   security = {
     sudo.wheelNeedsPassword = vars.requirePasswordForSudo;
     rtkit.enable = vars.enableAudio;
+    allowUserNamespaces = true;
     polkit = {
       enable = true;
       extraConfig = ''
