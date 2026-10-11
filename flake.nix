@@ -18,7 +18,6 @@
     };
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     catppuccin = {
       url = "github:catppuccin/nix";
@@ -43,7 +42,7 @@
       url = "github:nullstring1/hypr-kdeconnect-fix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-  };
+    };
 
   outputs =
     {
@@ -145,6 +144,13 @@
           ];
         })
         inputs.dolphin-overlay.overlays.default
+        # sops-nix still builds sops-install-secrets with buildGo125Module,
+        # which nixpkgs removed (Go 1.25 EOL). Alias it to the current
+        # default Go builder until upstream migrates.
+        # TODO: drop once sops-nix moves off Go 1.25.
+        (final: prev: {
+          buildGo125Module = prev.buildGoModule;
+        })
       ];
 
       pkgs = import nixpkgs {
