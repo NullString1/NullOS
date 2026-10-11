@@ -61,6 +61,7 @@ in
   ++ optionals (vars.enableLutris) [ ./lutris.nix ]
   ++ optionals (vars.enableDevMisc) [ ./httpie-desktop.nix ]
   ++ optionals (vars.enableBottles) [ ./bottles.nix ]
+  ++ optionals (vars.enableAntigravityCLI) [ ./antigravity.nix ]
   ++ optionals (vars.enableLibreOffice) [ ./libreoffice.nix ]
   ++ optionals (vars.enableOpencode) [ ./opencode.nix ]
   ++ optionals (vars.enableWayVNC) [ ./wayvnc.nix ]

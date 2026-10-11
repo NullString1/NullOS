@@ -36,6 +36,7 @@
 
   enableDocker = false;
   enableVSCode = false;
+  enableAntigravityCLI = false;
   enableOpencode = false;
   enableAndroid = false;
   enableNVIM = false;

@@ -34,6 +34,7 @@
   enableLibreOffice = false;
   enableQBittorrent = false;
   enableGnomeNetworkDisplays = false;
+  enableAntigravityCLI = true;
 
   extraNixosConfig = {
     imports = [
