@@ -4,10 +4,7 @@
     enable = true;
     settings = {
       general = {
-        disable_loading_bar = true;
-        grace = 10;
         hide_cursor = true;
-        no_fade_in = false;
       };
       background = [
         {
@@ -43,24 +40,26 @@
           shadow_passes = 2;
         }
       ];
-      clock = [
+      label = [
         {
+          monitor = "";
+          text = "$TIME";
+          text_align = "center";
+          font_size = 48;
+          color = "rgb(CFE6F4)";
           position = "0, 80";
           halign = "center";
           valign = "center";
-          font_size = 48;
-          color = "rgb(CFE6F4)";
-          format = "{:%H:%M}";
         }
-      ];
-      date = [
         {
+          monitor = "";
+          text = ''cmd[update:60000] date +"%A, %d %B %Y"'';
+          text_align = "center";
+          font_size = 18;
+          color = "rgb(657DC2)";
           position = "0, 30";
           halign = "center";
           valign = "center";
-          font_size = 18;
-          color = "rgb(657DC2)";
-          format = "{:%A, %d %B %Y}";
         }
       ];
     };

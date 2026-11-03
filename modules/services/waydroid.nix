@@ -25,6 +25,67 @@ let
     waydroid status
   '';
 
+  waydroid-voice = pkgs.writeShellScriptBin "waydroid-voice" ''
+    set -euo pipefail
+    export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+
+    # `waydroid shell` (lxc-attach) requires root; nullstring1 has NOPASSWD sudo.
+    # The `--` is required: waydroid's argparse rejects dashed args (e.g. -a/--es) without it.
+    wsh() {
+      sudo -n waydroid shell -- "$@"
+    }
+
+    urlencode() {
+      # minimal encode for adb VIEW URIs: spaces -> %20, strip quotes
+      printf '%s' "$1" | sed -e 's/"/""/g' -e 's/ /%20/g'
+    }
+
+    usage() {
+      echo "usage: waydroid-voice search <query> | stremio-search <query> | key <code> | vol-up | vol-down | mute | play-pause | next | prev | up | down | left | right | center | back | home" >&2
+      exit 1
+    }
+
+    [ $# -ge 1 ] || usage
+    mode="$1"; shift || true
+
+    case "$mode" in
+      search)
+        [ $# -ge 1 ] || usage
+        query="$*"
+        wsh am start -a "android.search.action.GLOBAL_SEARCH" --es query "play $query on stremio"
+        sleep 3
+        wsh input keyevent 23
+        ;;
+      stremio-search)
+        [ $# -ge 1 ] || usage
+        query="$(urlencode "$*")"
+        wsh am start -a android.intent.action.VIEW -d "stremio:///search?query=$query" com.nuvio.tv
+        ;;
+      key)
+        [ $# -eq 1 ] || usage
+        case "$1" in '''|*[!0-9]*) usage ;; esac
+        wsh input keyevent "$1"
+        ;;
+      vol-up) wsh input keyevent 24 ;;
+      vol-down) wsh input keyevent 25 ;;
+      mute) wsh input keyevent 164 ;;
+      play-pause) wsh input keyevent 85 ;;
+      next) wsh input keyevent 87 ;;
+      prev) wsh input keyevent 88 ;;
+      up) wsh input keyevent 19 ;;
+      down) wsh input keyevent 20 ;;
+      left) wsh input keyevent 21 ;;
+      right) wsh input keyevent 22 ;;
+      center) wsh input keyevent 23 ;;
+      back) wsh input keyevent 4 ;;
+      home) wsh input keyevent 3 ;;
+      *)
+        usage
+        ;;
+    esac
+  '';
+
   waydroid-cage-wrapper = pkgs.writeShellScriptBin "waydroid-cage-wrapper" ''
     set -e
     trap 'waydroid session stop' EXIT
@@ -50,7 +111,7 @@ let
     waydroid shell wm density reset 2>/dev/null || true
 
     # Wake up Android and display full UI
-    waydroid shell input keyevent KEYCODE_WAKEUP 2>/dev/null || true
+    sudo -n waydroid shell -- input keyevent KEYCODE_WAKEUP 2>/dev/null || true
     exec waydroid show-full-ui
   '';
 in
@@ -65,6 +126,7 @@ in
     waydroid-atv-init
     waydroid-cage-wrapper
     restart-waydroid
+    waydroid-voice
     wlr-randr
     cage
   ];
@@ -93,7 +155,7 @@ in
       #WLR_DRM_NO_DIRECT_SCANOUT = "1";
       #WLR_DRM_NO_MODIFIERS = "1";
       WLR_NO_HARDWARE_CURSORS = "1";
-      WLR_BACKENDS = "drm,libinput";
+      WLR_BACKENDS = "drm";
       XDG_SESSION_TYPE = "wayland";
       WLR_RENDERER = "gles2";
       WLR_SCENE_DISABLE_DIRECT_SCANOUT = "1";
@@ -119,6 +181,13 @@ in
       };
     };
   };
+
+  # Fire TV remote (0171:0413) reaches Android via evdev passthrough; hide it from
+  # cage's libinput so keys aren't also sent through the Wayland bridge (duplicate inputs),
+  # and strip power-switch tag so systemd-logind does not shut down the host on power press.
+  services.udev.extraRules = ''
+    ACTION=="add|change", SUBSYSTEM=="input", ATTRS{id/vendor}=="0171", ATTRS{id/product}=="0413", ENV{LIBINPUT_IGNORE_DEVICE}="1", TAG-="power-switch"
+  '';
 
   systemd.services.bluez-headless-agent = {
     description = "BlueZ Default Agent and Page Scan Keepalive";

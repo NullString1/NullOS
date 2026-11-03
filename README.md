@@ -411,7 +411,7 @@ Real secrets (API keys, tokens, backup credentials) use sops-nix with age encryp
 
 Example secrets:
 - `githubToken` - For GitHub CLI access
-- `nextdnsServerName`, `nextdnsStamp` - If NextDNS enabled
+- `nextdnsProfileId` - If NextDNS enabled
 - `resticRepository` - Backup target credentials
 
 See `.sops.yaml` for encryption rules matching `machines/.*/secrets.yaml`.
@@ -606,7 +606,7 @@ age-keygen -o ~/.config/sops/age/keys.txt
 ```yaml
 githubToken: your-secret-token
 resticPassword: your-backup-password
-nextdnsServerName: your.server.name
+nextdnsProfileId: your-profile-id
 ```
 
 3. Encrypt with sops (automatic via `.sops.yaml` rules):

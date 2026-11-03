@@ -72,14 +72,34 @@
         source $HOME/.zshrc-personal
       fi
       eval "$(direnv hook zsh)"
+
+      fr() {
+        local target="''${1:-${vars.hostname}}"
+        if [[ "$target" == -* ]] || [ -z "$1" ]; then
+          nh os switch --hostname "${vars.hostname}" "$@"
+        elif [ "$target" = "${vars.hostname}" ]; then
+          nh os switch --hostname "${vars.hostname}" "''${@:2}"
+        else
+          nh os switch --hostname "$target" --target-host "$target" "''${@:2}"
+        fi
+      }
+
+      fu() {
+        local target="''${1:-${vars.hostname}}"
+        if [[ "$target" == -* ]] || [ -z "$1" ]; then
+          nh os switch --hostname "${vars.hostname}" --update "$@"
+        elif [ "$target" = "${vars.hostname}" ]; then
+          nh os switch --hostname "${vars.hostname}" --update "''${@:2}"
+        else
+          nh os switch --hostname "$target" --target-host "$target" --update "''${@:2}"
+        fi
+      }
     '';
 
     shellAliases = {
       sv = "sudo nvim";
       v = "nvim";
       c = "clear";
-      fr = "nh os switch --hostname ${vars.hostname}";
-      fu = "nh os switch --hostname ${vars.hostname} --update";
       zu = "sh <(curl -L https://gitlab.com/Zaney/zaneyos/-/releases/latest/download/install-zaneyos.sh)";
       ncg = "nix-collect-garbage --delete-old && sudo nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
       cat = "bat";

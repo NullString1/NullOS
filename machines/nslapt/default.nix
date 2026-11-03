@@ -6,7 +6,7 @@
 }:
 
 {
-  profile = "pc";
+  profile = "laptop";
   hostname = "nslapt";
 
   useNvidia = true;
@@ -29,8 +29,6 @@
   enableWinboat = false;
 
   requirePasswordForSudo = false;
-
-  laptopPowerManagement = true;
 
   services = {
     asusd.enable = true;

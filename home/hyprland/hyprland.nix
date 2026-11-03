@@ -17,7 +17,7 @@ in
     cliphist
     swappy
     ydotool
-    hyprland-qtutils
+    hyprland-guiutils
     hyprpicker
   ];
   systemd.user.targets.hyprland-session.Unit.Wants = [
@@ -48,6 +48,10 @@ in
     };
   };
   services.hyprpolkitagent.enable = true;
+  systemd.user.services.hyprpolkitagent.Service = {
+    Restart = "on-failure";
+    RestartSec = 1;
+  };
   services.network-manager-applet.enable = true;
   wayland.windowManager.hyprland = {
     enable = true;
@@ -90,7 +94,6 @@ in
 
               hl.exec_cmd("waybar &")
               hl.exec_cmd("killall -q swaync; sleep .5 && swaync &")
-              hl.exec_cmd("capsh --caps=\"\" -- pypr &")
               hl.exec_cmd("sleep 1.5 && hyprctl hyprpaper wallpaper ',${vars.stylixImage},cover'")
               hl.exec_cmd("sleep 2 && hyprctl setcursor Bibata-Modern-Ice 24")
             end
@@ -167,6 +170,7 @@ in
         misc = {
           layers_hog_keyboard_focus = true;
           initial_workspace_tracking = 0;
+          allow_session_lock_restore = true;
           mouse_move_enables_dpms = true;
           key_press_enables_dpms = true;
           disable_hyprland_logo = true;

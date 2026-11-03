@@ -61,6 +61,7 @@
   enableOpenFortiVPN = false;
   enableWayVNC = false;
   enableNextDNS = false;
+  nextdnsOverTLS = "yes";
   enableKDEConnect = false;
 
   enableFusion360 = false;

@@ -399,6 +399,7 @@
           };
           float = true;
           center = true;
+          pin = true;
         }
         {
           name = "games-no-blur";

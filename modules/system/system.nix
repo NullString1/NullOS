@@ -10,15 +10,31 @@ in
 {
   nix = {
     distributedBuilds = true;
-    buildMachines = lib.mkIf (vars.hostname != "nspc") [
-      {
-        hostName = "nspc";
-        system = "x86_64-linux";
-        protocol = "ssh-ng";
-        maxJobs = 1;
-        speedFactor = 2;
-      }
-    ];
+    buildMachines =
+      lib.optionals (vars.hostname != "nspc") [
+        {
+          hostName = "nspc";
+          system = "x86_64-linux";
+          protocol = "ssh-ng";
+          maxJobs = 1;
+          speedFactor = 2;
+        }
+      ]
+      ++ lib.optionals (vars.hostname != "serv2") [
+        {
+          hostName = "serv2";
+          systems = [ "aarch64-linux" ];
+          protocol = "ssh-ng";
+          maxJobs = 2;
+          speedFactor = 1;
+          supportedFeatures = [
+            "benchmark"
+            "big-parallel"
+            "kvm"
+            "nixos-test"
+          ];
+        }
+      ];
     extraOptions = ''
       builders-use-substitutes = true
     '';
@@ -73,4 +89,15 @@ in
   };
   systemd.services.nixos-upgrade.serviceConfig = lowPriority;
   systemd.services.nix-optimise.serviceConfig = lowPriority;
+
+  programs.ssh.knownHosts = {
+    serv2 = {
+      hostNames = [ "serv2" ];
+      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILc4gpyYWSUo9511aTrZSr6gQRFqX8OCj1Tn2YP2oHCj";
+    };
+    nspc = {
+      hostNames = [ "nspc" ];
+      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPtkOcRUkjnvHVonbNZ7tcONoi6iMVGREpj6aHs6PkTE";
+    };
+  };
 }

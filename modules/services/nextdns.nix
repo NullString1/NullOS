@@ -1,41 +1,37 @@
 {
   config,
+  vars,
   ...
 }:
+let
+  deviceName = vars.nextdnsDeviceName or vars.hostname;
+in
 {
-  sops.templates."dnscrypt-proxy.toml" = {
-    content = ''
-      ipv6_servers = true
-      server_names = [ "${config.sops.placeholder.nextdnsServerName}" ]
-      require_dnssec = true
-      bootstrap_resolvers = ['1.1.1.1:53', '1.0.0.1:53']
-      [static]
-        [static."${config.sops.placeholder.nextdnsServerName}"]
-          stamp = '${config.sops.placeholder.nextdnsStamp}'
-    '';
+  sops.templates."nextdns.conf" = {
+    path = "/etc/systemd/resolved.conf.d/nextdns.conf";
     mode = "0444";
+    content = ''
+      [Resolve]
+      DNS=
+      DNS=45.90.28.0#${deviceName}-${config.sops.placeholder.nextdnsProfileId}.dns.nextdns.io 2a07:a8c0::#${deviceName}-${config.sops.placeholder.nextdnsProfileId}.dns.nextdns.io 45.90.30.0#${deviceName}-${config.sops.placeholder.nextdnsProfileId}.dns.nextdns.io 2a07:a8c1::#${deviceName}-${config.sops.placeholder.nextdnsProfileId}.dns.nextdns.io
+      FallbackDNS=
+      FallbackDNS=45.90.28.0#${deviceName}-${config.sops.placeholder.nextdnsProfileId}.dns.nextdns.io 2a07:a8c0::#${deviceName}-${config.sops.placeholder.nextdnsProfileId}.dns.nextdns.io 45.90.30.0#${deviceName}-${config.sops.placeholder.nextdnsProfileId}.dns.nextdns.io 2a07:a8c1::#${deviceName}-${config.sops.placeholder.nextdnsProfileId}.dns.nextdns.io
+      Domains=~.
+      DNSOverTLS=${vars.nextdnsOverTLS}
+      DNSSEC=yes
+    '';
+    restartUnits = [ "systemd-resolved.service" ];
   };
-  services.dnscrypt-proxy = {
-    enable = true;
-    configFile = config.sops.templates."dnscrypt-proxy.toml".path;
-  };
+
   networking = {
     networkmanager.dns = "systemd-resolved";
   };
+
   services.resolved = {
     enable = true;
     settings = {
       Resolve = {
         MulticastDNS = true;
-        DNS = [
-          "127.0.0.1"
-          "::1"
-        ];
-        Domains = "~.";
-        FallbackDns = [
-          "127.0.0.1"
-          "::1"
-        ];
       };
     };
   };

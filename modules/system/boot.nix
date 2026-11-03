@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   vars,
   ...
 }:
@@ -12,6 +13,7 @@
       "fs.suid_dumpable" = 0;
       "fs.protected_fifos" = 2;
       "fs.protected_regular" = 2;
+      "kernel.sysrq" = 1;
       "kernel.kptr_restrict" = 2;
       "kernel.dmesg_restrict" = 1;
       "kernel.perf_event_paranoid" = 3;
@@ -21,8 +23,8 @@
       "net.ipv4.conf.all.accept_redirects" = 0;
       "net.ipv4.conf.default.accept_redirects" = 0;
     };
-    loader.systemd-boot.enable = true;
-    loader.efi.canTouchEfiVariables = true;
+    loader.systemd-boot.enable = lib.mkDefault true;
+    loader.efi.canTouchEfiVariables = lib.mkDefault true;
     loader.timeout = 3;
     plymouth.enable = false;
   };

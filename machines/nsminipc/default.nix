@@ -20,6 +20,7 @@
 
   extraNixosConfig = {
     imports = [
+      ./containers
       (
         { lib, config, ... }:
         {
@@ -42,6 +43,8 @@
               8123 # for home assistant
             ];
           };
+          # Always plugged in; avoid frequency-ramp stutter during Waydroid playback
+          powerManagement.cpuFreqGovernor = lib.mkForce "performance";
           boot = {
             devSize = "32m";
             devShmSize = "256m";

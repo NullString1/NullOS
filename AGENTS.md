@@ -4,12 +4,13 @@ Declarative NixOS + home-manager configuration with Hyprland (primary) and KDE (
 
 ## Quick Reference
 
-**Rebuild** (requires `nix develop` first):
+**Rebuild & Deploy (Smart `nh` Wrappers)**:
 ```bash
-nix develop
-fr   # rebuild current machine (alias for: nh os switch --hostname ${hostname})
-fu   # rebuild + update inputs (alias for: nh os switch --hostname ${hostname} --update)
-ncg  # garbage collection + bootloader cleanup
+fr              # rebuild current machine locally
+fr <hostname>   # deploy to remote machine (e.g., fr nsminipc, fr nslapt)
+fu              # rebuild + update flake inputs locally
+fu <hostname>   # deploy + update flake inputs remotely (e.g., fu nslapt)
+ncg             # garbage collection + bootloader cleanup
 ```
 
 **Specialisations** (nslapt only):
@@ -22,7 +23,7 @@ sudo reboot  # disables NVIDIA for battery life
 
 Three-stage pipeline (flake.nix:58-100):
 1. **Base** (`machines/profiles/base.nix`) - ~70 feature flags, most false
-2. **Profile** (`machines/profiles/{pc,server}.nix`) - Feature sets based on machine class
+2. **Profile** (`machines/profiles/{pc,laptop,server}.nix`) - Feature sets based on machine class
 3. **Machine** (`machines/{hostname}/default.nix`) - Per-machine overrides
 
 Result: `vars` object available to all modules via `specialArgs`. Machines define configs inline OR nested in `.vars` object (flake auto-detects and merges).
@@ -31,9 +32,10 @@ Result: `vars` object available to all modules via `specialArgs`. Machines defin
 
 ## Machines
 
-- **nslapt** (pc) - NVIDIA Prime (Intel iGPU + dGPU), passwordless sudo, Restic, iOS support (usbmuxd)
+- **nslapt** (laptop) - NVIDIA Prime (Intel iGPU + dGPU), passwordless sudo, Restic, iOS support (usbmuxd)
 - **nspc** (pc) - Full NVIDIA (open driver), Steam enabled
 - **nsminipc** (server) - Headless (`desktopEnvironment = null`), minimal services
+- **serv2** (server) - Oracle Cloud Infrastructure ARM64 (`aarch64`), headless, Comtrak S3/backend, Restic backup repository target
 
 ## Architecture Notes
 
@@ -41,7 +43,7 @@ Result: `vars` object available to all modules via `specialArgs`. Machines defin
 
 **Hyprland Lua config**: Uses `configType = "lua"`; monitor setup dynamically loaded via `require("monitors")` from `vars.extraMonitorSettings`.
 
-**Secrets with sops-nix**: `machines/{hostname}/secrets.yaml` encrypted with age key at `~/.config/sops/age/keys.txt`. Expected: `githubToken`, plus conditionals (`nextdnsServerName`, `nextdnsStamp`, `nextdnsIpUpdateUrl` if NextDNS enabled; `resticRepository` if Restic enabled).
+**Secrets with sops-nix**: `machines/{hostname}/secrets.yaml` encrypted with age key at `~/.config/sops/age/keys.txt`. Expected: `githubToken`, plus conditionals (`nextdnsProfileId`, `nextdnsIpUpdateUrl` if NextDNS enabled; `resticRepository` if Restic enabled).
 
 **Distributed builds**: nspc configured as SSH build machine (speedFactor 2x) for all hosts. Requires pre-configured SSH keys.
 

@@ -21,7 +21,7 @@
 
   requirePasswordForSudo = false;
 
-  enableAndroid = false;
+  enableAndroid = true;
   enableSteam = true;
   enableBluetooth = false;
   enableLutris = false;
@@ -61,7 +61,7 @@
           environment.systemPackages = [
             pkgs.mangohud
             pkgs.legendary-gl
-            pkgs.opencode2
+            pkgs.opencode
           ];
         }
       )

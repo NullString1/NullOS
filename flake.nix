@@ -46,6 +46,10 @@
       url = "path:/mdata/NS/Projects/opencode2flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    tscratch = {
+      url = "path:/mdata/NS/Projects/tscratch";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -120,13 +124,13 @@
           in
           {
             stable = stable;
-            fusion360 = fusion360.packages.${final.stdenv.hostPlatform.system}.default;
+            fusion360 = fusion360.packages.${final.stdenv.hostPlatform.system}.default or null;
           }
         )
         (final: prev: {
-          hyprland = inputs.hyprland.packages.${final.stdenv.hostPlatform.system}.hyprland;
+          hyprland = inputs.hyprland.packages.${final.stdenv.hostPlatform.system}.hyprland or null;
           xdg-desktop-portal-hyprland =
-            inputs.hyprland.packages.${final.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+            inputs.hyprland.packages.${final.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland or null;
         })
         (final: prev: {
           ananicy-rules-cachyos = prev.ananicy-rules-cachyos.overrideAttrs (oldAttrs: {
@@ -150,6 +154,7 @@
         })
         inputs.dolphin-overlay.overlays.default
         inputs.opencode-v2-overlay.overlays.default
+        inputs.tscratch.overlays.default
         # sops-nix still builds sops-install-secrets with buildGo125Module,
         # which nixpkgs removed (Go 1.25 EOL). Alias it to the current
         # default Go builder until upstream migrates.
@@ -209,7 +214,15 @@
         {
           hostname,
           hardware,
-          chosenPkgs ? pkgs,
+          system ? "x86_64-linux",
+          chosenPkgs ? (import nixpkgs {
+            localSystem = system;
+            inherit overlays;
+            config = {
+              allowUnfree = true;
+              android_sdk.accept_license = true;
+            };
+          }),
           extraModules ? [ ],
         }:
         let
@@ -247,8 +260,7 @@
                 githubToken = { };
               }
               // lib.optionalAttrs vars.enableNextDNS {
-                nextdnsServerName = { };
-                nextdnsStamp = { };
+                nextdnsProfileId = { };
                 nextdnsIpUpdateUrl = { };
               }
               // lib.optionalAttrs vars.enableResticBackup {
@@ -258,27 +270,30 @@
                 };
               };
             }
-            {
-              users.users.${username} = {
-                isNormalUser = true;
-                description = "${username}";
-                extraGroups = [
-                  "kvm"
-                  "libvirtd"
-                  "lp"
-                  "networkmanager"
-                  "scanner"
-                  "wheel"
-                  "dialout"
-                  "audio"
-                ]
-                ++ (if vars.enableAndroid then [ "adbusers" ] else [ ])
-                ++ (if vars.enableDocker then [ "docker" ] else [ ]);
-                shell = pkgs.zsh;
-                ignoreShellProgramCheck = true;
-              };
-              nix.settings.allowed-users = [ "@wheel" ];
-            }
+            (
+              { pkgs, ... }:
+              {
+                users.users.${username} = {
+                  isNormalUser = true;
+                  description = "${username}";
+                  extraGroups = [
+                    "kvm"
+                    "libvirtd"
+                    "lp"
+                    "networkmanager"
+                    "scanner"
+                    "wheel"
+                    "dialout"
+                    "audio"
+                  ]
+                  ++ (if vars.enableAndroid then [ "adbusers" ] else [ ])
+                  ++ (if vars.enableDocker then [ "docker" ] else [ ]);
+                  shell = pkgs.zsh;
+                  ignoreShellProgramCheck = true;
+                };
+                nix.settings.allowed-users = [ "@wheel" ];
+              }
+            )
             (
               { config, ... }:
               {
@@ -302,6 +317,57 @@
     {
       formatter.x86_64-linux = pkgs.nixfmt-tree;
 
+      devShells.x86_64-linux.default = pkgs.mkShell {
+        name = "nullos-dev";
+        packages = with pkgs; [
+          nh
+          sops
+          age
+          nixfmt-tree
+          deadnix
+          statix
+          nil
+        ];
+        shellHook = ''
+          fr() {
+            local host="$(hostname)"
+            local target="''${1:-$host}"
+            if [[ "$target" == -* ]] || [ -z "$1" ]; then
+              nh os switch --hostname "$host" "$@"
+            elif [ "$target" = "$host" ]; then
+              nh os switch --hostname "$host" "''${@:2}"
+            else
+              nh os switch --hostname "$target" --target-host "$target" "''${@:2}"
+            fi
+          }
+          fu() {
+            local host="$(hostname)"
+            local target="''${1:-$host}"
+            if [[ "$target" == -* ]] || [ -z "$1" ]; then
+              nh os switch --hostname "$host" --update "$@"
+            elif [ "$target" = "$host" ]; then
+              nh os switch --hostname "$host" --update "''${@:2}"
+            else
+              nh os switch --hostname "$target" --target-host "$target" --update "''${@:2}"
+            fi
+          }
+          export -f fr fu
+          echo "🚀 Welcome to NullOS Development Shell"
+          echo "Usage: fr [hostname] [args]  (e.g., fr, fr nsminipc, fr --dry)"
+          echo "       fu [hostname] [args]  (e.g., fu, fu nslapt, fu --dry)"
+        '';
+      };
+
+      packages.x86_64-linux = {
+        nspc = self.nixosConfigurations.nspc.config.system.build.toplevel;
+        nslapt = self.nixosConfigurations.nslapt.config.system.build.toplevel;
+        nsminipc = self.nixosConfigurations.nsminipc.config.system.build.toplevel;
+      };
+
+      packages.aarch64-linux = {
+        serv2 = self.nixosConfigurations.serv2.config.system.build.toplevel;
+      };
+
       homeConfigurations = builtins.listToAttrs (
         map (hostname: {
           name = "${username}@${hostname}";
@@ -313,6 +379,12 @@
       );
 
       nixosConfigurations = {
+        serv2 = mkSystem {
+          hostname = "serv2";
+          system = "aarch64-linux";
+          hardware = ./modules/system/hardware_serv2.nix;
+        };
+
         nslapt = mkSystem {
           hostname = "nslapt";
           hardware = ./modules/system/hardware_nslapt.nix;

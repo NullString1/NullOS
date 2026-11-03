@@ -49,13 +49,13 @@ in
       {
         _args = [
           "SUPER + S"
-          (lib.generators.mkLuaInline "hl.dsp.exec_cmd(\"screenshotin\")")
+          (lib.generators.mkLuaInline "hl.dsp.exec_cmd(\"screenshot-ocr\")")
         ];
       }
       {
         _args = [
           "SUPER + SHIFT + S"
-          (lib.generators.mkLuaInline "hl.dsp.exec_cmd(\"screenshot-ocr\")")
+          (lib.generators.mkLuaInline "hl.dsp.exec_cmd(\"screenshotin\")")
         ];
       }
       {
@@ -73,7 +73,7 @@ in
       {
         _args = [
           "SUPER + T"
-          (lib.generators.mkLuaInline "hl.dsp.exec_cmd(\"pypr toggle term\")")
+          (lib.generators.mkLuaInline "hl.dsp.exec_cmd(\"pypr tscratch toggle term\")")
         ];
       }
       {
@@ -85,7 +85,13 @@ in
       {
         _args = [
           "SUPER + G"
-          (lib.generators.mkLuaInline "hl.dsp.exec_cmd(\"pypr toggle gemini\")")
+          (lib.generators.mkLuaInline "hl.dsp.exec_cmd(\"pypr tscratch toggle gemini\")")
+        ];
+      }
+      {
+        _args = [
+          "SUPER + CTRL + T"
+          (lib.generators.mkLuaInline "hl.dsp.exec_cmd(\"pypr tscratch cycle_ratio dev\")")
         ];
       }
       {
