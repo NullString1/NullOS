@@ -80,6 +80,12 @@ in
     wlogout.enable = true;
     starship.enable = true;
     yazi.enable = false;
+    cache.enable = true;
+    sources = inputs.catppuccin.packages.${pkgs.stdenv.hostPlatform.system}.overrideScope (
+      _: _: {
+        whiskers = pkgs.catppuccin-whiskers;
+      }
+    );
   };
 
   services.blueman-applet.enable = true;

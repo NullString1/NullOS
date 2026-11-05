@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   vars,
   ...
 }:
@@ -121,6 +122,8 @@ in
     package = pkgs.waydroid-nftables;
   };
 
+  imports = [ ./firetv-mic ];
+
   environment.systemPackages = with pkgs; [
     waydroid-nftables
     waydroid-atv-init
@@ -225,14 +228,23 @@ in
     ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
-      Restart = "on-failure";
-      RestartSec = "2s";
+      # Restart=always so the TV UI comes back on its own if the Waydroid
+      # wrapper exits (session crash, container restart, accidental stop).
+      Restart = "always";
+      RestartSec = "5s";
       CPUSchedulingPolicy = "rr";
       CPUSchedulingPriority = 20;
       IOSchedulingClass = "realtime";
       IOSchedulingPriority = 0;
     };
   };
+
+  # cage owns tty1 and the generated unit has Conflicts=getty@tty1.service.
+  # getty.target still wants getty@tty1, so every `switch-to-configuration`
+  # would start it, kill cage (and with it the Android session) and leave the
+  # TV without a UI. Keeping the getty out of the config makes deploys
+  # non-destructive; SSH and tty2..tty6 remain available.
+  systemd.services."getty@tty1".enable = lib.mkForce false;
   systemd.services.waydroid-container = {
     serviceConfig = {
       IOSchedulingClass = "best-effort";
