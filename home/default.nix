@@ -2,6 +2,7 @@
   pkgs,
   vars,
   lib,
+  inputs,
   ...
 }:
 let
