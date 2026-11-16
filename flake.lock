@@ -766,6 +766,22 @@
         "type": "github"
       }
     },
+    "nixpkgs_4": {
+      "locked": {
+        "lastModified": 1790510107,
+        "narHash": "sha256-EVMNYv7hYDDD9TGVT/hIyTYgpiXA8y3m5xIEIxuGNU0=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "3181085bfd08663b6b9e60bc7a8395c2aaa741bd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixvim": {
       "inputs": {
         "flake-parts": "flake-parts",
@@ -833,21 +849,22 @@
         "type": "github"
       }
     },
-    "opencode-v2-overlay": {
+    "opencode": {
       "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
+        "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1793868860,
-        "narHash": "sha256-D4z+xLDQdvoo4v4uF1aRfArEgOa6nbv+HUvtz6S+W8U=",
-        "path": "/mdata/NS/Projects/opencode2flake",
-        "type": "path"
+        "lastModified": 1794431337,
+        "narHash": "sha256-Gdhebx4WCmyYthrsnofzmZaxFbMebKxCOU0tPK5UNEg=",
+        "owner": "anomalyco",
+        "repo": "opencode",
+        "rev": "745636aee37cce1ee3085db7af5b7a72d3fe17e2",
+        "type": "github"
       },
       "original": {
-        "path": "/mdata/NS/Projects/opencode2flake",
-        "type": "path"
+        "owner": "anomalyco",
+        "repo": "opencode",
+        "type": "github"
       }
     },
     "pre-commit-hooks": {
@@ -885,7 +902,7 @@
         "nixpkgs-stable": "nixpkgs-stable",
         "nixvim": "nixvim",
         "nvf": "nvf",
-        "opencode-v2-overlay": "opencode-v2-overlay",
+        "opencode": "opencode",
         "sops-nix": "sops-nix",
         "stylix": "stylix",
         "tscratch": "tscratch"
@@ -1080,14 +1097,17 @@
         "systems": "systems_4"
       },
       "locked": {
-        "lastModified": 1793693806,
-        "narHash": "sha256-bRxcuziFqe4A06fZuxKf3pu5reFea4L7RvUwuc4GNgc=",
-        "path": "/mdata/NS/Projects/tscratch",
-        "type": "path"
+        "lastModified": 1794846133,
+        "narHash": "sha256-rDbzx0WlpAF9zxwmkTrLt++81sBimyfFUuKFm2E8p6s=",
+        "owner": "nullstring1",
+        "repo": "tscratch",
+        "rev": "6d1596cae73548cc587cf7df49a22a72f9ef7d8d",
+        "type": "github"
       },
       "original": {
-        "path": "/mdata/NS/Projects/tscratch",
-        "type": "path"
+        "owner": "nullstring1",
+        "repo": "tscratch",
+        "type": "github"
       }
     },
     "xdph": {

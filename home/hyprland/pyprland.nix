@@ -88,6 +88,7 @@ in
     [tscratch.dev.windows.term]
     command = "ghostty --class=scratchpad.ghostty"
     class = "scratchpad.ghostty"
+    pinned = true
     ratio = 0.8
     min_width = "350px"
     max_width = "1650px"
