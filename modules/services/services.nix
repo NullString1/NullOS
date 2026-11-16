@@ -51,6 +51,10 @@
       ignoreIP = [
         "127.0.0.1/8"
         "::1"
+      ]
+      ++ lib.optionals (vars.enableTailscale) [
+        "100.100.0.0/16"
+        "100.64.0.0/10"
       ];
     };
     avahi = {

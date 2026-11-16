@@ -42,12 +42,11 @@
       url = "github:nullstring1/hypr-kdeconnect-fix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    opencode-v2-overlay = {
-      url = "path:/mdata/NS/Projects/opencode2flake";
-      inputs.nixpkgs.follows = "nixpkgs";
+    opencode = {
+      url = "github:anomalyco/opencode";
     };
     tscratch = {
-      url = "path:/mdata/NS/Projects/tscratch";
+      url = "github:nullstring1/tscratch";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -131,6 +130,21 @@
           hyprland = inputs.hyprland.packages.${final.stdenv.hostPlatform.system}.hyprland or null;
           xdg-desktop-portal-hyprland =
             inputs.hyprland.packages.${final.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland or null;
+          # Track the latest opencode release from upstream instead of nixpkgs.
+          # Run `nix flake update opencode` to pick up new releases.
+          opencode =
+            let
+              oc = inputs.opencode.packages.${final.stdenv.hostPlatform.system}.default;
+            in
+            # Upstream's x86_64-linux node_modules hash is stale at the locked rev.
+            if final.stdenv.hostPlatform.system == "x86_64-linux" then
+              oc.override {
+                node_modules = oc.node_modules.override {
+                  hash = "sha256-eRMU1U6cwVEstQxH6EiAURqgQUMpNC9NbEoYolgIgwg=";
+                };
+              }
+            else
+              oc;
         })
         (final: prev: {
           ananicy-rules-cachyos = prev.ananicy-rules-cachyos.overrideAttrs (oldAttrs: {
@@ -153,7 +167,6 @@
           ];
         })
         inputs.dolphin-overlay.overlays.default
-        inputs.opencode-v2-overlay.overlays.default
         inputs.tscratch.overlays.default
         # sops-nix still builds sops-install-secrets with buildGo125Module,
         # which nixpkgs removed (Go 1.25 EOL). Alias it to the current
@@ -235,7 +248,6 @@
             inherit vars inputs home-manager;
           };
           modules = [
-            inputs.opencode-v2-overlay.nixosModules.default
             inputs.home-manager.nixosModules.home-manager
             inputs.sops-nix.nixosModules.sops
             {

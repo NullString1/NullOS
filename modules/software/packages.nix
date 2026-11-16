@@ -2,14 +2,30 @@
   pkgs,
   vars,
   lib,
+  inputs,
   ...
 }:
 let
   inherit (lib) mkIf mkForce;
   inherit (vars) isHyprland isKDE;
+  # Hyprland comes from the upstream flake, built with its own pinned nixpkgs
+  # (glibc 2.42). Mesa dlopens the system driver set from /run/opengl-driver,
+  # so the system mesa must be loadable by Hyprland: system mesa built on a
+  # newer glibc fails with "version `GLIBC_2.43' not found", crashing Hyprland
+  # at login with "no allocator available".
+  # https://wiki.hypr.land/Nix/Hyprland-on-NixOS/ (flakes tab)
+  hyprNixpkgs =
+    inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   services.desktopManager.plasma6.enable = isKDE;
+
+  # Use the mesa that matches Hyprland's pinned nixpkgs so Hyprland can load
+  # the /run/opengl-driver driver set (see comment above).
+  hardware.graphics = mkIf isHyprland {
+    package = hyprNixpkgs.mesa;
+    package32 = hyprNixpkgs.pkgsi686Linux.mesa;
+  };
 
   programs = {
     nix-ld.enable = true;

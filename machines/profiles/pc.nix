@@ -5,6 +5,7 @@
   enableIPForwarding = true;
   enableVSCode = true;
   enableOpencode = true;
+  enableAntigravityCLI = true;
   enableAndroid = true;
   enableNVIM = false;
   enableDirenv = true;
